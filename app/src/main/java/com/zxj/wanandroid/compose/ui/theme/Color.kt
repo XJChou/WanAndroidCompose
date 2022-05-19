@@ -19,97 +19,38 @@ val Grey900 = Color(0xFF212121).convert(ColorSpaces.CieXyz)
 /**
  * 主题色
  */
-@Stable
 class WanAndroidColors(
-    colorPrimary: Color,
-    colorPrimaryDark: Color,
-    colorAccent: Color,
-    textColorPrimary: Color,
-    viewBackground: Color,
-    windowBackground: Color,
-    lineDivider: Color,
-    listDivider: Color,
-    maskColor: Color,
+    val colorPrimary: Color,
+    val colorPrimaryDark: Color,
+    val colorAccent: Color,
+    val textColorPrimary: Color,
+    val viewBackground: Color,
+    val windowBackground: Color,
+    val lineDivider: Color,
+    val listDivider: Color,
+    val maskColor: Color,
 
     /* item */
-    commonColor: Color,
-    itemTitle: Color,
-    itemAuthor: Color,
-    itemDesc: Color,
-    itemTime: Color,
-    itemDate: Color,
-    itemChapter: Color,
-    itemTagTv: Color,
-    itemNavColorTv: Color,
-    colorTitleBg: Color,
-    colorAboutTv: Color,
-    transparent75: Color,
-    verticalTabLayoutBg: Color,
-    verticalTabLayoutIndicatorColor: Color,
-    itemFlowLayoutBg: Color,
-    arrowColor: Color,
-    stickyHeaderBg: Color,
+    val commonColor: Color,
+    val itemTitle: Color,
+    val itemAuthor: Color,
+    val itemDesc: Color,
+    val itemTime: Color,
+    val itemDate: Color,
+    val itemChapter: Color,
+    val itemTagTv: Color,
+    val itemNavColorTv: Color,
+    val colorTitleBg: Color,
+    val colorAboutTv: Color,
+    val transparent75: Color,
+    val verticalTabLayoutBg: Color,
+    val verticalTabLayoutIndicatorColor: Color,
+    val itemFlowLayoutBg: Color,
+    val arrowColor: Color,
+    val stickyHeaderBg: Color,
 
-    blueGrey: Color
-) {
-    var colorPrimary: Color by mutableStateOf(colorPrimary)
-        private set
-    var colorPrimaryDark: Color by mutableStateOf(colorPrimaryDark)
-        private set
-    var colorAccent: Color by mutableStateOf(colorAccent)
-        private set
-    var textColorPrimary: Color by mutableStateOf(textColorPrimary)
-        private set
-    var viewBackground: Color by mutableStateOf(viewBackground)
-        private set
-    var windowBackground: Color by mutableStateOf(windowBackground)
-        private set
-    var lineDivider: Color by mutableStateOf(lineDivider)
-        private set
-    var listDivider: Color by mutableStateOf(listDivider)
-        private set
-    var maskColor: Color by mutableStateOf(maskColor)
-        private set
-
-    // item
-    var commonColor: Color by mutableStateOf(commonColor)
-        private set
-    var itemTitle: Color by mutableStateOf(itemTitle)
-        private set
-    var itemAuthor: Color by mutableStateOf(itemAuthor)
-        private set
-    var itemDesc: Color by mutableStateOf(itemDesc)
-        private set
-    var itemTime: Color by mutableStateOf(itemTime)
-        private set
-    var itemDate: Color by mutableStateOf(itemDate)
-        private set
-    var itemChapter: Color by mutableStateOf(itemChapter)
-        private set
-    var itemTagTv: Color by mutableStateOf(itemTagTv)
-        private set
-    var itemNavColorTv: Color by mutableStateOf(itemNavColorTv)
-        private set
-    var colorTitleBg: Color by mutableStateOf(colorTitleBg)
-        private set
-    var colorAboutTv: Color by mutableStateOf(colorAboutTv)
-        private set
-    var transparent75: Color by mutableStateOf(transparent75)
-        private set
-    var verticalTabLayoutBg: Color by mutableStateOf(verticalTabLayoutBg)
-        private set
-    var verticalTabLayoutIndicatorColor: Color by mutableStateOf(verticalTabLayoutIndicatorColor)
-        private set
-    var itemFlowLayoutBg: Color by mutableStateOf(itemFlowLayoutBg)
-        private set
-    var arrowColor: Color by mutableStateOf(arrowColor)
-        private set
-    var stickyHeaderBg: Color by mutableStateOf(stickyHeaderBg)
-        private set
-
-    var blueGrey: Color by mutableStateOf(blueGrey)
-        private set
-}
+    val blueGrey: Color
+)
 
 val NormalColors = WanAndroidColors(
     colorPrimary = Color(0xFFE91E63).convert(ColorSpaces.CieXyz),
