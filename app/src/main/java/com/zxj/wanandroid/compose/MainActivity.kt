@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import com.zxj.wanandroid.compose.application.AnimateStatusColor
 import com.zxj.wanandroid.compose.ui.page.Home
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WanAndroidTheme(viewModel.theme) {
+                AnimateStatusColor(window)
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -30,3 +32,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
