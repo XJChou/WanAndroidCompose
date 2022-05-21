@@ -8,40 +8,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.ui.ControlBean
 import com.zxj.wanandroid.compose.ui.NavigationBar
 import com.zxj.wanandroid.compose.ui.Toolbar
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
+import kotlinx.coroutines.launch
 
-val TITLE = arrayOf(
-    getString(R.string.toolbar_text_home),
-    getString(R.string.toolbar_text_square),
-    getString(R.string.toolbar_text_public),
-    getString(R.string.toolbar_text_system),
-    getString(R.string.toolbar_text_project)
-)
-
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Home() {
     val viewModel: HomeViewModel = viewModel()
-    var selectIndex by remember { mutableStateOf(0) }
+    val pagerState = rememberPagerState()
+    val animateScope = rememberCoroutineScope()
     Box(Modifier.fillMaxSize()) {
         // 上部分
-        Box(Modifier.matchParentSize()) {
-            // 列表
-            when (selectIndex) {
-                0 -> IndexPage()
-                1 -> SquarePage()
-                2 -> PublicPage()
-                3 -> SystemPage()
-                4 -> ProjectPage()
-            }
-        }
-
+        HomePager(
+            count = viewModel.navigationItems.size,
+            pagerState = pagerState,
+            modifier = Modifier.matchParentSize()
+        )
         // 菜单栏
         val leftControls = remember {
             arrayListOf(
@@ -67,14 +57,20 @@ fun Home() {
                 .align(Alignment.TopStart)
                 .fillMaxWidth(),
             leftControl = leftControls,
-            title = TITLE[selectIndex],
+            title = viewModel.TITLE[pagerState.currentPage],
             titleColor = WanAndroidTheme.colors.itemTagTv,
             rightControl = rightControls
         )
 
         // 底部导航
-        NavigationBar(Modifier.align(Alignment.BottomStart), selectIndex) {
-            selectIndex = it
+        NavigationBar(
+            Modifier.align(Alignment.BottomStart),
+            viewModel.navigationItems,
+            pagerState.currentPage
+        ) {
+            animateScope.launch {
+                pagerState.animateScrollToPage(it)
+            }
         }
     }
 }

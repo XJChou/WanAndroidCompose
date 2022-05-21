@@ -1,6 +1,7 @@
 package com.zxj.wanandroid.compose.ui
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -51,3 +52,5 @@ fun NavigationItem(
         )
     }
 }
+
+data class NavigationItemBean(@DrawableRes val icon:Int, @StringRes val title:Int)
