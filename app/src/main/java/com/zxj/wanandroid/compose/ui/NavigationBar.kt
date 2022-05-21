@@ -12,25 +12,10 @@ import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 
-val icons = arrayOf(
-    R.drawable.ic_home_black_24dp,
-    R.drawable.ic_square_black_24dp,
-    R.drawable.ic_wechat_black_24dp,
-    R.drawable.ic_apps_black_24dp,
-    R.drawable.ic_project_black_24dp
-)
-
-val texts = arrayOf(
-    R.string.navigation_text_home,
-    R.string.navigation_text_square,
-    R.string.navigation_text_public,
-    R.string.navigation_text_system,
-    R.string.navigation_text_project
-)
-
 @Composable
 fun NavigationBar(
     modifier: Modifier = Modifier,
+    navigationItems: Array<NavigationItemBean>,
     selectIndex: Int,
     onItemSelectedChanged: ((Int) -> Unit)? = null
 ) {
@@ -40,7 +25,7 @@ fun NavigationBar(
             .fillMaxWidth()
             .height(56.dp)
     ) {
-        icons.forEachIndexed { index, icon ->
+        navigationItems.forEachIndexed { index, item ->
             NavigationItem(
                 modifier = Modifier
                     .weight(1f)
@@ -48,8 +33,8 @@ fun NavigationBar(
                         onItemSelectedChanged?.invoke(index)
                     },
                 isBig = selectIndex == index,
-                icon = icon,
-                text = getString(texts[index]),
+                icon = item.icon,
+                text = getString(item.title),
                 tint = if (selectIndex == index) {
                     WanAndroidTheme.colors.blueGrey
                 } else {

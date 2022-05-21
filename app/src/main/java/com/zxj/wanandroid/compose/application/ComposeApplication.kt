@@ -9,7 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.graphics.toArgb
+import com.ayvytr.okhttploginterceptor.BuildConfig
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
+import com.zxj.wanandroid.compose.utils.MyLog
 
 class ComposeApplication : Application() {
 
@@ -22,6 +24,7 @@ class ComposeApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         application = this
+        MyLog.init(BuildConfig.DEBUG)
     }
 }
 
