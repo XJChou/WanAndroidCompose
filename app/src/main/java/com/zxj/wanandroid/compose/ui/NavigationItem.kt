@@ -1,6 +1,7 @@
 package com.zxj.wanandroid.compose.ui
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -26,6 +27,9 @@ fun NavigationItem(
     text: String,
     tint: Color
 ) {
+    val textSize = animateFloatAsState(
+        targetValue = if (isBig) 13.sp.value else 12.sp.value,
+    )
     Column(
         modifier.fillMaxHeight(1f),
         verticalArrangement = Arrangement.Bottom,
@@ -42,7 +46,7 @@ fun NavigationItem(
         Text(
             text = text,
             modifier = Modifier.padding(0.dp, 5.dp, 0.dp, 5.dp),
-            fontSize = if (isBig) 13.sp else 12.sp,
+            fontSize = textSize.value.sp,
             color = tint
         )
     }

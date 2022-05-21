@@ -42,14 +42,14 @@ fun NavigationBar(
     ) {
         icons.forEachIndexed { index, icon ->
             NavigationItem(
-                isBig = selectIndex == index,
-                icon = icon,
-                text = getString(texts[index]),
                 modifier = Modifier
                     .weight(1f)
                     .clickable {
                         onItemSelectedChanged?.invoke(index)
                     },
+                isBig = selectIndex == index,
+                icon = icon,
+                text = getString(texts[index]),
                 tint = if (selectIndex == index) {
                     WanAndroidTheme.colors.blueGrey
                 } else {
