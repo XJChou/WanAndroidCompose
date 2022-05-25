@@ -2,12 +2,16 @@ package com.zxj.wanandroid.compose.viewmodel
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.zxj.wanandroid.compose.data.ArticleBean
 import com.zxj.wanandroid.compose.data.BannerBean
+import com.zxj.wanandroid.compose.data.Data
 import com.zxj.wanandroid.compose.net.APIFactory
 import com.zxj.wanandroid.compose.net.IndexAPI
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 // model
 class IndexViewModel : ViewModel() {
@@ -34,10 +38,22 @@ class IndexViewModel : ViewModel() {
     }
 
     private fun dispatchRefresh() {
-//        viewModelScope.launch {
-//            val articleListAwait = async { indexAPI.loadArticleList(0) }
-//            val bannerListAwait = async { indexAPI.loadBanner() }
-//        }
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(FetchStatus.Fetching)
+            val articleListAwait = async { indexAPI.loadArticleList(0) }
+            val bannerListAwait = async { indexAPI.loadBanner() }
+            val articleListResponse = articleListAwait.await()
+            val bannerListResponse = bannerListAwait.await()
+            if (articleListResponse.isSuccess && bannerListResponse.isSuccess) {
+                _uiState.value = _uiState.value.copy(
+                    fetchStatus = FetchStatus.Fetched,
+                    bannerList = bannerListResponse.data,
+                    articleList = articleListResponse.data?.datas
+                )
+            } else {
+                _uiState.value = _uiState.value.copy(FetchStatus.RefreshError)
+            }
+        }
     }
 
     private fun dispatchLoadAction() {
@@ -54,13 +70,14 @@ class IndexViewModel : ViewModel() {
 data class IndexViewState(
     val fetchStatus: FetchStatus,
     val bannerList: List<BannerBean>? = null,
-    val articleList: List<ArticleBean>? = null
+    val articleList: List<Data>? = null
 )
 
 sealed class FetchStatus {
     object NotFetched : FetchStatus()
     object Fetching : FetchStatus()
     object Fetched : FetchStatus()
+    object RefreshError : FetchStatus()
 }
 
 /**

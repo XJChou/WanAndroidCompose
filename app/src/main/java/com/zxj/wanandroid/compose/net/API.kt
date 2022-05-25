@@ -7,7 +7,7 @@ import java.io.IOException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-class API<Data>(val errorCode: Int, val errorMsg: String?, val data: Data? = null) {
+class API<Data>(val errorCode: Int = 0, val errorMsg: String? = null, val data: Data? = null) {
 
     val isSuccess: Boolean
         get() = errorCode == 0

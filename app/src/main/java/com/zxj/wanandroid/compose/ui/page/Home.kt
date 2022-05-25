@@ -1,6 +1,7 @@
 package com.zxj.wanandroid.compose.ui.page
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.*
@@ -27,40 +28,41 @@ fun Home() {
     val animateScope = rememberCoroutineScope()
     Box(Modifier.fillMaxSize()) {
         // 上部分
-        HomePager(
-            count = viewModel.navigationItems.size,
-            pagerState = pagerState,
-            modifier = Modifier.matchParentSize()
-        )
-        // 菜单栏
-        val leftControls = remember {
-            arrayListOf(
-                ControlBean(R.drawable.ic_menu_white_24dp) {
-                    toast("菜单")
-                    viewModel.theme = if (viewModel.theme == WanAndroidTheme.Theme.Night) {
-                        WanAndroidTheme.Theme.Normal
-                    } else {
-                        WanAndroidTheme.Theme.Night
+        Column(Modifier.fillMaxSize()) {
+            // 菜单栏
+            val leftControls = remember {
+                arrayListOf(
+                    ControlBean(R.drawable.ic_menu_white_24dp) {
+                        toast("菜单")
+                        viewModel.theme = if (viewModel.theme == WanAndroidTheme.Theme.Night) {
+                            WanAndroidTheme.Theme.Normal
+                        } else {
+                            WanAndroidTheme.Theme.Night
+                        }
                     }
-                }
+                )
+            }
+            val rightControls = remember {
+                arrayListOf(
+                    ControlBean(R.drawable.ic_search_white_24dp) {
+                        toast("搜索")
+                    }
+                )
+            }
+            Toolbar(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                leftControl = leftControls,
+                title = viewModel.TITLE[pagerState.currentPage],
+                titleColor = WanAndroidTheme.colors.itemTagTv,
+                rightControl = rightControls
+            )
+            HomePager(
+                count = viewModel.navigationItems.size,
+                pagerState = pagerState,
+                modifier = Modifier.fillMaxWidth().weight(1f)
             )
         }
-        val rightControls = remember {
-            arrayListOf(
-                ControlBean(R.drawable.ic_search_white_24dp) {
-                    toast("搜索")
-                }
-            )
-        }
-        Toolbar(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .fillMaxWidth(),
-            leftControl = leftControls,
-            title = viewModel.TITLE[pagerState.currentPage],
-            titleColor = WanAndroidTheme.colors.itemTagTv,
-            rightControl = rightControls
-        )
 
         // 底部导航
         NavigationBar(
