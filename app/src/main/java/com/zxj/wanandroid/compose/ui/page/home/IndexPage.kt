@@ -5,36 +5,31 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.FixedScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import coil.size.Dimension
-import coil.size.OriginalSize
 import coil.size.Size
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.data.BannerBean
 import com.zxj.wanandroid.compose.data.Data
-import com.zxj.wanandroid.compose.ui.theme.Shapes
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 
@@ -47,13 +42,18 @@ fun IndexPage() {
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .background(WanAndroidTheme.colors.windowBackground)
+            .background(WanAndroidTheme.colors.windowBackground),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
 
         // banner view
         val bannerList = uiState.bannerList
         if (bannerList != null) {
-            item { Banner(bannerList) }
+            item {
+                Banner(bannerList) {
+                    // 点击bannber
+                }
+            }
         }
 
         // 列表内容
@@ -159,35 +159,49 @@ fun ArticleItem(data: Data) {
 
 @Composable
 @OptIn(ExperimentalPagerApi::class)
-fun Banner(bannerList: List<BannerBean>) {
-    HorizontalPager(
-        bannerList.size,
-        Modifier.fillMaxWidth()
-    ) { page ->
-        val item = bannerList[page]
-        Box(Modifier.fillMaxWidth()) {
-            // 图片
-            val imageRequest = ImageRequest.Builder(LocalContext.current)
+fun Banner(bannerList: List<BannerBean>, onBannerItem: (BannerBean) -> Unit) {
+    Box(Modifier.fillMaxWidth()) {
+        val state = rememberPagerState(bannerList.size * 10000)
+        // 广告轮播
+        HorizontalPager(
+            Int.MAX_VALUE,
+            Modifier.fillMaxWidth(),
+            state
+        ) { page ->
+            val item = bannerList[page % bannerList.size]
+            val request = ImageRequest.Builder(LocalContext.current)
                 .data(item.imagePath)
+                .placeholder(R.drawable.placeholder_banner)
                 .size(Size.ORIGINAL)
                 .build()
-            val painter = rememberAsyncImagePainter(imageRequest)
-            Image(
-                painter = painter,
+            AsyncImage(
+                model = request,
                 contentDescription = item.title,
                 contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onBannerItem(item)
+                    }
             )
-            // 文字
+        }
+        // banner文本
+        if (bannerList.isNotEmpty()) {
             Text(
-                text = item.title,
+                text = bannerList[state.currentPage % bannerList.size].title,
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .fillMaxWidth()
+                    .background(Color(0x44AAAAAA))
+                    .padding(13.dp, 6.dp)
+                    .fillMaxWidth(),
+                fontSize = 16.sp,
+                color = WanAndroidTheme.colors.colorTitleBg,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
             )
-
         }
     }
+
 }
 
 @Composable
@@ -197,7 +211,7 @@ fun ArticleTag(text: String, color: Color) {
         modifier = Modifier
             .padding(10.dp, 0.dp, 0.dp, 0.dp)
             .border(BorderStroke(0.5.dp, color), RoundedCornerShape(2.dp))
-            .padding(4.dp, 2.dp),
+            .padding(4.5.dp, 2.dp),
         color = color,
         fontSize = 10.sp
     )
