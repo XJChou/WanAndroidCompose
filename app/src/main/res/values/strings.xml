@@ -12,4 +12,6 @@
     <string name="toolbar_text_public">@string/navigation_text_public</string>
     <string name="toolbar_text_system">@string/navigation_text_system</string>
     <string name="toolbar_text_project">@string/navigation_text_project</string>
+    <string name="top_tip">置顶</string>
+    <string name="new_fresh">新</string>
 </resources>

@@ -22,6 +22,7 @@ data class Data(
     val desc: String,
     val descMd: String,
     val envelopePic: String,
+    val top:String?,
     val fresh: Boolean,
     val host: String,
     val id: Int,
@@ -44,7 +45,46 @@ data class Data(
     val userId: Int,
     val visible: Int,
     val zan: Int
-)
+) {
+    companion object {
+        val Demo = Data(
+            "",
+            1,
+            "",
+            false,
+            502,
+            "自助",
+            false,
+            13,
+            "",
+            "",
+            "",
+            "",
+            true,
+            "",
+            22843,
+            "https://juejin.cn/post/7101600959456870437",
+            "18小时前",
+            "18小时前",
+            "",
+            "",
+            "",
+            1653639991000,
+            493,
+            0,
+            1653639991000,
+            "345丶",
+            494,
+            "广场Tab",
+            arrayListOf(),
+            "Android | Compsoe 初上手",
+            0,
+            70343,
+            1,
+            0
+        )
+    }
+}
 
 data class Tag(
     val name: String,

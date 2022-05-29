@@ -42,13 +42,25 @@ class IndexViewModel : ViewModel() {
             _uiState.value = _uiState.value.copy(FetchStatus.Fetching)
             val articleListAwait = async { indexAPI.loadArticleList(0) }
             val bannerListAwait = async { indexAPI.loadBanner() }
+            val topArticleListAwait = async { indexAPI.loadTopArticleList() }
             val articleListResponse = articleListAwait.await()
             val bannerListResponse = bannerListAwait.await()
-            if (articleListResponse.isSuccess && bannerListResponse.isSuccess) {
+            val topArticleListResponse = topArticleListAwait.await()
+            if (articleListResponse.isSuccess && bannerListResponse.isSuccess && topArticleListResponse.isSuccess) {
+                val topArticleList = topArticleListResponse.data ?: arrayListOf()
+                val targetArticleList = arrayListOf<Data>()
+                if (topArticleList.isNotEmpty()) {
+                    targetArticleList.addAll(topArticleList.map { it.copy(top = "1") })
+                }
+                val pageData = articleListResponse.data?.datas
+                if(!pageData.isNullOrEmpty()) {
+                    targetArticleList.addAll(pageData)
+                }
+
                 _uiState.value = _uiState.value.copy(
                     fetchStatus = FetchStatus.Fetched,
                     bannerList = bannerListResponse.data,
-                    articleList = articleListResponse.data?.datas
+                    articleList = targetArticleList
                 )
             } else {
                 _uiState.value = _uiState.value.copy(FetchStatus.RefreshError)
