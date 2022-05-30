@@ -1,6 +1,9 @@
 package com.zxj.wanandroid.compose.ui.page.home
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,27 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.size.Size
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
-import com.zxj.wanandroid.compose.data.BannerBean
 import com.zxj.wanandroid.compose.data.Data
+import com.zxj.wanandroid.compose.ui.page.view.Banner
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 
@@ -63,13 +57,6 @@ fun IndexPage() {
                 ArticleItem(articleList[it])
             }
         }
-
-        // viewpager
-//        HorizontalPager()
-
-        // 列表
-
-
     }
 }
 
@@ -157,52 +144,6 @@ fun ArticleItem(data: Data) {
     }
 }
 
-@Composable
-@OptIn(ExperimentalPagerApi::class)
-fun Banner(bannerList: List<BannerBean>, onBannerItem: (BannerBean) -> Unit) {
-    Box(Modifier.fillMaxWidth()) {
-        val state = rememberPagerState(bannerList.size * 10000)
-        // 广告轮播
-        HorizontalPager(
-            Int.MAX_VALUE,
-            Modifier.fillMaxWidth(),
-            state
-        ) { page ->
-            val item = bannerList[page % bannerList.size]
-            val request = ImageRequest.Builder(LocalContext.current)
-                .data(item.imagePath)
-                .placeholder(R.drawable.placeholder_banner)
-                .size(Size.ORIGINAL)
-                .build()
-            AsyncImage(
-                model = request,
-                contentDescription = item.title,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        onBannerItem(item)
-                    }
-            )
-        }
-        // banner文本
-        if (bannerList.isNotEmpty()) {
-            Text(
-                text = bannerList[state.currentPage % bannerList.size].title,
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .background(Color(0x44AAAAAA))
-                    .padding(13.dp, 6.dp)
-                    .fillMaxWidth(),
-                fontSize = 16.sp,
-                color = WanAndroidTheme.colors.colorTitleBg,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
-            )
-        }
-    }
-
-}
 
 @Composable
 fun ArticleTag(text: String, color: Color) {
