@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -30,22 +27,20 @@ import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 @Composable
 fun IndexPage() {
     val indexViewModel: IndexViewModel = viewModel()
-    indexViewModel.uiState
     val uiState by indexViewModel.uiState.collectAsState()
-    // 这里应该套一个 refresh-layout
+    val bannerList by derivedStateOf { uiState.bannerList }
+
     LazyColumn(
         Modifier
             .fillMaxSize()
             .background(WanAndroidTheme.colors.windowBackground),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-
         // banner view
-        val bannerList = uiState.bannerList
-        if (bannerList != null) {
+        bannerList?.also {
             item {
-                Banner(bannerList) {
-                    // 点击bannber
+                Banner(bannerList = it) {
+
                 }
             }
         }
