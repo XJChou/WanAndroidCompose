@@ -39,8 +39,9 @@ fun IndexPage() {
         // banner view
         bannerList?.also {
             item {
-                Banner(bannerList = it) {
-
+                Banner(
+                    Modifier.fillMaxWidth(),
+                    bannerList = it) {
                 }
             }
         }

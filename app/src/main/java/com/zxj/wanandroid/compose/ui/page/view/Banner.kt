@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,16 +40,35 @@ import kotlinx.coroutines.isActive
 @Composable
 @OptIn(ExperimentalPagerApi::class)
 fun Banner(
+    modifier: Modifier,
     bannerList: List<BannerBean>,
     onBannerItem: (BannerBean) -> Unit,
 ) {
-    Box(Modifier.fillMaxWidth()) {
+    Box(modifier) {
         val initPage = remember(bannerList) { bannerList.size * 10000 }
+        var pageDown by remember { mutableStateOf(false) }
         // bannerView
         val state = rememberPagerState(initPage)
         HorizontalPager(
             Int.MAX_VALUE,
-            Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .pointerInput(state.currentPage) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            val dragEvent = event.changes.first()
+                            when {
+                                dragEvent.changedToDownIgnoreConsumed() -> {
+                                    pageDown = true
+                                }
+                                dragEvent.changedToUpIgnoreConsumed() -> {
+                                    pageDown = false
+                                }
+                            }
+                        }
+                    }
+                },
             state,
         ) { page ->
             val item = bannerList[page % bannerList.size]
@@ -70,7 +90,7 @@ fun Banner(
         }
 
         // step2: 启动一个协程，用于自动轮播下一个
-        StartLoop(state)
+        StartInfiniteLoop(state, pageDown)
 
         // step3: Text + Indicators
         if (bannerList.isNotEmpty()) {
@@ -85,13 +105,20 @@ fun Banner(
     }
 }
 
+/**
+ * 开始无限滑动协程处理
+ * @param state 主要控制Pager控件自动滚动
+ * @param pagerDown 主要检测Pager控件是不是被按压
+ */
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun StartLoop(state: PagerState) {
-    LaunchedEffect(state) {
-        while (isActive) {
-            delay(3000L)
-            state.animateScrollToPage(state.currentPage + 1, 0f)
+fun StartInfiniteLoop(state: PagerState, pagerDown: Boolean) {
+    LaunchedEffect(state, pagerDown) {
+        if (!pagerDown) {
+            while (isActive) {
+                delay(3000L)
+                state.animateScrollToPage(state.currentPage + 1, 0f)
+            }
         }
     }
 }
