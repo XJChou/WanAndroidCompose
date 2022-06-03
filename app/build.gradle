@@ -90,6 +90,7 @@ dependencies {
     // pager
     implementation "com.google.accompanist:accompanist-pager:${accompanist_version}"
     implementation "com.google.accompanist:accompanist-pager-indicators:${accompanist_version}"
+    implementation "com.google.accompanist:accompanist-swiperefresh:${accompanist_version}"
 
     // 测试相关
     testImplementation 'junit:junit:4.13.2'

@@ -17,40 +17,59 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.data.Data
 import com.zxj.wanandroid.compose.ui.page.view.Banner
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
+import com.zxj.wanandroid.compose.viewmodel.FetchStatus
+import com.zxj.wanandroid.compose.viewmodel.IndexViewAction
 import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 
 @Composable
 fun IndexPage() {
     val indexViewModel: IndexViewModel = viewModel()
+    // StateFlow -> State
     val uiState by indexViewModel.uiState.collectAsState()
+
+    // State<> map State<>
     val bannerList by derivedStateOf { uiState.bannerList }
 
-    LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .background(WanAndroidTheme.colors.windowBackground),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+    // State<> map State<Boolean>
+    val state = remember { SwipeRefreshState(false) }
+    state.isRefreshing = uiState.refreshFetchStatus == FetchStatus.Fetching
+    // 刷新布局
+    SwipeRefresh(
+        state = state,
+        onRefresh = {
+            indexViewModel.dispatch(IndexViewAction.RefreshAction)
+        }
     ) {
-        // banner view
-        bannerList?.also {
-            item {
-                Banner(
-                    Modifier.fillMaxWidth(),
-                    bannerList = it) {
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .background(WanAndroidTheme.colors.windowBackground),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            // banner view
+            bannerList?.also {
+                item {
+                    Banner(
+                        Modifier.fillMaxWidth(),
+                        bannerList = it
+                    ) {
+                    }
                 }
             }
-        }
 
-        // 列表内容
-        val articleList = uiState.articleList
-        if (articleList != null) {
-            items(articleList.size) {
-                ArticleItem(articleList[it])
+            // 列表内容
+            val articleList = uiState.articleList
+            if (articleList != null) {
+                items(articleList.size) {
+                    ArticleItem(articleList[it])
+                }
             }
         }
     }

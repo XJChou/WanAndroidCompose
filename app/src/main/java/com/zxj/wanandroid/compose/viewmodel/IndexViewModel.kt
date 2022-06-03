@@ -3,12 +3,12 @@ package com.zxj.wanandroid.compose.viewmodel
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zxj.wanandroid.compose.data.ArticleBean
 import com.zxj.wanandroid.compose.data.BannerBean
 import com.zxj.wanandroid.compose.data.Data
 import com.zxj.wanandroid.compose.net.APIFactory
 import com.zxj.wanandroid.compose.net.IndexAPI
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -39,7 +39,7 @@ class IndexViewModel : ViewModel() {
 
     private fun dispatchRefresh() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(FetchStatus.Fetching)
+            _uiState.value = _uiState.value.copy(refreshFetchStatus = FetchStatus.Fetching)
             val articleListAwait = async { indexAPI.loadArticleList(0) }
             val bannerListAwait = async { indexAPI.loadBanner() }
             val topArticleListAwait = async { indexAPI.loadTopArticleList() }
@@ -58,12 +58,12 @@ class IndexViewModel : ViewModel() {
                 }
 
                 _uiState.value = _uiState.value.copy(
-                    fetchStatus = FetchStatus.Fetched,
+                    refreshFetchStatus = FetchStatus.Fetched,
                     bannerList = bannerListResponse.data,
                     articleList = targetArticleList
                 )
             } else {
-                _uiState.value = _uiState.value.copy(FetchStatus.RefreshError)
+                _uiState.value = _uiState.value.copy(FetchStatus.Fetched)
             }
         }
     }
@@ -80,7 +80,7 @@ class IndexViewModel : ViewModel() {
  * 3. 文章列表
  */
 data class IndexViewState(
-    val fetchStatus: FetchStatus,
+    val refreshFetchStatus: FetchStatus,
     val bannerList: List<BannerBean>? = null,
     val articleList: List<Data>? = null
 )
@@ -89,7 +89,6 @@ sealed class FetchStatus {
     object NotFetched : FetchStatus()
     object Fetching : FetchStatus()
     object Fetched : FetchStatus()
-    object RefreshError : FetchStatus()
 }
 
 /**
