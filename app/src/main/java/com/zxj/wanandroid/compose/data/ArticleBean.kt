@@ -7,7 +7,9 @@ data class ArticleBean(
     val over: Boolean,
     val pageCount: Int,
     val size: Int,
-    val total: Int
+    val total: Int,
+    // 业务相关
+    val topCount: Int = 0
 )
 
 data class Data(

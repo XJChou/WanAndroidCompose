@@ -11,7 +11,9 @@ import com.zxj.wanandroid.compose.application.AnimateStatusColor
 import com.zxj.wanandroid.compose.ui.page.Home
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     val viewModel: HomeViewModel by viewModels()

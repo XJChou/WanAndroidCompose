@@ -5,23 +5,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zxj.wanandroid.compose.data.BannerBean
 import com.zxj.wanandroid.compose.data.Data
-import com.zxj.wanandroid.compose.net.APIFactory
-import com.zxj.wanandroid.compose.net.IndexAPI
+import com.zxj.wanandroid.compose.data.repositories.IndexRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-// model
-class IndexViewModel : ViewModel() {
+@HiltViewModel
+class IndexViewModel @Inject constructor(
+    private val indexRepository: IndexRepository
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(IndexViewState(FetchStatus.NotFetched))
+    private val _uiState = MutableStateFlow(IndexViewState())
     val uiState: StateFlow<IndexViewState> = _uiState
 
-    private val indexAPI: IndexAPI by lazy { APIFactory.get() }
-
-    private var index = 0
+    private var pageIndex = 1
 
     init {
         dispatch(IndexViewAction.RefreshAction)
@@ -38,57 +38,81 @@ class IndexViewModel : ViewModel() {
     }
 
     private fun dispatchRefresh() {
+        if (_uiState.value.isRefresh || _uiState.value.isLoad) return
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(refreshFetchStatus = FetchStatus.Fetching)
-            val articleListAwait = async { indexAPI.loadArticleList(0) }
-            val bannerListAwait = async { indexAPI.loadBanner() }
-            val topArticleListAwait = async { indexAPI.loadTopArticleList() }
+            val bannerListAwait = async { indexRepository.loadBannerList() }
+            val articleListAwait = async { indexRepository.loadDataList(1) }
+
             val articleListResponse = articleListAwait.await()
             val bannerListResponse = bannerListAwait.await()
-            val topArticleListResponse = topArticleListAwait.await()
-            if (articleListResponse.isSuccess && bannerListResponse.isSuccess && topArticleListResponse.isSuccess) {
-                val topArticleList = topArticleListResponse.data ?: arrayListOf()
-                val targetArticleList = arrayListOf<Data>()
-                if (topArticleList.isNotEmpty()) {
-                    targetArticleList.addAll(topArticleList.map { it.copy(top = "1") })
-                }
-                val pageData = articleListResponse.data?.datas
-                if(!pageData.isNullOrEmpty()) {
-                    targetArticleList.addAll(pageData)
-                }
-
+            if (articleListResponse.isSuccess && bannerListResponse.isSuccess) {
                 _uiState.value = _uiState.value.copy(
-                    refreshFetchStatus = FetchStatus.Fetched,
+                    refreshFetchStatus = FetchStatus.Success,
                     bannerList = bannerListResponse.data,
-                    articleList = targetArticleList
+                    articleList = articleListResponse.data?.datas
                 )
+                pageIndex = 1
             } else {
-                _uiState.value = _uiState.value.copy(FetchStatus.Fetched)
+                _uiState.value = _uiState.value.copy(refreshFetchStatus = FetchStatus.Error)
             }
         }
     }
 
     private fun dispatchLoadAction() {
+        if (_uiState.value.isRefresh || _uiState.value.isLoad) return
 
+        val nextPage = this.pageIndex + 1
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(loadFetchStatus = FetchStatus.Fetching)
+            indexRepository.loadDataList(nextPage)
+                .onSuccess {
+                    val targetList = _uiState.value.articleList as MutableList
+                    val networkData = it?.datas
+                    if (!networkData.isNullOrEmpty()) {
+                        targetList.addAll(targetList)
+                    }
+
+                    _uiState.value = _uiState.value.copy(
+                        loadFetchStatus = FetchStatus.Success,
+                        articleList = targetList
+                    )
+                    this@IndexViewModel.pageIndex = nextPage
+                }
+                .onError {
+                    _uiState.value = _uiState.value.copy(loadFetchStatus = FetchStatus.Error)
+                }
+        }
     }
 }
 
 /**
  * 承载了页面所有状态 state [ model -> view ]
- * 1. 当前加载的状态
+ * 1. 当前刷新状态
  * 2. banner列表
  * 3. 文章列表
+ * 4. 当前加载状态
  */
 data class IndexViewState(
-    val refreshFetchStatus: FetchStatus,
+    val refreshFetchStatus: FetchStatus = FetchStatus.NotFetched,
     val bannerList: List<BannerBean>? = null,
-    val articleList: List<Data>? = null
-)
+    val articleList: List<Data>? = null,
+    val loadFetchStatus: FetchStatus = FetchStatus.NotFetched,
+    val hasLoad: Boolean = false
+) {
+    val isRefresh: Boolean
+        get() = refreshFetchStatus == FetchStatus.Fetching
+
+    val isLoad: Boolean
+        get() = loadFetchStatus == FetchStatus.Fetching
+}
 
 sealed class FetchStatus {
     object NotFetched : FetchStatus()
     object Fetching : FetchStatus()
-    object Fetched : FetchStatus()
+    object Success : FetchStatus()
+    object Error : FetchStatus()
 }
 
 /**
