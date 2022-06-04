@@ -51,7 +51,8 @@ class IndexViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     refreshFetchStatus = FetchStatus.Success,
                     bannerList = bannerListResponse.data,
-                    articleList = articleListResponse.data?.datas
+                    articleList = articleListResponse.data?.datas,
+                    hasLoad = true
                 )
                 pageIndex = 1
             } else {
@@ -76,7 +77,8 @@ class IndexViewModel @Inject constructor(
 
                     _uiState.value = _uiState.value.copy(
                         loadFetchStatus = FetchStatus.Success,
-                        articleList = targetList
+                        articleList = targetList,
+                        hasLoad = !it?.datas.isNullOrEmpty()
                     )
                     this@IndexViewModel.pageIndex = nextPage
                 }
