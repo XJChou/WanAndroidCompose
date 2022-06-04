@@ -12,16 +12,18 @@ class API<Data>(val errorCode: Int = 0, val errorMsg: String? = null, val data: 
     val isSuccess: Boolean
         get() = errorCode == 0
 
-    fun onSuccess(block: API<Data>.(data: Data?) -> Unit) {
+    fun onSuccess(block: API<Data>.(data: Data?) -> Unit):API<Data> {
         if (isSuccess) {
             this.block(data)
         }
+        return this
     }
 
-    fun onError(block: API<Data>.(msg: String) -> Unit) {
+    fun onError(block: API<Data>.(msg: String) -> Unit):API<Data> {
         if (!isSuccess) {
             this.block(errorMsg ?: "网络异常")
         }
+        return this
     }
 }
 

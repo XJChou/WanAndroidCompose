@@ -8,8 +8,10 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.zxj.wanandroid.compose.application.AnimateStatusColor
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
+import dagger.hilt.android.AndroidEntryPoint
 import com.zxj.wanandroid.compose.utils.MyLog
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

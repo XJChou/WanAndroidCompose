@@ -1,9 +1,6 @@
 package com.zxj.wanandroid.compose.ui.page.home
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,15 +28,20 @@ import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 @Composable
 fun IndexPage() {
     val indexViewModel: IndexViewModel = viewModel()
+
     // StateFlow -> State
     val uiState by indexViewModel.uiState.collectAsState()
 
-    // State<> map State<>
-    val bannerList by derivedStateOf { uiState.bannerList }
-
-    // State<> map State<Boolean>
+    // 是否当前在刷新状态
     val state = remember { SwipeRefreshState(false) }
     state.isRefreshing = uiState.refreshFetchStatus == FetchStatus.Fetching
+    // 轮播列表
+    val bannerList by remember { derivedStateOf { uiState.bannerList } }
+    // 文章列表
+    val articleList by remember { derivedStateOf { uiState.articleList } }
+    // 是否能够加载
+    val hasLoad by remember { derivedStateOf { uiState.hasLoad } }
+
     // 刷新布局
     SwipeRefresh(
         state = state,
@@ -53,7 +55,8 @@ fun IndexPage() {
                 .background(WanAndroidTheme.colors.windowBackground),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            // banner view
+
+            // 轮播内容
             bannerList?.also {
                 item {
                     Banner(
@@ -65,10 +68,28 @@ fun IndexPage() {
             }
 
             // 列表内容
-            val articleList = uiState.articleList
-            if (articleList != null) {
-                items(articleList.size) {
-                    ArticleItem(articleList[it])
+            articleList?.also { dataList ->
+                items(dataList.size) {
+                    ArticleItem(dataList[it])
+                }
+            }
+
+            // 加载内容
+            if (hasLoad) {
+                item {
+                    val text = remember(uiState.isLoad) {
+                        if (uiState.isLoad) {
+                            "加载中"
+                        } else {
+                            "点击加载"
+                        }
+                    }
+                    Text(
+                        text = text,
+                        modifier = Modifier.clickable {
+                            indexViewModel.dispatch(IndexViewAction.LoadAction)
+                        }
+                    )
                 }
             }
         }

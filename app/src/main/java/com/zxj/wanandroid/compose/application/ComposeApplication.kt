@@ -12,7 +12,9 @@ import androidx.compose.ui.graphics.toArgb
 import com.zxj.wanandroid.compose.BuildConfig
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.utils.MyLog
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class ComposeApplication : Application() {
 
     companion object {
