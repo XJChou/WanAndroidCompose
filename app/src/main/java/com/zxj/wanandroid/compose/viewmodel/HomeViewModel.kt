@@ -1,17 +1,11 @@
 package com.zxj.wanandroid.compose.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.ui.NavigationItemBean
-import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 
 class HomeViewModel : ViewModel() {
-
-    var theme by mutableStateOf(WanAndroidTheme.Theme.Normal)
 
     val navigationItems = arrayOf(
         NavigationItemBean(R.drawable.ic_home_black_24dp, R.string.navigation_text_home),

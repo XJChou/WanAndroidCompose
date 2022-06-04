@@ -1,14 +1,18 @@
 package com.zxj.wanandroid.compose.ui.page
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
+import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.ui.ControlBean
@@ -20,7 +24,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Home() {
+fun Home(navController: NavController) {
     val viewModel: HomeViewModel = viewModel()
     val pagerState = rememberPagerState()
     val animateScope = rememberCoroutineScope()
@@ -32,18 +36,21 @@ fun Home() {
                 arrayListOf(
                     ControlBean(R.drawable.ic_menu_white_24dp) {
                         toast("菜单")
-                        viewModel.theme = if (viewModel.theme == WanAndroidTheme.Theme.Night) {
-                            WanAndroidTheme.Theme.Normal
-                        } else {
-                            WanAndroidTheme.Theme.Night
-                        }
+                        WanAndroidTheme.changeTheme()
                     }
                 )
             }
             val rightControls = remember {
                 arrayListOf(
                     ControlBean(R.drawable.ic_search_white_24dp) {
-                        toast("搜索")
+                        navController.navigate(NavigationRoute.SEARCH) {
+                            anim {
+                                this.enter = androidx.fragment.R.anim.fragment_open_enter
+                                this.exit = androidx.fragment.R.anim.fragment_open_enter
+                                this.popEnter = androidx.fragment.R.anim.fragment_open_enter
+                                this.popExit = androidx.fragment.R.anim.fragment_open_enter
+                            }
+                        }
                     }
                 )
             }
@@ -51,8 +58,13 @@ fun Home() {
                 modifier = Modifier
                     .fillMaxWidth(),
                 leftControl = leftControls,
-                title = viewModel.TITLE[pagerState.currentPage],
-                titleColor = WanAndroidTheme.colors.itemTagTv,
+                {
+                    Text(
+                        text = viewModel.TITLE[pagerState.currentPage],
+                        fontSize = 18.sp,
+                        color = WanAndroidTheme.colors.itemTagTv
+                    )
+                },
                 rightControl = rightControls
             )
             HomePager(
@@ -81,6 +93,6 @@ fun Home() {
 @Composable
 fun PreviewHome() {
     WanAndroidTheme {
-        Home()
+        Home(rememberNavController())
     }
 }

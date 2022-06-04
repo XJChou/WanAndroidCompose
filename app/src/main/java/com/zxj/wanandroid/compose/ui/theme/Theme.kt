@@ -3,13 +3,24 @@ package com.zxj.wanandroid.compose.ui.theme
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 
 object WanAndroidTheme {
     /**
      * 提供给别人使用
      */
+
+    var theme by mutableStateOf(Theme.Normal)
+
+    fun changeTheme(theme: Theme?=null){
+        this.theme= theme
+            ?: if (this.theme == Theme.Night) {
+                Theme.Normal
+            } else {
+                Theme.Night
+            }
+    }
+
     val colors: WanAndroidColors
         @Composable
         get() = LocalWanAndroidColors.current

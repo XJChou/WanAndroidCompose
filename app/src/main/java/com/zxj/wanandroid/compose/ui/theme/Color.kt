@@ -116,4 +116,4 @@ val NightColors = WanAndroidColors(
     blueGrey = Color(0xFF607D8B).convert(ColorSpaces.CieXyz)
 )
 
-val LocalWanAndroidColors = compositionLocalOf { NormalColors }
+val LocalWanAndroidColors = staticCompositionLocalOf { NormalColors }
