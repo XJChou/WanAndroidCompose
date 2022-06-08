@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Home(navController: NavController) {
+fun Home(/*navController: NavController*/) {
     val viewModel: HomeViewModel = viewModel()
     val pagerState = rememberPagerState()
     val animateScope = rememberCoroutineScope()
@@ -43,14 +43,14 @@ fun Home(navController: NavController) {
             val rightControls = remember {
                 arrayListOf(
                     ControlBean(R.drawable.ic_search_white_24dp) {
-                        navController.navigate(NavigationRoute.SEARCH) {
-                            anim {
+//                        navController.navigate(NavigationRoute.SEARCH) {
+//                            anim {
 //                                this.enter = androidx.fragment.R.anim.fragment_open_enter
 //                                this.exit = androidx.fragment.R.anim.fragment_open_enter
 //                                this.popEnter = androidx.fragment.R.anim.fragment_open_enter
 //                                this.popExit = androidx.fragment.R.anim.fragment_open_enter
-                            }
-                        }
+//                            }
+//                        }
                     }
                 )
             }
@@ -93,6 +93,6 @@ fun Home(navController: NavController) {
 @Composable
 fun PreviewHome() {
     WanAndroidTheme {
-        Home(rememberNavController())
+        Home()
     }
 }

@@ -33,8 +33,8 @@ class MainActivity : ComponentActivity() {
                     color = WanAndroidTheme.colors.windowBackground
                 ) {
                     MyLog.e("viewModel.theme=${WanAndroidTheme.theme}")
-                    Home(rememberNavController())
 //                    MainNavigation()
+                    Home()
                 }
             }
         }
