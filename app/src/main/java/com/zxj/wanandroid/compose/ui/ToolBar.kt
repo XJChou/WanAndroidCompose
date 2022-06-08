@@ -21,14 +21,14 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 fun Toolbar(
     modifier: Modifier = Modifier,
     leftControl: List<ControlBean>? = null,
-    title: String,
-    titleColor: Color,
+    centerControl: @Composable (() -> Unit),
     rightControl: List<ControlBean>? = null
 ) {
     Row(
         modifier = modifier
-            .height(48.dp)
-            .background(WanAndroidTheme.colors.colorPrimary),
+            .background(WanAndroidTheme.colors.colorPrimary)
+            .statusBarsPadding()
+            .height(48.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leftControl != null) {
@@ -42,14 +42,13 @@ fun Toolbar(
             }
         }
 
-        Text(
-            text = title,
-            modifier = Modifier
+        Box(
+            Modifier
                 .padding(10.dp, 0.dp)
-                .weight(1f),
-            fontSize = 18.sp,
-            color = titleColor
-        )
+                .weight(1f)
+        ) {
+            centerControl()
+        }
 
         // 右控制域
         if (rightControl != null) {
@@ -95,9 +94,13 @@ fun PreviewToolbar() {
         modifier = Modifier.fillMaxWidth(),
         arrayListOf(
             ControlBean(icon = R.drawable.ic_menu_white_24dp)
-        ),
-        "测试",
-        WanAndroidTheme.colors.itemTagTv,
+        ), {
+            Text(
+                text = "测试",
+                fontSize = 18.sp,
+                color = WanAndroidTheme.colors.itemTagTv
+            )
+        },
         arrayListOf(
             ControlBean(icon = R.drawable.ic_search_white_24dp)
         )
