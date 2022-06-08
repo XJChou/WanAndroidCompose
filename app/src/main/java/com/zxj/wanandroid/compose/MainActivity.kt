@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.zxj.wanandroid.compose.application.AnimateStatusColor
+import com.zxj.wanandroid.compose.ui.page.Home
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.zxj.wanandroid.compose.utils.MyLog
@@ -25,7 +26,8 @@ class MainActivity : ComponentActivity() {
                     color = WanAndroidTheme.colors.windowBackground
                 ) {
                     MyLog.e("viewModel.theme=${WanAndroidTheme.theme}")
-                    MainNavigation()
+//                    MainNavigation()
+                    Home()
                 }
             }
         }

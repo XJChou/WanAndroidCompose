@@ -10,10 +10,10 @@ fun MainNavigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = NavigationRoute.HOME
+        startDestination = NavigationRoute.HOME,
     ) {
-        composable(NavigationRoute.HOME) { Home(navController) }
-        composable(NavigationRoute.SEARCH) { Search(navController) }
+//        composable(NavigationRoute.HOME) { Home(navController) }
+//        composable(NavigationRoute.SEARCH) { Search(navController) }
     }
 }
 
