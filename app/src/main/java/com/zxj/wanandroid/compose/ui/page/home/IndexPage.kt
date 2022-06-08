@@ -97,11 +97,18 @@ fun IndexPage() {
 }
 
 @Composable
-fun ArticleItem(data: Data) {
+fun ArticleItem(
+    data: Data,
+    onItemZanListener: ((targetZan: Int, data: Data) -> Unit)? = null,
+    onItemClickListener: ((data: Data) -> Unit)? = null
+) {
     Column(
         Modifier
             .fillMaxWidth()
             .background(WanAndroidTheme.colors.viewBackground)
+            .clickable {
+                onItemClickListener?.invoke(data)
+            }
             .padding(0.dp, 10.dp, 10.dp, 10.dp)
     ) {
         // 标签 + 作者 + 时间
@@ -118,11 +125,7 @@ fun ArticleItem(data: Data) {
             }
 
             // 作者
-            val author = if (data.author.isNullOrEmpty()) {
-                data.shareUser
-            } else {
-                data.author
-            }
+            val author = data.author.ifEmpty { data.shareUser }
             Text(
                 text = author,
                 Modifier
@@ -175,7 +178,16 @@ fun ArticleItem(data: Data) {
             val painter = remember(data.zan) {
                 if (data.zan == 1) R.drawable.ic_like else R.drawable.ic_like_not
             }
-            Image(painter = painterResource(id = painter), contentDescription = null)
+            Image(
+                painter = painterResource(id = painter),
+                contentDescription = null,
+                modifier = Modifier.clickable {
+                    onItemZanListener?.invoke(
+                        if (data.zan == 1) 0 else 1,
+                        data
+                    )
+                }
+            )
         }
     }
 }

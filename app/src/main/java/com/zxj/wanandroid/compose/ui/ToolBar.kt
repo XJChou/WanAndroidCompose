@@ -26,8 +26,9 @@ fun Toolbar(
 ) {
     Row(
         modifier = modifier
-            .height(48.dp)
-            .background(WanAndroidTheme.colors.colorPrimary),
+            .background(WanAndroidTheme.colors.colorPrimary)
+            .statusBarsPadding()
+            .height(48.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leftControl != null) {

@@ -45,10 +45,10 @@ fun Home(navController: NavController) {
                     ControlBean(R.drawable.ic_search_white_24dp) {
                         navController.navigate(NavigationRoute.SEARCH) {
                             anim {
-                                this.enter = androidx.fragment.R.anim.fragment_open_enter
-                                this.exit = androidx.fragment.R.anim.fragment_open_enter
-                                this.popEnter = androidx.fragment.R.anim.fragment_open_enter
-                                this.popExit = androidx.fragment.R.anim.fragment_open_enter
+//                                this.enter = androidx.fragment.R.anim.fragment_open_enter
+//                                this.exit = androidx.fragment.R.anim.fragment_open_enter
+//                                this.popEnter = androidx.fragment.R.anim.fragment_open_enter
+//                                this.popExit = androidx.fragment.R.anim.fragment_open_enter
                             }
                         }
                     }
