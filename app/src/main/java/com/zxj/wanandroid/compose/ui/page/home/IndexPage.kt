@@ -1,5 +1,6 @@
 package com.zxj.wanandroid.compose.ui.page.home
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +29,7 @@ import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 
 @Composable
 fun IndexPage() {
-    val indexViewModel: IndexViewModel = viewModel()
+    val indexViewModel: IndexViewModel = viewModel(LocalContext.current as ComponentActivity)
 
     // StateFlow -> State
     val uiState by indexViewModel.uiState.collectAsState()

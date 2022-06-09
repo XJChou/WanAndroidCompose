@@ -12,8 +12,8 @@ fun MainNavigation() {
         navController = navController,
         startDestination = NavigationRoute.HOME,
     ) {
-//        composable(NavigationRoute.HOME) { Home(navController) }
-//        composable(NavigationRoute.SEARCH) { Search(navController) }
+        composable(NavigationRoute.HOME) { Home(navController) }
+        composable(NavigationRoute.SEARCH) { Search(navController) }
     }
 }
 

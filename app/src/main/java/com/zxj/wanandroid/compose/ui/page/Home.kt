@@ -1,9 +1,11 @@
 package com.zxj.wanandroid.compose.ui.page
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,8 +26,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Home(/*navController: NavController*/) {
-    val viewModel: HomeViewModel = viewModel()
+fun Home(navController: NavController) {
+    val viewModel: HomeViewModel = viewModel(LocalContext.current as ComponentActivity)
     val pagerState = rememberPagerState()
     val animateScope = rememberCoroutineScope()
     Box(Modifier.fillMaxSize()) {
@@ -43,14 +45,14 @@ fun Home(/*navController: NavController*/) {
             val rightControls = remember {
                 arrayListOf(
                     ControlBean(R.drawable.ic_search_white_24dp) {
-//                        navController.navigate(NavigationRoute.SEARCH) {
-//                            anim {
-//                                this.enter = androidx.fragment.R.anim.fragment_open_enter
-//                                this.exit = androidx.fragment.R.anim.fragment_open_enter
-//                                this.popEnter = androidx.fragment.R.anim.fragment_open_enter
-//                                this.popExit = androidx.fragment.R.anim.fragment_open_enter
-//                            }
-//                        }
+                        navController.navigate(NavigationRoute.SEARCH) {
+                            anim {
+                                this.enter = androidx.fragment.R.animator.fragment_open_enter
+                                this.exit = androidx.fragment.R.animator.fragment_open_enter
+                                this.popEnter = androidx.fragment.R.animator.fragment_open_enter
+                                this.popExit = androidx.fragment.R.animator.fragment_open_enter
+                            }
+                        }
                     }
                 )
             }
@@ -93,6 +95,6 @@ fun Home(/*navController: NavController*/) {
 @Composable
 fun PreviewHome() {
     WanAndroidTheme {
-        Home()
+        Home(rememberNavController())
     }
 }

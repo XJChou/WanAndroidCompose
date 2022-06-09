@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,15 +27,15 @@ class MainActivity : ComponentActivity() {
             WanAndroidTheme(WanAndroidTheme.theme) {
                 val systemUiController = rememberSystemUiController()
                 systemUiController.setSystemBarsColor(Color.Transparent)
+                systemUiController.setNavigationBarColor(Color.Black)
 //                AnimateStatusColor(window)
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().navigationBarsPadding(),
                     color = WanAndroidTheme.colors.windowBackground
                 ) {
                     MyLog.e("viewModel.theme=${WanAndroidTheme.theme}")
-//                    MainNavigation()
-                    Home()
+                    MainNavigation()
                 }
             }
         }
