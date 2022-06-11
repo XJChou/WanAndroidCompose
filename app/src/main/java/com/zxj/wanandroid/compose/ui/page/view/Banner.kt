@@ -45,10 +45,10 @@ fun Banner(
     onBannerItem: (BannerBean) -> Unit,
 ) {
     Box(modifier) {
-        val initPage = remember(bannerList) { bannerList.size * 10000 }
         var pageDown by remember { mutableStateOf(false) }
-        // bannerView
-        val state = rememberPagerState(initPage)
+        val startIndex = Int.MAX_VALUE / 2
+        val state = rememberPagerState(startIndex)
+
         HorizontalPager(
             Int.MAX_VALUE,
             modifier = Modifier
@@ -70,23 +70,9 @@ fun Banner(
                     }
                 },
             state,
-        ) { page ->
-            val item = bannerList[page % bannerList.size]
-            val request = ImageRequest.Builder(LocalContext.current)
-                .data(item.imagePath)
-                .placeholder(R.drawable.placeholder_banner)
-                .size(Size.ORIGINAL)
-                .build()
-            AsyncImage(
-                model = request,
-                contentDescription = item.title,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        onBannerItem(item)
-                    }
-            )
+        ) { index ->
+            val page = (index - startIndex).floorMod(bannerList.size)
+            BannerPage(onBannerItem, bannerList[page] )
         }
 
         // step2: 启动一个协程，用于自动轮播下一个
@@ -103,6 +89,36 @@ fun Banner(
             )
         }
     }
+}
+
+private fun Int.floorMod(other: Int): Int = when (other) {
+    0 -> this
+    else -> this - floorDiv(other) * other
+}
+
+@Composable
+private fun BannerPage(
+    onBannerItem: (BannerBean) -> Unit,
+    item: BannerBean
+) {
+    val context = LocalContext.current
+    val request = remember(item.imagePath) {
+        ImageRequest.Builder(context)
+            .data(item.imagePath)
+            .placeholder(R.drawable.placeholder_banner)
+            .size(Size.ORIGINAL)
+            .build()
+    }
+    AsyncImage(
+        model = request,
+        contentDescription = item.title,
+        contentScale = ContentScale.FillWidth,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onBannerItem(item)
+            }
+    )
 }
 
 /**
