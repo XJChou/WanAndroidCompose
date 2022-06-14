@@ -3,13 +3,13 @@ package com.zxj.wanandroid.compose.viewmodel
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zxj.wanandroid.compose.data.BannerBean
-import com.zxj.wanandroid.compose.data.Data
+import com.zxj.wanandroid.compose.data.bean.BannerBean
+import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.data.repositories.IndexRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class IndexViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndexViewState())
-    val uiState: StateFlow<IndexViewState> = _uiState
+    val uiState = _uiState.asStateFlow()
 
     private var pageIndex = 1
 

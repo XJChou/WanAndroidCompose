@@ -1,8 +1,8 @@
 package com.zxj.wanandroid.compose.net
 
-import com.zxj.wanandroid.compose.data.ArticleBean
-import com.zxj.wanandroid.compose.data.BannerBean
-import com.zxj.wanandroid.compose.data.Data
+import com.zxj.wanandroid.compose.data.bean.ArticleBean
+import com.zxj.wanandroid.compose.data.bean.BannerBean
+import com.zxj.wanandroid.compose.data.bean.Data
 import retrofit2.http.GET
 import retrofit2.http.Path
 

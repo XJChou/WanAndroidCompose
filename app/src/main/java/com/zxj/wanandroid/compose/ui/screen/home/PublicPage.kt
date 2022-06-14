@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.ui.page.home
+package com.zxj.wanandroid.compose.ui.screen.home
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
@@ -7,10 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
-fun SystemPage() {
+fun PublicPage() {
 
     Text(
-        text = "体系",
+        text = "公众号",
         modifier = Modifier
             .fillMaxWidth(),
         textAlign = TextAlign.Center

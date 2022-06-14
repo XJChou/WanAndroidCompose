@@ -55,7 +55,7 @@ class WanAndroidColors(
 val NormalColors = WanAndroidColors(
     colorPrimary = Color(0xFFE91E63).convert(ColorSpaces.CieXyz),
     colorPrimaryDark = Color(0xFFC2185B).convert(ColorSpaces.CieXyz),
-    colorAccent = Color.Cyan.convert(ColorSpaces.CieXyz),
+    colorAccent = Color(0xFF00BCD4).convert(ColorSpaces.CieXyz),
     textColorPrimary = Color(0xFF616161).convert(ColorSpaces.CieXyz),
     viewBackground = Color.White.convert(ColorSpaces.CieXyz),
     windowBackground = Grey100,

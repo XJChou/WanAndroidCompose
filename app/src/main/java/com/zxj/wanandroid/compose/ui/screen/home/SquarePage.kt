@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.ui.page.home
+package com.zxj.wanandroid.compose.ui.screen.home
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text

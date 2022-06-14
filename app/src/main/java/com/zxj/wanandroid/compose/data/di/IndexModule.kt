@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.data.hilt
+package com.zxj.wanandroid.compose.data.di
 
 import com.zxj.wanandroid.compose.net.APIFactory
 import com.zxj.wanandroid.compose.net.IndexAPI

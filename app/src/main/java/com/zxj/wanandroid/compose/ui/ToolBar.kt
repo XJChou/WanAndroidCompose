@@ -21,8 +21,8 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 fun Toolbar(
     modifier: Modifier = Modifier,
     leftControl: List<ControlBean>? = null,
+    rightControl: List<ControlBean>? = null,
     centerControl: @Composable (() -> Unit),
-    rightControl: List<ControlBean>? = null
 ) {
     Row(
         modifier = modifier
@@ -94,15 +94,15 @@ fun PreviewToolbar() {
         modifier = Modifier.fillMaxWidth(),
         arrayListOf(
             ControlBean(icon = R.drawable.ic_menu_white_24dp)
-        ), {
-            Text(
-                text = "测试",
-                fontSize = 18.sp,
-                color = WanAndroidTheme.colors.itemTagTv
-            )
-        },
+        ),
         arrayListOf(
             ControlBean(icon = R.drawable.ic_search_white_24dp)
         )
-    )
+    ) {
+        Text(
+            text = "测试",
+            fontSize = 18.sp,
+            color = WanAndroidTheme.colors.itemTagTv
+        )
+    }
 }

@@ -100,6 +100,13 @@ dependencies {
     // system-ui
     implementation "com.google.accompanist:accompanist-systemuicontroller:${accompanist_version}"
 
+    // datastore - preferences
+//    implementation "androidx.datastore:datastore-preferences:${datastore_version}"
+//    implementation "androidx.datastore:datastore-preferences-core:${datastore_version}"
+    // datastore - proto
+    implementation "androidx.datastore:datastore:${datastore_version}"
+    implementation "androidx.datastore:datastore-core:${datastore_version}"
+
     // 测试相关
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

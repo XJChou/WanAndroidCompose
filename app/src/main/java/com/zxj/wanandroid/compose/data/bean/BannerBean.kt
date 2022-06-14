@@ -1,5 +1,4 @@
-package com.zxj.wanandroid.compose.data
-
+package com.zxj.wanandroid.compose.data.bean
 
 data class BannerBean(
     val desc: String,

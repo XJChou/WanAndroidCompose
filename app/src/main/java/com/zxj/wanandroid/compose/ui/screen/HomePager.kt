@@ -1,11 +1,11 @@
-package com.zxj.wanandroid.compose.ui.page
+package com.zxj.wanandroid.compose.ui.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
-import com.zxj.wanandroid.compose.ui.page.home.*
+import com.zxj.wanandroid.compose.ui.screen.home.*
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable

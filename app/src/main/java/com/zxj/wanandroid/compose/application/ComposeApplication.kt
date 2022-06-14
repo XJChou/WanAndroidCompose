@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import com.zxj.wanandroid.compose.BuildConfig
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.utils.MyLog
@@ -31,6 +32,9 @@ class ComposeApplication : Application() {
 }
 
 fun getString(@StringRes id: Int): String = ComposeApplication.application.getString(id)
+
+@Composable
+fun GetString(@StringRes id: Int): String = LocalContext.current.getString(id)
 
 fun toast(title: String, duration: Int = Toast.LENGTH_SHORT) =
     Toast.makeText(ComposeApplication.application, title, duration).show()

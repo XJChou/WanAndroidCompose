@@ -1,7 +1,7 @@
 package com.zxj.wanandroid.compose.data.repositories
 
-import com.zxj.wanandroid.compose.data.ArticleBean
-import com.zxj.wanandroid.compose.data.Data
+import com.zxj.wanandroid.compose.data.bean.ArticleBean
+import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.data.datasource.IndexLocalDataSource
 import com.zxj.wanandroid.compose.data.datasource.IndexNetworkDataSource
 import com.zxj.wanandroid.compose.net.API

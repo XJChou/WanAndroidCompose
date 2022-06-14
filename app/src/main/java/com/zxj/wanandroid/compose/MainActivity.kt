@@ -9,10 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.zxj.wanandroid.compose.application.AnimateStatusColor
-import com.zxj.wanandroid.compose.ui.page.Home
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.zxj.wanandroid.compose.utils.MyLog

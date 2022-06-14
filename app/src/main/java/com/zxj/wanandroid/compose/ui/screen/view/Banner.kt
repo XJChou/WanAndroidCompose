@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.ui.page.view
+package com.zxj.wanandroid.compose.ui.screen.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,7 +22,7 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.google.accompanist.pager.*
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.data.BannerBean
+import com.zxj.wanandroid.compose.data.bean.BannerBean
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

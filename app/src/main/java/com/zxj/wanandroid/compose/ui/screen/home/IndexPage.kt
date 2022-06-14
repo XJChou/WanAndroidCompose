@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.ui.page.home
+package com.zxj.wanandroid.compose.ui.screen.home
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
@@ -20,8 +20,8 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
-import com.zxj.wanandroid.compose.data.Data
-import com.zxj.wanandroid.compose.ui.page.view.Banner
+import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.ui.screen.view.Banner
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.FetchStatus
 import com.zxj.wanandroid.compose.viewmodel.IndexViewAction
