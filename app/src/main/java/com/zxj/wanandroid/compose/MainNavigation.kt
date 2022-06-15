@@ -15,7 +15,7 @@ fun MainNavigation() {
         navController = navController,
         startDestination = NavigationRoute.HOME,
     ) {
-        composable(NavigationRoute.HOME) { HomeScreen(navController) }
+        composable(NavigationRoute.HOME) { HomeScreen { navController.navigate(it) } }
         composable(NavigationRoute.SEARCH) { SearchScreen(navController) }
         composable(NavigationRoute.LOGIN) { LoginScreen(navController) }
     }

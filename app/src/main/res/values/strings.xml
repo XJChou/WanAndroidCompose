@@ -43,4 +43,33 @@
     <string name="user_register">注册用户</string>
     <string name="register_tip">用户注册后才可以登录！</string>
 
+    <!-- Nav Action -->
+    <string name="nav_my_collect">我的收藏</string>
+    <string name="nav_setting">系统设置</string>
+    <string name="nav_about_us">关于我们</string>
+    <string name="nav_logout">退出登录</string>
+    <string name="nav_night_mode">夜间模式</string>
+    <string name="nav_todo">TODO</string>
+    <string name="nav_my_score">我的积分</string>
+    <string name="nav_id">ID:</string>
+    <string name="nav_grade">等级:</string>
+    <string name="nav_rank">排名:</string>
+
+
+    <string name="nav_line_4" translatable="false">----</string>
+    <string name="nav_line_2" translatable="false">--</string>
+
+    <!-- 广场 -->
+    <string name="square">广场</string>
+    <string name="my_share">我的分享</string>
+    <string name="share_article">分享文章</string>
+    <string name="share_article_title">文章标题</string>
+    <string name="share_article_title_tip">100字以内</string>
+    <string name="share_article_link">文章链接</string>
+    <string name="share_article_link_tip">例如：https://www.wanandroid.com</string>
+    <string name="share_success">分享成功</string>
+    <string name="share_article_delete">已删除分享的文章</string>
+    <string name="audited">待审核</string>
+    <string name="submit_ing">正在提交...</string>
+
 </resources>

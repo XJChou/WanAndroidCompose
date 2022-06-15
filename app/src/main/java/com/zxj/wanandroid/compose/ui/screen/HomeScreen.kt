@@ -1,6 +1,7 @@
 package com.zxj.wanandroid.compose.ui.screen
 
 import androidx.activity.ComponentActivity
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,53 +16,56 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.application.GetString
 import com.zxj.wanandroid.compose.ui.ControlBean
 import com.zxj.wanandroid.compose.ui.NavigationBar
 import com.zxj.wanandroid.compose.ui.Toolbar
+import com.zxj.wanandroid.compose.ui.screen.home.*
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
-import com.zxj.wanandroid.compose.application.getString
-
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navigation: (String) -> Unit) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
     ModalDrawer(
         drawerContent = {
-            DrawContent(navController)
+            DrawHead(navigation)
+            DrawContent(
+                navigation = navigation,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+            )
         },
         modifier = Modifier.fillMaxSize(),
         drawerState = drawerState,
-        drawerBackgroundColor = Color.Transparent,
-        drawerElevation = 0.dp
+        drawerBackgroundColor = WanAndroidTheme.colors.viewBackground,
     ) {
-        val coroutineScope = rememberCoroutineScope()
-        HomeContent(navController) {
-            coroutineScope.launch {
-                drawerState.open()
-            }
+        HomeContent(navigation) {
+            coroutineScope.launch { drawerState.open() }
         }
     }
 }
 
 @Composable
-private fun DrawContent(navController: NavController) {
+private fun DrawHead(navigation: (String) -> Unit) {
     Column(
         modifier = Modifier
-            .fillMaxHeight()
-            .background(WanAndroidTheme.colors.viewBackground)
+            .fillMaxWidth()
+            .background(WanAndroidTheme.colors.colorPrimary)
             .padding(16.dp, 36.dp, 16.dp, 10.dp),
     ) {
         // 排名
@@ -72,9 +76,8 @@ private fun DrawContent(navController: NavController) {
                 .size(20.dp)
                 .align(Alignment.End)
                 .clickable {
-                    navController.navigate(NavigationRoute.LOGIN)
                 },
-            tint = WanAndroidTheme.colors.itemNavColorTv
+            tint = Color.White
         )
 
         // 圆形图边
@@ -88,29 +91,125 @@ private fun DrawContent(navController: NavController) {
         )
         // 去登录
         Text(
-            text = getString(R.string.go_login),
+            text = GetString(R.string.go_login),
             modifier = Modifier
-                .padding(12.dp),
-            color = Color.White
+                .padding(0.dp, 12.dp, 0.dp, 0.dp)
+                .align(Alignment.CenterHorizontally),
+            color = Color.White,
+            fontWeight = FontWeight.Bold
         )
 
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 8.dp, 0.dp, 0.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
+            Text(
+                text = GetString(id = R.string.nav_id),
+                color = Color(0xFFF5F5F5),
+                fontSize = 12.sp
+            )
+            Text(
+                text = GetString(id = R.string.nav_line_4),
+                fontSize = 12.sp,
+                color = Color(0xFFF5F5F5),
+            )
+        }
 
-        // 登录前
-
-        // 登录后
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 8.dp, 0.dp, 0.dp)
+                .align(Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = GetString(id = R.string.nav_grade),
+                color = Color(0xFFF5F5F5),
+                fontSize = 12.sp
+            )
+            Text(
+                text = GetString(id = R.string.nav_line_2),
+                fontSize = 12.sp,
+                color = Color(0xFFF5F5F5),
+            )
+            Text(
+                text = GetString(id = R.string.nav_rank),
+                modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
+                fontSize = 12.sp,
+                color = Color(0xFFF5F5F5),
+            )
+            Text(
+                text = GetString(id = R.string.nav_line_2),
+                fontSize = 12.sp,
+                color = Color(0xFFF5F5F5),
+            )
+        }
     }
 }
 
-
-@Preview
 @Composable
-fun PreviewDrawer() {
-    DrawContent(rememberNavController())
+private fun DrawContent(
+    navigation: (String) -> Unit,
+    modifier: Modifier
+) {
+    Column(
+        modifier
+            .background(WanAndroidTheme.colors.viewBackground)
+            .padding(0.dp, 10.dp, 0.dp, 0.dp)
+    ) {
+        DrawItemContent(R.drawable.ic_score_white_24dp, GetString(id = R.string.nav_my_score)) {
+//            navigation("")
+        }
+        DrawItemContent(R.drawable.ic_like_not, GetString(id = R.string.nav_my_collect)) {
+//            navigation("")
+        }
+        DrawItemContent(R.drawable.ic_share_white_24dp, GetString(id = R.string.my_share)) {
+//            navigation("")
+        }
+        DrawItemContent(R.drawable.ic_todo_default_24dp, GetString(id = R.string.nav_todo)) {
+//            navigation("")
+        }
+        DrawItemContent(R.drawable.ic_night_24dp, GetString(id = R.string.nav_night_mode)) {
+//            navigation("")
+            WanAndroidTheme.changeTheme()
+        }
+        DrawItemContent(R.drawable.ic_setting_24dp, GetString(id = R.string.nav_setting)) {
+//            navigation("")
+        }
+        DrawItemContent(R.drawable.ic_logout_white_24dp, GetString(id = R.string.nav_logout)) {
+//            navigation("")
+        }
+    }
+}
+
+@Composable
+private fun DrawItemContent(@DrawableRes icon: Int, title: String, itemClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .clickable { itemClick() }
+            .padding(20.dp, 0.dp, 0.dp, 0.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = icon),
+            contentDescription = title,
+            tint = WanAndroidTheme.colors.itemNavColorTv,
+            modifier = Modifier.padding(0.dp, 15.dp)
+        )
+        Text(
+            text = title,
+            color = WanAndroidTheme.colors.itemNavColorTv,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(40.dp, 0.dp, 0.dp, 0.dp),
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
 
 @Composable
 @OptIn(ExperimentalPagerApi::class)
-fun HomeContent(navController: NavController, onMenuClickListener: () -> Unit) {
+fun HomeContent(navigation: (String) -> Unit, onMenuClickListener: () -> Unit) {
     val viewModel: HomeViewModel = viewModel(LocalContext.current as ComponentActivity)
     val pagerState = rememberPagerState()
     val animateScope = rememberCoroutineScope()
@@ -127,14 +226,7 @@ fun HomeContent(navController: NavController, onMenuClickListener: () -> Unit) {
         val rightControls = remember {
             arrayListOf(
                 ControlBean(R.drawable.ic_search_white_24dp) {
-                    navController.navigate(NavigationRoute.SEARCH) {
-                        anim {
-                            this.enter = androidx.fragment.R.animator.fragment_open_enter
-                            this.exit = androidx.fragment.R.animator.fragment_open_enter
-                            this.popEnter = androidx.fragment.R.animator.fragment_open_enter
-                            this.popExit = androidx.fragment.R.animator.fragment_open_enter
-                        }
-                    }
+                    navigation(NavigationRoute.SEARCH)
                 }
             )
         }
@@ -142,20 +234,29 @@ fun HomeContent(navController: NavController, onMenuClickListener: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             leftControl = leftControls,
             rightControl = rightControls
-        )  {
+        ) {
             Text(
                 text = viewModel.TITLE[pagerState.currentPage],
                 fontSize = 18.sp,
                 color = WanAndroidTheme.colors.itemTagTv
             )
         }
-        HomePager(
+        HorizontalPager(
             count = viewModel.navigationItems.size,
-            pagerState = pagerState,
+            state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
         )
+        {
+            when (it) {
+                0 -> IndexPage()
+                1 -> SquarePage()
+                2 -> PublicPage()
+                3 -> SystemPage()
+                4 -> ProjectPage()
+            }
+        }
         // 底部导航
         NavigationBar(
             Modifier.padding(0.dp, 1.dp, 0.dp, 0.dp),
@@ -174,6 +275,22 @@ fun HomeContent(navController: NavController, onMenuClickListener: () -> Unit) {
 @Composable
 fun PreviewHome() {
     WanAndroidTheme {
-        HomeScreen(rememberNavController())
+        HomeScreen() {
+
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewDrawContent() {
+    Column(Modifier.fillMaxSize()) {
+        DrawHead {}
+        DrawContent(
+            navigation = {},
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        )
     }
 }
