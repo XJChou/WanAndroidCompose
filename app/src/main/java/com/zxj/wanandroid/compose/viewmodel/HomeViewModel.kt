@@ -4,8 +4,13 @@ import androidx.lifecycle.ViewModel
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.ui.NavigationItemBean
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+
+) : ViewModel() {
 
     val navigationItems = arrayOf(
         NavigationItemBean(R.drawable.ic_home_black_24dp, R.string.navigation_text_home),

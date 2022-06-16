@@ -1,12 +1,14 @@
 package com.zxj.wanandroid.compose.data.repositories
 
-import com.zxj.wanandroid.compose.data.datasource.UserLocalDataSource
-import com.zxj.wanandroid.compose.data.datasource.UserNetworkDataSource
-import javax.inject.Inject
+import com.zxj.wanandroid.compose.data.bean.User
+import kotlinx.coroutines.flow.Flow
 
 
-class UserRepository @Inject constructor(
-    private val userNetworkDataSource: UserNetworkDataSource,
-    private val userLocalDataSource: UserLocalDataSource
-) {
+/**
+ * 用户数据存储库
+ */
+interface UserRepository {
+
+    fun getLoginUser(): Flow<User?>
+
 }

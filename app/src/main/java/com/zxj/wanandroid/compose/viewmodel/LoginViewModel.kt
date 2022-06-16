@@ -1,7 +1,6 @@
 package com.zxj.wanandroid.compose.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.zxj.wanandroid.compose.data.repositories.IndexRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

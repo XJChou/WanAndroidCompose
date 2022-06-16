@@ -2,8 +2,8 @@ package com.zxj.wanandroid.compose.data.repositories
 
 import com.zxj.wanandroid.compose.data.bean.ArticleBean
 import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.data.datasource.ArticleNetworkDataSource
 import com.zxj.wanandroid.compose.data.datasource.IndexLocalDataSource
-import com.zxj.wanandroid.compose.data.datasource.IndexNetworkDataSource
 import com.zxj.wanandroid.compose.net.API
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -22,22 +22,22 @@ import javax.inject.Inject
  *
  * 包含业务逻辑。
  */
-class IndexRepository @Inject constructor(
+class RealArticleRepository @Inject constructor(
     // 网络数据源
-    private val networkDataSource: IndexNetworkDataSource,
+    private val networkDataSource: ArticleNetworkDataSource,
     // 数据库数据源
     private val networkLocalSource: IndexLocalDataSource
-) {
+) : ArticleRepository {
 
     /**
      * 提供Banner内容
      */
-    suspend fun loadBannerList() = networkDataSource.loadBannerList()
+    override suspend fun loadBannerList() = networkDataSource.loadBanner()
 
     /**
      * 提供每一页内容
      */
-    suspend fun loadDataList(page: Int): API<ArticleBean> {
+    override suspend fun loadDataList(page: Int): API<ArticleBean> {
         return if (page == 1) {
             coroutineScope {
                 val topArticleListAsync = async { networkDataSource.loadTopArticleList() }

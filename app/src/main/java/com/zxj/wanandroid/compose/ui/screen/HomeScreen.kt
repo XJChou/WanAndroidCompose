@@ -1,6 +1,5 @@
 package com.zxj.wanandroid.compose.ui.screen
 
-import androidx.activity.ComponentActivity
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,13 +13,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -170,7 +168,6 @@ private fun DrawContent(
 //            navigation("")
         }
         DrawItemContent(R.drawable.ic_night_24dp, GetString(id = R.string.nav_night_mode)) {
-//            navigation("")
             WanAndroidTheme.changeTheme()
         }
         DrawItemContent(R.drawable.ic_setting_24dp, GetString(id = R.string.nav_setting)) {
@@ -210,7 +207,7 @@ private fun DrawItemContent(@DrawableRes icon: Int, title: String, itemClick: ()
 @Composable
 @OptIn(ExperimentalPagerApi::class)
 fun HomeContent(navigation: (String) -> Unit, onMenuClickListener: () -> Unit) {
-    val viewModel: HomeViewModel = viewModel(LocalContext.current as ComponentActivity)
+    val viewModel: HomeViewModel = hiltViewModel()
     val pagerState = rememberPagerState()
     val animateScope = rememberCoroutineScope()
 

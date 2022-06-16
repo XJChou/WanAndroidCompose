@@ -2,7 +2,7 @@ package com.zxj.wanandroid.compose.data.bean
 
 import com.alibaba.fastjson.annotation.JSONField
 
-data class LoginBean(
+data class User(
     @JSONField(name = "id") val id: Int,
     @JSONField(name = "icon") val icon: String,
     @JSONField(name = "username") val username: String,

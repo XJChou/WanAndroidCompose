@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zxj.wanandroid.compose.data.bean.BannerBean
 import com.zxj.wanandroid.compose.data.bean.Data
-import com.zxj.wanandroid.compose.data.repositories.IndexRepository
+import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IndexViewModel @Inject constructor(
-    private val indexRepository: IndexRepository
+    private val indexRepository: ArticleRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndexViewState())

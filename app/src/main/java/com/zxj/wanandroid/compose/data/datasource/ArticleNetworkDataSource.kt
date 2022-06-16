@@ -1,12 +1,13 @@
-package com.zxj.wanandroid.compose.net
+package com.zxj.wanandroid.compose.data.datasource
 
 import com.zxj.wanandroid.compose.data.bean.ArticleBean
 import com.zxj.wanandroid.compose.data.bean.BannerBean
 import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.net.API
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface IndexAPI {
+interface ArticleNetworkDataSource {
 
     /**
      * 首页文章列表

@@ -1,15 +1,17 @@
 package com.zxj.wanandroid.compose.data.di
 
+import com.zxj.wanandroid.compose.data.datasource.ArticleNetworkDataSource
+import com.zxj.wanandroid.compose.data.datasource.UserNetworkDataSource
 import com.zxj.wanandroid.compose.net.APIFactory
-import com.zxj.wanandroid.compose.net.IndexAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityRetainedComponent::class)
-class IndexModule {
+@InstallIn(SingletonComponent::class)
+object DataSourceModule {
 
     // @Binds - normal class
     // 使用场景：您无法通过构造函数注入它，而应向 Hilt 提供绑定信息，方法是在 Hilt 模块内创建一个带有 @Binds 注释的抽象函数。
@@ -23,7 +25,11 @@ class IndexModule {
     // https://developer.android.com/training/dependency-injection/hilt-android#multiple-bindings
     // 使用方法：
 
-    //    @Singleton
+    @Singleton
     @Provides
-    fun provideIndexApi(): IndexAPI = APIFactory.get()
+    fun providerUserNetworkDataSource(): UserNetworkDataSource = APIFactory.get()
+
+    @Provides
+    @Singleton
+    fun providerIndexNetworkDataSource(): ArticleNetworkDataSource = APIFactory.get()
 }
