@@ -7,7 +7,13 @@ import javax.inject.Inject
 
 
 class UserLocalDataSource @Inject constructor() {
+
+    fun setLoginUser(user: User?) {
+        // 设置DataSource
+    }
+
     fun getLoginUser(): Flow<User?> {
+        // 从DataSource取
         return flow { null }
     }
 }

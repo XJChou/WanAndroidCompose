@@ -7,7 +7,9 @@ import com.zxj.wanandroid.compose.data.bean.BannerBean
 import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -37,6 +39,7 @@ class IndexViewModel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun dispatchRefresh() {
         if (_uiState.value.isRefresh || _uiState.value.isLoad) return
 
@@ -44,14 +47,12 @@ class IndexViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(refreshFetchStatus = FetchStatus.Fetching)
             val bannerListAwait = async { indexRepository.loadBannerList() }
             val articleListAwait = async { indexRepository.loadDataList(1) }
-
-            val articleListResponse = articleListAwait.await()
-            val bannerListResponse = bannerListAwait.await()
-            if (articleListResponse.isSuccess && bannerListResponse.isSuccess) {
+            val isSuccess = awaitAll(bannerListAwait, articleListAwait).all { it.isSuccess }
+            if (isSuccess) {
                 _uiState.value = _uiState.value.copy(
                     refreshFetchStatus = FetchStatus.Success,
-                    bannerList = bannerListResponse.data,
-                    articleList = articleListResponse.data?.datas,
+                    bannerList = bannerListAwait.getCompleted().data,
+                    articleList = articleListAwait.getCompleted().data?.datas,
                     hasLoad = true
                 )
                 pageIndex = 1

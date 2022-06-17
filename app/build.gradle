@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.protobuf'
 }
 
 android {
@@ -107,6 +108,7 @@ dependencies {
     // datastore - proto
     implementation "androidx.datastore:datastore:${datastore_version}"
     implementation "androidx.datastore:datastore-core:${datastore_version}"
+    implementation "com.google.protobuf:protobuf-javalite:3.18.0"
 
     // 测试相关
     testImplementation 'junit:junit:4.13.2'
@@ -114,4 +116,23 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+}
+
+protobuf {
+    protoc {
+        if (osdetector.os == "osx") {
+            artifact = 'com.google.protobuf:protoc:3.14.0:osx-x86_64'
+        } else {
+            artifact = 'com.google.protobuf:protoc:3.14.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
 }
