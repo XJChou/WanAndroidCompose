@@ -33,6 +33,13 @@ class API<Data>(val errorCode: Int = 0, val errorMsg: String? = null, val data: 
         }
         return this
     }
+
+    suspend fun onSuspendError(block: suspend API<Data>.(msg: String) -> Unit): API<Data> {
+        if (!isSuccess) {
+            this.block(errorMsg ?: "网络异常")
+        }
+        return this
+    }
 }
 
 

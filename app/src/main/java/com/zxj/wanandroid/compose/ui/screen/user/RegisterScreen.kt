@@ -28,13 +28,13 @@ import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.ui.ControlBean
 import com.zxj.wanandroid.compose.ui.Toolbar
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
-import com.zxj.wanandroid.compose.viewmodel.LoginViewAction
-import com.zxj.wanandroid.compose.viewmodel.LoginViewEvent
-import com.zxj.wanandroid.compose.viewmodel.LoginViewModel
+import com.zxj.wanandroid.compose.viewmodel.RegisterViewAction
+import com.zxj.wanandroid.compose.viewmodel.RegisterViewEvent
+import com.zxj.wanandroid.compose.viewmodel.RegisterViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun RegisterScreen(navController: NavHostController) {
     Column(Modifier.fillMaxSize()) {
         val leftControls = remember(navController) {
             arrayListOf(ControlBean(R.drawable.ic_back) {
@@ -43,18 +43,18 @@ fun LoginScreen(navController: NavHostController) {
         }
         Toolbar(leftControl = leftControls) {
             Text(
-                text = GetString(R.string.login),
+                text = GetString(R.string.register),
                 fontSize = 18.sp,
                 color = WanAndroidTheme.colors.itemTagTv
             )
         }
         // 内容
-        LoginPage(
-            onRegisterClick = {
+        RegisterPage(
+            onLoginClick = {
                 navController.popBackStack()
-                navController.navigate(NavigationRoute.REGISTER)
+                navController.navigate(NavigationRoute.LOGIN)
             },
-            onLoginSuccess = {
+            onRegisterSuccess = {
                 navController.popBackStack()
             }
         )
@@ -62,34 +62,34 @@ fun LoginScreen(navController: NavHostController) {
 }
 
 @Composable
-fun ColumnScope.LoginPage(
-    onRegisterClick: () -> Unit,
-    onLoginSuccess: () -> Unit
+fun ColumnScope.RegisterPage(
+    onLoginClick: () -> Unit,
+    onRegisterSuccess: () -> Unit
 ) {
-    val viewModel: LoginViewModel = hiltViewModel()
+    val viewModel: RegisterViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
-    val username by remember { derivedStateOf { uiState.username } }
-    val password by remember { derivedStateOf { uiState.password } }
-
     LaunchedEffect(key1 = viewModel) {
         viewModel.uiEvent.collectLatest {
             when (it) {
-                is LoginViewEvent.UserNameIsNotEmpty -> {
+                is RegisterViewEvent.UserNameIsNotEmpty -> {
                     toast("用户名不能为空")
                 }
-                is LoginViewEvent.PasswordIsNotEmpty -> {
-                    toast("密码不为为空")
+                is RegisterViewEvent.PasswordIsNotEmpty -> {
+                    toast("密码不能为空")
                 }
-                is LoginViewEvent.LoginSuccess -> {
-                    onLoginSuccess()
+                is RegisterViewEvent.ConfirmPasswordIsNotEmpty -> {
+                    toast("确认密码不能为空")
                 }
-                is LoginViewEvent.LoginError -> {
-                    toast("登录失败：${it.message}")
+                is RegisterViewEvent.RegisterSuccess -> {
+                    toast("注册成功")
+                    onRegisterSuccess()
+                }
+                is RegisterViewEvent.RegisterError -> {
+                    toast("注册失败：${it.message}")
                 }
             }
         }
     }
-
     Column(
         Modifier
             .background(WanAndroidTheme.colors.viewBackground)
@@ -99,7 +99,7 @@ fun ColumnScope.LoginPage(
             .weight(1f)
     ) {
         Text(
-            text = GetString(R.string.user_login),
+            text = GetString(R.string.register_tip),
             color = WanAndroidTheme.colors.commonColor,
             fontSize = 18.sp
         )
@@ -112,9 +112,9 @@ fun ColumnScope.LoginPage(
             modifier = Modifier
                 .padding(0.dp, 30.dp, 0.dp, 8.dp)
                 .fillMaxWidth(),
-            value = username,
+            value = uiState.username,
             onValueChange = {
-                viewModel.dispatch(LoginViewAction.InputUsernameAction(it))
+                viewModel.dispatch(RegisterViewAction.InputUsernameAction(it))
             },
             singleLine = true,
             label = { Text(text = GetString(id = R.string.username)) }
@@ -123,32 +123,44 @@ fun ColumnScope.LoginPage(
             modifier = Modifier
                 .padding(0.dp, 8.dp)
                 .fillMaxWidth(),
-            value = password,
+            value = uiState.password,
             singleLine = true,
             onValueChange = {
-                viewModel.dispatch(LoginViewAction.InputPasswordAction(it))
+                viewModel.dispatch(RegisterViewAction.InputPasswordAction(it))
             },
             label = { Text(text = GetString(id = R.string.password)) },
             visualTransformation = PasswordVisualTransformation()
         )
+        OutlinedTextField(
+            modifier = Modifier
+                .padding(0.dp, 8.dp)
+                .fillMaxWidth(),
+            value = uiState.confirmPassword,
+            singleLine = true,
+            onValueChange = {
+                viewModel.dispatch(RegisterViewAction.InputConfirmPasswordAction(it))
+            },
+            label = { Text(text = GetString(id = R.string.enter_password_again)) },
+            visualTransformation = PasswordVisualTransformation()
+        )
         Text(
-            text = GetString(id = R.string.login),
+            text = GetString(id = R.string.register),
             modifier = Modifier
                 .padding(0.dp, 24.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp))
                 .background(WanAndroidTheme.colors.colorAccent)
-                .clickable { viewModel.dispatch(LoginViewAction.LoginAction) }
+                .clickable { viewModel.dispatch(RegisterViewAction.RegisterAction) }
                 .padding(12.dp),
             color = Color.White,
             textAlign = TextAlign.Center
         )
         Text(
-            text = GetString(id = R.string.no_account),
+            text = GetString(id = R.string.have_account),
             modifier = Modifier
                 .padding(0.dp, 0.dp, 0.dp, 24.dp)
                 .align(Alignment.End)
-                .clickable { onRegisterClick() },
+                .clickable { onLoginClick() },
             fontSize = 16.sp
         )
     }
@@ -156,8 +168,6 @@ fun ColumnScope.LoginPage(
 
 @Preview
 @Composable
-fun PreviewLoginScreen() {
-    WanAndroidTheme {
-        LoginScreen(rememberNavController())
-    }
+fun PreviewRegisterScreen() {
+    RegisterScreen(navController = rememberNavController())
 }

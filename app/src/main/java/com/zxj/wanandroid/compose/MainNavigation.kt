@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.zxj.wanandroid.compose.ui.screen.HomeScreen
 import com.zxj.wanandroid.compose.ui.screen.search.SearchScreen
 import com.zxj.wanandroid.compose.ui.screen.user.LoginScreen
+import com.zxj.wanandroid.compose.ui.screen.user.RegisterScreen
 
 @Composable
 fun MainNavigation() {
@@ -18,11 +19,13 @@ fun MainNavigation() {
         composable(NavigationRoute.HOME) { HomeScreen { navController.navigate(it) } }
         composable(NavigationRoute.SEARCH) { SearchScreen(navController) }
         composable(NavigationRoute.LOGIN) { LoginScreen(navController) }
+        composable(NavigationRoute.REGISTER) { RegisterScreen(navController) }
     }
 }
 
 object NavigationRoute {
     val HOME = "/app/home"
     val SEARCH = "/app/search"
-    val LOGIN = "/app/login"
+    val LOGIN = "/user/login"
+    val REGISTER = "/user/register";
 }
