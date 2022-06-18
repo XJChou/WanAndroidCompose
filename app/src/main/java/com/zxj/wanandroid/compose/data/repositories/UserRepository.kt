@@ -13,7 +13,7 @@ interface UserRepository {
     /**
      * 获取当前登录用户
      */
-    val loginUser: Flow<User?>
+    val user: Flow<User>
 
     suspend fun register(
         username: String,

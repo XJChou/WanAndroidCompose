@@ -7,9 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,17 +29,24 @@ import com.zxj.wanandroid.compose.ui.NavigationBar
 import com.zxj.wanandroid.compose.ui.Toolbar
 import com.zxj.wanandroid.compose.ui.screen.home.*
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
+import com.zxj.wanandroid.compose.viewmodel.DrawerUIState
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(navigation: (String) -> Unit) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
+    navigation: (String) -> Unit
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
+    val drawerUIState by viewModel.drawerUIState.collectAsState()
     ModalDrawer(
         drawerContent = {
             DrawHead(navigation)
             DrawContent(
+                drawerUIState,
                 navigation = navigation,
                 modifier = Modifier
                     .weight(1f)
@@ -147,6 +152,7 @@ private fun DrawHead(navigation: (String) -> Unit) {
 
 @Composable
 private fun DrawContent(
+    drawerUIState: DrawerUIState,
     navigation: (String) -> Unit,
     modifier: Modifier
 ) {
@@ -156,26 +162,46 @@ private fun DrawContent(
             .padding(0.dp, 10.dp, 0.dp, 0.dp)
     ) {
         DrawItemContent(R.drawable.ic_score_white_24dp, GetString(id = R.string.nav_my_score)) {
-//            navigation("")
+            drawerUIState.ifLogin(navigation) {
+
+            }
         }
         DrawItemContent(R.drawable.ic_like_not, GetString(id = R.string.nav_my_collect)) {
-//            navigation("")
+            drawerUIState.ifLogin(navigation) {
+
+            }
         }
         DrawItemContent(R.drawable.ic_share_white_24dp, GetString(id = R.string.my_share)) {
-//            navigation("")
+            drawerUIState.ifLogin(navigation) {
+
+            }
         }
         DrawItemContent(R.drawable.ic_todo_default_24dp, GetString(id = R.string.nav_todo)) {
-//            navigation("")
+            drawerUIState.ifLogin(navigation) {
+
+            }
         }
         DrawItemContent(R.drawable.ic_night_24dp, GetString(id = R.string.nav_night_mode)) {
             WanAndroidTheme.changeTheme()
         }
         DrawItemContent(R.drawable.ic_setting_24dp, GetString(id = R.string.nav_setting)) {
-//            navigation("")
+            drawerUIState.ifLogin(navigation) {
+
+            }
         }
-        DrawItemContent(R.drawable.ic_logout_white_24dp, GetString(id = R.string.nav_logout)) {
+        if (drawerUIState.isLogin) {
+            DrawItemContent(R.drawable.ic_logout_white_24dp, GetString(id = R.string.nav_logout)) {
 //            navigation("")
+            }
         }
+    }
+}
+
+private fun DrawerUIState.ifLogin(navigation: (String) -> Unit, block: () -> Unit) {
+    if (isLogin) {
+        block()
+    } else {
+        navigation(NavigationRoute.LOGIN)
     }
 }
 
@@ -273,21 +299,6 @@ fun HomeContent(navigation: (String) -> Unit, onMenuClickListener: () -> Unit) {
 fun PreviewHome() {
     WanAndroidTheme {
         HomeScreen() {
-
         }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewDrawContent() {
-    Column(Modifier.fillMaxSize()) {
-        DrawHead {}
-        DrawContent(
-            navigation = {},
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-        )
     }
 }

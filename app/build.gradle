@@ -108,7 +108,7 @@ dependencies {
     // datastore - proto
     implementation "androidx.datastore:datastore:${datastore_version}"
     implementation "androidx.datastore:datastore-core:${datastore_version}"
-    implementation "com.google.protobuf:protobuf-javalite:3.18.0"
+    implementation "com.google.protobuf:protobuf-kotlin-lite:${protobuf_version}"
 
     // 测试相关
     testImplementation 'junit:junit:4.13.2'
@@ -120,16 +120,15 @@ dependencies {
 
 protobuf {
     protoc {
-        if (osdetector.os == "osx") {
-            artifact = 'com.google.protobuf:protoc:3.14.0:osx-x86_64'
-        } else {
-            artifact = 'com.google.protobuf:protoc:3.14.0'
-        }
+        artifact = "com.google.protobuf:protoc:${protobuf_version}"
     }
     generateProtoTasks {
         all().each { task ->
             task.builtins {
                 java {
+                    option 'lite'
+                }
+                kotlin {
                     option 'lite'
                 }
             }

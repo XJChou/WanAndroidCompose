@@ -64,8 +64,10 @@ fun LoginScreen(navController: NavHostController) {
 }
 
 @Composable
-fun RegisterPage(modifier: Modifier) {
+fun RegisterPage() {
+
 }
+
 
 @Composable
 fun LoginPage(modifier: Modifier) {
@@ -115,7 +117,7 @@ fun LoginPage(modifier: Modifier) {
                 .clip(RoundedCornerShape(4.dp))
                 .background(WanAndroidTheme.colors.colorAccent)
                 .clickable {
-
+                    viewModel.dispatch(LoginViewAction.LoginAction)
                 }
                 .padding(12.dp),
             color = Color.White,

@@ -12,11 +12,11 @@ class RealUserRepository @Inject constructor(
     private val userLocalDataSource: UserLocalDataSource
 ) : UserRepository {
 
-    override val loginUser: Flow<User?>
-        get() = userLocalDataSource.getLoginUser()
+    override val user: Flow<User>
+        get() = userLocalDataSource.user
 
-    private fun setLoginUser(user: User?) {
-        userLocalDataSource.setLoginUser(user)
+    private suspend fun updateUser(user: User) {
+        userLocalDataSource.updateUser(user)
     }
 
     override suspend fun register(
@@ -24,20 +24,21 @@ class RealUserRepository @Inject constructor(
         password: String,
         confirmPassword: String
     ): API<User> {
-        return userNetworkDataSource.register(username, password, confirmPassword).onSuccess {
-            setLoginUser(it!!)
-        }
+        return userNetworkDataSource.register(username, password, confirmPassword)
+            .onSuspendSuccess {
+                updateUser(it!!)
+            }
     }
 
     override suspend fun login(username: String, password: String): API<User> {
-        return userNetworkDataSource.login(username, password).onSuccess {
-            setLoginUser(it!!)
+        return userNetworkDataSource.login(username, password).onSuspendSuccess {
+            updateUser(it!!)
         }
     }
 
     override suspend fun loginOut(): API<String> {
-        return userNetworkDataSource.logout().onSuccess {
-            setLoginUser(null)
+        return userNetworkDataSource.logout().onSuspendSuccess {
+            userLocalDataSource.clearToken()
         }
     }
 
