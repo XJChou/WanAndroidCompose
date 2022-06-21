@@ -21,8 +21,8 @@ option java_multiple_files = true;
 message UserPreferences {
   string id = 1;
   string username = 2;
-  string password = 3;
-  string token = 4;
+  reserved 3;
+  reserved 4;
   string icon = 5;
   string email = 6;
   int32 type = 7;

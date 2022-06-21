@@ -30,6 +30,7 @@ import com.zxj.wanandroid.compose.ui.Toolbar
 import com.zxj.wanandroid.compose.ui.screen.home.*
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.DrawerUIState
+import com.zxj.wanandroid.compose.viewmodel.HomeViewAction
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 
@@ -44,13 +45,18 @@ fun HomeScreen(
     val drawerUIState by viewModel.drawerUIState.collectAsState()
     ModalDrawer(
         drawerContent = {
-            DrawHead(navigation)
+            DrawHead(drawerUIState, navigation)
             DrawContent(
                 drawerUIState,
                 navigation = navigation,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
+                    .clickable {
+                    },
+                signOut = {
+                    viewModel.dispatch(HomeViewAction.SignOutAction)
+                }
             )
         },
         modifier = Modifier.fillMaxSize(),
@@ -64,7 +70,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun DrawHead(navigation: (String) -> Unit) {
+private fun DrawHead(drawerUIState: DrawerUIState, navigation: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,32 +98,16 @@ private fun DrawHead(navigation: (String) -> Unit) {
                 .border(2.dp, Color.White, CircleShape)
                 .align(Alignment.CenterHorizontally)
         )
-        // 去登录
+
+        // 根据当前状态
         Text(
-            text = GetString(R.string.go_login),
+            text = if (drawerUIState.isLogin) drawerUIState.user.username else GetString(R.string.go_login),
             modifier = Modifier
                 .padding(0.dp, 12.dp, 0.dp, 0.dp)
                 .align(Alignment.CenterHorizontally),
             color = Color.White,
             fontWeight = FontWeight.Bold
         )
-
-        Row(
-            modifier = Modifier
-                .padding(0.dp, 8.dp, 0.dp, 0.dp)
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = GetString(id = R.string.nav_id),
-                color = Color(0xFFF5F5F5),
-                fontSize = 12.sp
-            )
-            Text(
-                text = GetString(id = R.string.nav_line_4),
-                fontSize = 12.sp,
-                color = Color(0xFFF5F5F5),
-            )
-        }
 
         Row(
             modifier = Modifier
@@ -153,8 +143,9 @@ private fun DrawHead(navigation: (String) -> Unit) {
 @Composable
 private fun DrawContent(
     drawerUIState: DrawerUIState,
-    navigation: (String) -> Unit,
-    modifier: Modifier
+    navigation: (String) -> Unit = {},
+    modifier: Modifier,
+    signOut: () -> Unit = {}
 ) {
     Column(
         modifier
@@ -191,7 +182,7 @@ private fun DrawContent(
         }
         if (drawerUIState.isLogin) {
             DrawItemContent(R.drawable.ic_logout_white_24dp, GetString(id = R.string.nav_logout)) {
-//            navigation("")
+                signOut()
             }
         }
     }

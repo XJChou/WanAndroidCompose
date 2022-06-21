@@ -6,9 +6,8 @@ import com.google.protobuf.InvalidProtocolBufferException
 import com.zxj.wanandroid.compose.datastore.UserPreferences
 import java.io.InputStream
 import java.io.OutputStream
-import javax.inject.Inject
 
-class UserPreferencesSerializer @Inject constructor() : Serializer<UserPreferences> {
+class UserPreferencesSerializer : Serializer<UserPreferences> {
 
     override val defaultValue: UserPreferences = UserPreferences.getDefaultInstance()
 

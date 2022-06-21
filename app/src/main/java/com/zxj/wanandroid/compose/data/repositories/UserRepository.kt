@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
  */
 interface UserRepository {
 
+    val isLogin: Flow<Boolean>
+
     /**
      * 获取当前登录用户
      */
@@ -21,8 +23,9 @@ interface UserRepository {
         confirmPassword: String
     ): API<User>
 
-    suspend fun login(username: String, password: String): API<User>
+    suspend fun signIn(username: String, password: String): API<User>
 
-    suspend fun loginOut(): API<String>
+    suspend fun userInfo(): API<String>
 
+    suspend fun signOut(): API<String>
 }

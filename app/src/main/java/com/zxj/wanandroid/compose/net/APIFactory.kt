@@ -24,6 +24,8 @@ object APIFactory {
         .build()
 
     private fun buildOKHttpClient(): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(LoggingInterceptor(true, visualFormat = false))
+        .addInterceptor(HeaderInterceptor())
+        .addInterceptor(SaveCookieInterceptor())
+        .addInterceptor(LoggingInterceptor(true, visualFormat = false, isShowAll = true))
         .build()
 }

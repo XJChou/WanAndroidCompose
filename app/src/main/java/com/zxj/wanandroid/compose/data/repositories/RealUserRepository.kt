@@ -1,5 +1,6 @@
 package com.zxj.wanandroid.compose.data.repositories
 
+import com.zxj.wanandroid.compose.data.HttpConstant
 import com.zxj.wanandroid.compose.data.bean.User
 import com.zxj.wanandroid.compose.data.datasource.UserLocalDataSource
 import com.zxj.wanandroid.compose.data.datasource.UserNetworkDataSource
@@ -11,6 +12,9 @@ class RealUserRepository @Inject constructor(
     private val userNetworkDataSource: UserNetworkDataSource,
     private val userLocalDataSource: UserLocalDataSource
 ) : UserRepository {
+
+    override val isLogin: Flow<Boolean>
+        get() = HttpConstant.isLogin
 
     override val user: Flow<User>
         get() = userLocalDataSource.user
@@ -30,16 +34,21 @@ class RealUserRepository @Inject constructor(
             }
     }
 
-    override suspend fun login(username: String, password: String): API<User> {
+    override suspend fun signIn(username: String, password: String): API<User> {
         return userNetworkDataSource.login(username, password).onSuspendSuccess {
             updateUser(it!!)
         }
     }
 
-    override suspend fun loginOut(): API<String> {
-        return userNetworkDataSource.logout().onSuspendSuccess {
-            userLocalDataSource.clearToken()
+    override suspend fun userInfo(): API<String> {
+        return userNetworkDataSource.userInfo().onSuspendSuccess {
+//            updateUser(it!!)
         }
     }
 
+    override suspend fun signOut(): API<String> {
+        return userNetworkDataSource.logout().onSuspendSuccess {
+            HttpConstant.clearToken()
+        }
+    }
 }

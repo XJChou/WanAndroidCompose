@@ -42,18 +42,5 @@ object DataSourceModule {
     @Provides
     @Singleton
     fun providerIndexNetworkDataSource(): ArticleNetworkDataSource = APIFactory.get()
-
-    @Provides
-    @Singleton
-    fun providesUserPreferencesDataStore(
-        @ApplicationContext context: Context,
-        userPreferencesSerializer: UserPreferencesSerializer
-    ): DataStore<UserPreferences> =
-        DataStoreFactory.create(
-            serializer = userPreferencesSerializer,
-            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-        ) {
-            context.dataStoreFile("user_preferences.pb")
-        }
 }
 

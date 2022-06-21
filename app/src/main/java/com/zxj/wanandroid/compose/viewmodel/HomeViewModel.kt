@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
+import com.zxj.wanandroid.compose.data.bean.User
 import com.zxj.wanandroid.compose.data.repositories.UserRepository
 import com.zxj.wanandroid.compose.ui.NavigationItemBean
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,13 +17,21 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    val drawerUIState: StateFlow<DrawerUIState> = userRepository.user.map {
-        DrawerUIState(it.token.isNotEmpty())
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(1000),
-        initialValue = DrawerUIState()
+    val drawerUIState: StateFlow<DrawerUIState> = combine(
+        userRepository.isLogin,
+        userRepository.user,
+        transform = { isLogin, user ->
+            DrawerUIState(isLogin, user)
+        }
     )
+        .onEach {
+
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(1000),
+            initialValue = DrawerUIState()
+        )
 
     val navigationItems = arrayOf(
         NavigationItemBean(R.drawable.ic_home_black_24dp, R.string.navigation_text_home),
@@ -39,9 +49,22 @@ class HomeViewModel @Inject constructor(
         getString(R.string.toolbar_text_project)
     )
 
-
+    fun dispatch(action: HomeViewAction) {
+        when (action) {
+            is HomeViewAction.SignOutAction -> {
+                viewModelScope.launch {
+                    userRepository.signOut()
+                }
+            }
+        }
+    }
 }
 
 data class DrawerUIState(
-    val isLogin: Boolean = false
+    val isLogin: Boolean = false,
+    val user: User = User()
 )
+
+sealed class HomeViewAction {
+    object SignOutAction : HomeViewAction()
+}

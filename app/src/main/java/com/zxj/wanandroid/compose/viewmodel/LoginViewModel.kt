@@ -48,7 +48,7 @@ class LoginViewModel @Inject constructor(
             // step2: 网络访问
             viewModelScope.launch {
                 userRepository
-                    .login(username, password)
+                    .signIn(username, password)
                     .onSuspendSuccess {
                         _uiEvent.send(LoginViewEvent.LoginSuccess)
                     }

@@ -79,6 +79,7 @@ dependencies {
     implementation 'org.ligboy.retrofit2:converter-fastjson:2.1.0'
     implementation 'com.alibaba:fastjson:1.2.83'
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
 
     // hilt
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
