@@ -1,30 +1,31 @@
 package com.zxj.wanandroid.compose.data
 
 import android.content.Context
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import com.zxj.wanandroid.compose.application.ComposeApplication
-import kotlinx.coroutines.MainScope
+import com.zxj.wanandroid.compose.data.datasource.CookiesPreferencesSerializer
+import com.zxj.wanandroid.compose.datastore.CookiesPreferences
+import com.zxj.wanandroid.compose.datastore.copy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.Cookie
+import okhttp3.HttpUrl
 
-private val Context.cookiesPreferences by preferencesDataStore("cookies")
+private val Context.cookiesPreferences: DataStore<CookiesPreferences> by dataStore(
+    fileName = "cookies_preferences.pb",
+    serializer = CookiesPreferencesSerializer(),
+)
 
 private val cookiesPreferences = ComposeApplication.application.cookiesPreferences
-
-private val loginKey = booleanPreferencesKey("isLogin")
 
 /**
  * Created by chenxz on 2018/6/9.
  */
 object HttpConstant {
 
-    const val DEFAULT_TIMEOUT: Long = 15
     const val SAVE_USER_LOGIN_KEY = "user/login"
     const val SAVE_USER_REGISTER_KEY = "user/register"
 
@@ -34,61 +35,36 @@ object HttpConstant {
     const val TODO_WEBSITE = "lg/todo"
     const val COIN_WEBSITE = "lg/coin"
 
-    const val SET_COOKIE_KEY = "set-cookie"
-    const val COOKIE_NAME = "Cookie"
-
-    const val MAX_CACHE_SIZE: Long = 1024 * 1024 * 50 // 50M 的缓存大小
-
     val isLogin: Flow<Boolean> = cookiesPreferences.data.map {
-        it[loginKey] ?: false
+        it.isLogin
     }
 
-    fun encodeCookie(cookies: List<String>): String {
-        val sb = StringBuilder()
-        val set = HashSet<String>()
-        cookies
-            .map { cookie ->
-                cookie.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            }
-            .forEach {
-                it.filterNot { set.contains(it) }.forEach { set.add(it) }
-            }
-        val ite = set.iterator()
-        while (ite.hasNext()) {
-            val cookie = ite.next()
-            sb.append(cookie).append(";")
-        }
-        val last = sb.lastIndexOf(";")
-        if (sb.length - 1 == last) {
-            sb.deleteCharAt(last)
-        }
-        return sb.toString()
-    }
-
-    fun saveCookie(url: String, domain: String, cookies: String) {
+    fun saveCookie(newCookies: List<Cookie>) {
         runBlocking {
-            val key = stringPreferencesKey(url)
-            cookiesPreferences.edit {
-                val domainKey = stringPreferencesKey(domain)
-                // key = url, value = cookies
-                it[key] = cookies
-                // key = domain, value = cookies
-                it[domainKey] = cookies
-                it[loginKey] = true
+            cookiesPreferences.updateData {
+                it.copy {
+                    isLogin = true
+                    cookies.clear()
+                    cookies.addAll(newCookies.map { it.toString() })
+                }
             }
         }
     }
 
-    fun getCookies(url: String): String {
+    fun getCookies(url: HttpUrl): List<Cookie> {
         return runBlocking {
-            val domainKey = stringPreferencesKey(url)
-            cookiesPreferences.data.first()[domainKey] ?: ""
+            cookiesPreferences.data.first().cookiesList.map {
+                Cookie.parse(url, it)!!
+            }
         }
     }
 
     suspend fun clearToken() {
-        cookiesPreferences.edit {
-            it.clear()
+        cookiesPreferences.updateData {
+            it.copy {
+                clearIsLogin()
+                cookies.clear()
+            }
         }
     }
 }
