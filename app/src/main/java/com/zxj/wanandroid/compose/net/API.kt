@@ -1,5 +1,6 @@
 package com.zxj.wanandroid.compose.net
 
+import com.zxj.wanandroid.compose.data.HttpConstant
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.*
@@ -137,7 +138,11 @@ class APICall(private val originCall: Call<API<*>>) : Call<API<*>> {
     override fun clone(): Call<API<*>> = APICall(originCall.clone())
 
     private fun Response<API<*>>.check(): Response<API<*>> {
-        if (this.body() != null) {
+        val body = this.body()
+        if (body != null) {
+            if (body.errorCode == HttpConstant.ALREADY_LOGIN_OUT) {
+                HttpConstant.clearTokenSync()
+            }
             return this
         }
         return Response.success(NullPointerException().toAPI())

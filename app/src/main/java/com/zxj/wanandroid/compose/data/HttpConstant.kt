@@ -35,6 +35,8 @@ object HttpConstant {
     const val TODO_WEBSITE = "lg/todo"
     const val COIN_WEBSITE = "lg/coin"
 
+    const val ALREADY_LOGIN_OUT = -1001
+
     val isLogin: Flow<Boolean> = cookiesPreferences.data.map {
         it.isLogin
     }
@@ -66,5 +68,9 @@ object HttpConstant {
                 cookies.clear()
             }
         }
+    }
+
+    fun clearTokenSync() {
+        runBlocking { clearToken() }
     }
 }

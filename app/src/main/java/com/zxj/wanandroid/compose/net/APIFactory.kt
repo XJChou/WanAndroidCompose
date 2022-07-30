@@ -28,8 +28,6 @@ object APIFactory {
         .build()
 
     private fun buildOKHttpClient(): OkHttpClient = OkHttpClient.Builder()
-//        .addInterceptor(HeaderInterceptor())
-//        .addInterceptor(SaveCookieInterceptor())
         .addInterceptor(LoggingInterceptor(true, visualFormat = false, isShowAll = true))
         .cookieJar(WanAndroidCookieJar)
         .build()
