@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.ui
+package com.zxj.wanandroid.compose.widget
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background

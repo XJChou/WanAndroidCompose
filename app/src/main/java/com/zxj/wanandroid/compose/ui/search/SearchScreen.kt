@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.ui.screen.search
+package com.zxj.wanandroid.compose.ui.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -9,8 +9,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.toast
-import com.zxj.wanandroid.compose.ui.ControlBean
-import com.zxj.wanandroid.compose.ui.Toolbar
+import com.zxj.wanandroid.compose.widget.ControlBean
+import com.zxj.wanandroid.compose.widget.Toolbar
 
 @Composable
 fun SearchScreen(navController: NavController) {

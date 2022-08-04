@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
+import com.zxj.wanandroid.compose.widget.NavigationItem
+import com.zxj.wanandroid.compose.widget.NavigationItemBean
 
 @Composable
 fun NavigationBar(

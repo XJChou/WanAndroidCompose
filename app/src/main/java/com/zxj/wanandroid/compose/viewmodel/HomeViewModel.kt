@@ -6,7 +6,7 @@ import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.data.bean.User
 import com.zxj.wanandroid.compose.data.repositories.UserRepository
-import com.zxj.wanandroid.compose.ui.NavigationItemBean
+import com.zxj.wanandroid.compose.widget.NavigationItemBean
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val drawerUIState: StateFlow<DrawerUIState> = combine(
-        userRepository.isLogin,
+        userRepository.isLogin.distinctUntilChanged().onEach { if (it) userRepository.userInfo() },
         userRepository.user,
         transform = { isLogin, user ->
             DrawerUIState(isLogin, user)
@@ -56,6 +56,9 @@ class HomeViewModel @Inject constructor(
                     userRepository.signOut()
                 }
             }
+            is HomeViewAction.UserInfo -> {
+                viewModelScope.launch { userRepository.userInfo() }
+            }
         }
     }
 }
@@ -67,4 +70,6 @@ data class DrawerUIState(
 
 sealed class HomeViewAction {
     object SignOutAction : HomeViewAction()
+
+    object UserInfo : HomeViewAction()
 }

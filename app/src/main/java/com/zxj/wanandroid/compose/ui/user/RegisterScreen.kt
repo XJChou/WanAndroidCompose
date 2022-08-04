@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.ui.screen.user
+package com.zxj.wanandroid.compose.ui.user
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,12 +25,12 @@ import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.GetString
 import com.zxj.wanandroid.compose.application.toast
-import com.zxj.wanandroid.compose.ui.ControlBean
-import com.zxj.wanandroid.compose.ui.Toolbar
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.RegisterViewAction
 import com.zxj.wanandroid.compose.viewmodel.RegisterViewEvent
 import com.zxj.wanandroid.compose.viewmodel.RegisterViewModel
+import com.zxj.wanandroid.compose.widget.ControlBean
+import com.zxj.wanandroid.compose.widget.Toolbar
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

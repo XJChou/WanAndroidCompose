@@ -19,19 +19,23 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 声明自身管理WindowInsets
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
+            // 当前的主题
             WanAndroidTheme(WanAndroidTheme.theme) {
+
+                // 窗体设置
                 val systemUiController = rememberSystemUiController()
-                systemUiController.setSystemBarsColor(Color.Transparent)
+                systemUiController.setSystemBarsColor(Color.Transparent) // 状态栏设置为透明
                 systemUiController.setNavigationBarColor(Color.Black)
-//                AnimateStatusColor(window)
-                // A surface container using the 'background' color from the theme
+
                 Surface(
                     modifier = Modifier.fillMaxSize().navigationBarsPadding(),
                     color = WanAndroidTheme.colors.windowBackground
                 ) {
-                    MyLog.e("viewModel.theme=${WanAndroidTheme.theme}")
+                    // 主题内容
                     MainNavigation()
                 }
             }

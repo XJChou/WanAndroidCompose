@@ -8,7 +8,6 @@ import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun SystemPage() {
-
     Text(
         text = "体系",
         modifier = Modifier

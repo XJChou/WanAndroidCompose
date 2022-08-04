@@ -28,7 +28,9 @@ import com.zxj.wanandroid.compose.viewmodel.IndexViewAction
 import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 
 @Composable
-fun IndexPage() {
+fun IndexPage(
+    onItemClick: (Data) -> Unit
+) {
     val indexViewModel: IndexViewModel = viewModel(LocalContext.current as ComponentActivity)
 
     // StateFlow -> State
@@ -72,7 +74,8 @@ fun IndexPage() {
             // 列表内容
             articleList?.also { dataList ->
                 items(dataList.size) {
-                    ArticleItem(dataList[it])
+                    ArticleItem(dataList[it],
+                    onItemClickListener = onItemClick)
                 }
             }
 

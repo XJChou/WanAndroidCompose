@@ -24,21 +24,23 @@ import com.google.accompanist.pager.rememberPagerState
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.GetString
-import com.zxj.wanandroid.compose.ui.ControlBean
+import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.ui.NavigationBar
-import com.zxj.wanandroid.compose.ui.Toolbar
 import com.zxj.wanandroid.compose.ui.screen.home.*
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.DrawerUIState
 import com.zxj.wanandroid.compose.viewmodel.HomeViewAction
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
+import com.zxj.wanandroid.compose.widget.ControlBean
+import com.zxj.wanandroid.compose.widget.Toolbar
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    navigation: (String) -> Unit
+    navigation: (String) -> Unit,
+    onItemClick: (Data) -> Unit,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -63,9 +65,13 @@ fun HomeScreen(
         drawerState = drawerState,
         drawerBackgroundColor = WanAndroidTheme.colors.viewBackground,
     ) {
-        HomeContent(navigation) {
-            coroutineScope.launch { drawerState.open() }
-        }
+        HomeContent(
+            navigation,
+            {
+                coroutineScope.launch { drawerState.open() }
+            },
+            onItemClick
+        )
     }
 }
 
@@ -223,7 +229,11 @@ private fun DrawItemContent(@DrawableRes icon: Int, title: String, itemClick: ()
 
 @Composable
 @OptIn(ExperimentalPagerApi::class)
-fun HomeContent(navigation: (String) -> Unit, onMenuClickListener: () -> Unit) {
+fun HomeContent(
+    navigation: (String) -> Unit,
+    onMenuClickListener: () -> Unit,
+    onItemClick: (Data) -> Unit
+) {
     val viewModel: HomeViewModel = hiltViewModel()
     val pagerState = rememberPagerState()
     val animateScope = rememberCoroutineScope()
@@ -264,7 +274,7 @@ fun HomeContent(navigation: (String) -> Unit, onMenuClickListener: () -> Unit) {
         )
         {
             when (it) {
-                0 -> IndexPage()
+                0 -> IndexPage(onItemClick)
                 1 -> SquarePage()
                 2 -> PublicPage()
                 3 -> SystemPage()
@@ -289,7 +299,5 @@ fun HomeContent(navigation: (String) -> Unit, onMenuClickListener: () -> Unit) {
 @Composable
 fun PreviewHome() {
     WanAndroidTheme {
-        HomeScreen() {
-        }
     }
 }
