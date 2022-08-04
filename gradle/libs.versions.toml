@@ -1,0 +1,62 @@
+[versions]
+accompanist = "0.26.0-alpha"
+compose = '1.3.0-alpha01'
+room = '2.4.3'
+hilt = '2.40.1'
+retrofit = "2.9.0"
+okhttp = "4.9.0"
+lifecycle_ktx = "2.5.0-beta01"
+datastore = "1.0.0"
+nav = "2.5.1"
+kotlin = "1.6.21"
+protobuf = "3.21.1"
+protobufP = "0.8.18"
+core-ktx = "1.8.0"
+
+# 依赖相关
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
+accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
+accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompanist-swiperefresh", version.ref = "accompanist" }
+accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
+accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-gradle = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.0.0" }
+compose-coil = { group = "io.coil-kt", name = "coil-compose", version = "2.0.0" }
+compose-activity = { group = "androidx.activity", name = "activity-compose", version = "1.5.1" }
+compose-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version = "2.5.1" }
+compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
+compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav" }
+compose-navigation-gradle = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "nav"}
+compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
+lifecycle-livedata-core-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-core-ktx", version.ref = "lifecycle.ktx" }
+lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle.ktx" }
+lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle.ktx" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle.ktx" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-fastjson = { group = "org.ligboy.retrofit2", name = "converter-fastjson", version = "2.1.0" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+fastjson = { group = "com.alibaba", name = "fastjson", version = "1.2.83" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+okhttp-logger = { group = "io.github.ayvytr", name = "okhttploginterceptor", version = "3.0.6" }
+datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastore" }
+datastore-protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
+datastore-protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+test = { group = "junit", name = "junit", version = "4.13.2" }
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.1.3" }
+androidx-test-exspresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.4.0" }
+
+#[bundles]
+
+
