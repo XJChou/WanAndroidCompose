@@ -10,7 +10,7 @@ datastore = "1.0.0"
 nav = "2.5.1"
 kotlin = "1.6.21"
 protobuf = "3.21.1"
-protobufP = "0.8.18"
+protobufPlugin = "0.8.18"
 core-ktx = "1.8.0"
 
 # 依赖相关
