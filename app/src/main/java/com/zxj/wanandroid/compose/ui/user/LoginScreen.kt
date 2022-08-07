@@ -1,5 +1,6 @@
 package com.zxj.wanandroid.compose.ui.user
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,8 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.composable
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.GetString
@@ -29,33 +31,49 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.LoginViewAction
 import com.zxj.wanandroid.compose.viewmodel.LoginViewEvent
 import com.zxj.wanandroid.compose.viewmodel.LoginViewModel
-import com.zxj.wanandroid.compose.widget.ControlBean
-import com.zxj.wanandroid.compose.widget.Toolbar
+import com.zxj.wanandroid.compose.widget.TextToolBar
+import com.zxj.wanandroid.compose.widget.ToolBarIcon
 import kotlinx.coroutines.flow.collectLatest
 
+/**
+ * 添加登录界面到Navigation
+ */
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.addLoginScreen(controller: NavHostController) {
+    composable(NavigationRoute.LOGIN) {
+        LoginScreen(
+            onBack = {
+                controller.popBackStack()
+            },
+            registerAction = {
+                controller.navigate(NavigationRoute.REGISTER)
+            }
+        )
+    }
+}
+
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(
+    onBack: () -> Unit = { },
+    registerAction: () -> Unit = {}
+) {
     Column(Modifier.fillMaxSize()) {
-        val leftControls = remember(navController) {
-            arrayListOf(ControlBean(R.drawable.ic_back) {
-                navController.popBackStack()
-            })
-        }
-        Toolbar(leftControl = leftControls) {
-            Text(
-                text = GetString(R.string.login),
-                fontSize = 18.sp,
-                color = WanAndroidTheme.colors.itemTagTv
-            )
-        }
+        TextToolBar(
+            title = GetString(id = R.string.login),
+            fitsSystemWindows = true,
+            navigationIcon = {
+                ToolBarIcon(drawableRes = R.drawable.ic_back, onBack)
+            }
+        )
         // 内容
         LoginPage(
             onRegisterClick = {
-                navController.popBackStack()
-                navController.navigate(NavigationRoute.REGISTER)
+                onBack()
+                registerAction()
+
             },
             onLoginSuccess = {
-                navController.popBackStack()
+                onBack()
             }
         )
     }
@@ -158,6 +176,6 @@ fun ColumnScope.LoginPage(
 @Composable
 fun PreviewLoginScreen() {
     WanAndroidTheme {
-        LoginScreen(rememberNavController())
+        LoginScreen()
     }
 }

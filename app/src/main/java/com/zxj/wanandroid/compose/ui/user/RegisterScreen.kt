@@ -1,5 +1,6 @@
 package com.zxj.wanandroid.compose.ui.user
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,7 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,8 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.composable
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.GetString
@@ -29,33 +34,52 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.RegisterViewAction
 import com.zxj.wanandroid.compose.viewmodel.RegisterViewEvent
 import com.zxj.wanandroid.compose.viewmodel.RegisterViewModel
-import com.zxj.wanandroid.compose.widget.ControlBean
-import com.zxj.wanandroid.compose.widget.Toolbar
+import com.zxj.wanandroid.compose.widget.TextToolBar
+import com.zxj.wanandroid.compose.widget.ToolBarIcon
 import kotlinx.coroutines.flow.collectLatest
 
+
+/**
+ * 添加注册界面到Navigation
+ */
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.addRegisterScreen(controller: NavHostController) {
+    composable(NavigationRoute.REGISTER) {
+        RegisterScreen(
+            onBack = {
+                controller.popBackStack()
+            },
+            loginAction = {
+                controller.navigate(NavigationRoute.LOGIN)
+            }
+        )
+    }
+}
+
+
 @Composable
-fun RegisterScreen(navController: NavHostController) {
+fun RegisterScreen(
+    onBack: () -> Unit = {},
+    loginAction: () -> Unit = {}
+) {
     Column(Modifier.fillMaxSize()) {
-        val leftControls = remember(navController) {
-            arrayListOf(ControlBean(R.drawable.ic_back) {
-                navController.popBackStack()
-            })
-        }
-        Toolbar(leftControl = leftControls) {
-            Text(
-                text = GetString(R.string.register),
-                fontSize = 18.sp,
-                color = WanAndroidTheme.colors.itemTagTv
-            )
-        }
+        TextToolBar(
+            title = GetString(R.string.register),
+            fitsSystemWindows = true,
+            navigationIcon = {
+                ToolBarIcon(drawableRes = R.drawable.ic_back) {
+                    onBack()
+                }
+            }
+        )
         // 内容
         RegisterPage(
             onLoginClick = {
-                navController.popBackStack()
-                navController.navigate(NavigationRoute.LOGIN)
+                onBack()
+                loginAction()
             },
             onRegisterSuccess = {
-                navController.popBackStack()
+                onBack()
             }
         )
     }
@@ -169,5 +193,5 @@ fun ColumnScope.RegisterPage(
 @Preview
 @Composable
 fun PreviewRegisterScreen() {
-    RegisterScreen(navController = rememberNavController())
+    RegisterScreen()
 }

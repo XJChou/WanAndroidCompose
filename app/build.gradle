@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.accompanist.swiperefresh)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.accompanist.webview)
+    implementation(libs.accompanist.navigation.animation)
     // hilt
     kapt(libs.hilt.android.compiler)
     implementation(libs.hilt.android)

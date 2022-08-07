@@ -1,41 +1,53 @@
 package com.zxj.wanandroid.compose.ui.search
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import com.google.accompanist.navigation.animation.composable
+import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.toast
-import com.zxj.wanandroid.compose.widget.ControlBean
-import com.zxj.wanandroid.compose.widget.Toolbar
+import com.zxj.wanandroid.compose.widget.TextToolBar
+import com.zxj.wanandroid.compose.widget.ToolBarIcon
+
+
+/**
+ * 添加搜索界面到Navigation
+ */
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.addSearchScreen(controller: NavHostController) {
+    composable(route = NavigationRoute.SEARCH) { backStackEntry ->
+        SearchScreen(
+            onBack = { controller.popBackStack() }
+        )
+    }
+}
 
 @Composable
-fun SearchScreen(navController: NavController) {
+fun SearchScreen(onBack: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Toolbar(
-            modifier = Modifier.fillMaxWidth(),
-            leftControl = arrayListOf(ControlBean(R.drawable.ic_back, contentDescription = "返回") {
-                navController.popBackStack()
-            }),
-            centerControl = {
-                BasicTextField(
-                    modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    value = "value",
-                    onValueChange = {
-
-                    })
+//        BasicTextField(
+//            modifier = Modifier.weight(1f),
+//            singleLine = true,
+//            value = "value",
+//            onValueChange = {
+//
+//            })
+        TextToolBar(
+            title = "value",
+            navigationIcon = {
+                ToolBarIcon(drawableRes = R.drawable.ic_back, onBack)
             },
-            rightControl = arrayListOf(
-                ControlBean(
-                    R.drawable.ic_search,
-                    contentDescription = "搜索"
-                ) {
+            actions = {
+                ToolBarIcon(drawableRes = R.drawable.ic_search) {
                     toast("搜索")
-                })
+                }
+            }
         )
     }
 }
@@ -43,5 +55,7 @@ fun SearchScreen(navController: NavController) {
 @Preview
 @Composable
 fun SearchPrev() {
-    SearchScreen(rememberNavController())
+    SearchScreen {
+
+    }
 }

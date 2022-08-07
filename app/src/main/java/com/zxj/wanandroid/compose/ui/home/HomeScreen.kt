@@ -1,13 +1,19 @@
-package com.zxj.wanandroid.compose.ui.screen
+package com.zxj.wanandroid.compose.ui.home
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -31,9 +40,26 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.DrawerUIState
 import com.zxj.wanandroid.compose.viewmodel.HomeViewAction
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
-import com.zxj.wanandroid.compose.widget.ControlBean
-import com.zxj.wanandroid.compose.widget.Toolbar
+import com.zxj.wanandroid.compose.widget.TextToolBar
+import com.zxj.wanandroid.compose.widget.ToolBarIcon
 import kotlinx.coroutines.launch
+
+/**
+ * 添加主页界面到Navigation
+ */
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.addHomeScreen(controller: NavHostController) {
+    composable(route = NavigationRoute.HOME) { backStackEntry ->
+        HomeScreen(
+            navigation = { controller.navigate(it) },
+            onItemClick = { data ->
+                controller.navigate(
+                    NavigationRoute.buildBrowserRoute(data.link)
+                )
+            }
+        )
+    }
+}
 
 @Composable
 fun HomeScreen(
@@ -239,32 +265,20 @@ fun HomeContent(
     val animateScope = rememberCoroutineScope()
 
     Column(Modifier.fillMaxSize()) {
-        // 菜单栏
-        val leftControls = remember {
-            arrayListOf(
-                ControlBean(R.drawable.ic_menu_white_24dp) {
+        TextToolBar(
+            title = viewModel.TITLE[pagerState.currentPage],
+            fitsSystemWindows = true,
+            navigationIcon = {
+                ToolBarIcon(drawableRes = R.drawable.ic_menu_white_24dp) {
                     onMenuClickListener()
                 }
-            )
-        }
-        val rightControls = remember {
-            arrayListOf(
-                ControlBean(R.drawable.ic_search_white_24dp) {
+            },
+            actions = {
+                ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp) {
                     navigation(NavigationRoute.SEARCH)
                 }
-            )
-        }
-        Toolbar(
-            modifier = Modifier.fillMaxWidth(),
-            leftControl = leftControls,
-            rightControl = rightControls
-        ) {
-            Text(
-                text = viewModel.TITLE[pagerState.currentPage],
-                fontSize = 18.sp,
-                color = WanAndroidTheme.colors.itemTagTv
-            )
-        }
+            }
+        )
         HorizontalPager(
             count = viewModel.navigationItems.size,
             state = pagerState,

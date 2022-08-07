@@ -1,36 +1,55 @@
 package com.zxj.wanandroid.compose
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.zxj.wanandroid.compose.ui.browser.addBrowserScreen
-import com.zxj.wanandroid.compose.ui.screen.HomeScreen
-import com.zxj.wanandroid.compose.ui.search.SearchScreen
-import com.zxj.wanandroid.compose.ui.user.LoginScreen
-import com.zxj.wanandroid.compose.ui.user.RegisterScreen
+import com.zxj.wanandroid.compose.ui.home.addHomeScreen
+import com.zxj.wanandroid.compose.ui.search.addSearchScreen
+import com.zxj.wanandroid.compose.ui.user.addLoginScreen
+import com.zxj.wanandroid.compose.ui.user.addRegisterScreen
 
 @Composable
+@OptIn(ExperimentalAnimationApi::class)
 fun MainNavigation() {
-    val navController = rememberNavController()
-    NavHost(
+    val navController = rememberAnimatedNavController()
+    AnimatedNavHost(
         navController = navController,
         startDestination = NavigationRoute.HOME,
-    ) {
-        composable(NavigationRoute.HOME) {
-            HomeScreen(
-                navigation = { navController.navigate(it) },
-                onItemClick = { data ->
-                    navController.navigate(
-                        NavigationRoute.buildBrowserRoute(data.link)
-                    )
-                }
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentScope.SlideDirection.Right,
+                animationSpec = tween(500)
             )
         }
-        composable(NavigationRoute.SEARCH) { SearchScreen(navController) }
-        composable(NavigationRoute.LOGIN) { LoginScreen(navController) }
-        composable(NavigationRoute.REGISTER) { RegisterScreen(navController) }
+    ) {
+        addHomeScreen(navController)
+        addSearchScreen(navController)
+        addLoginScreen(navController)
+        addRegisterScreen(navController)
         addBrowserScreen(navController)
     }
 }
