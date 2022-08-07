@@ -1,6 +1,7 @@
 package com.zxj.wanandroid.compose.ui.browser
 
 import android.webkit.WebChromeClient
+import android.webkit.WebViewClient
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -36,13 +37,16 @@ fun NavGraphBuilder.addBrowserScreen(controller: NavHostController) {
     }
 }
 
+/**
+ * 因WebView的存在，进场动画还存在问题
+ */
 @Composable
 fun BrowserScreen(url: String, onBack: () -> Unit) {
     val webState = rememberWebViewState(url)
     // 这里使用Column会导致TextToolBar延迟了绘制
     Box(
         Modifier
-            .background(WanAndroidTheme.colors.viewBackground)
+            .background(WanAndroidTheme.colors.windowBackground)
             .fillMaxSize()
     ) {
         WebView(
@@ -54,6 +58,7 @@ fun BrowserScreen(url: String, onBack: () -> Unit) {
             onCreated = {
                 it.settings.javaScriptEnabled = true
                 it.webChromeClient = WebChromeClient()
+                it.webViewClient = WebViewClient()
             }
         )
         TextToolBar(
