@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.sp
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 
+val TOOLBAR_HEIGHT = 48.dp
+
 @Composable
 fun TextToolBar(
     title: String,
@@ -32,7 +34,7 @@ fun TextToolBar(
     if (fitsSystemWindows) modifier = modifier.statusBarsPadding()
     modifier = modifier
         .fillMaxWidth(1f)
-        .height(48.dp)
+        .height(TOOLBAR_HEIGHT)
     Toolbar(
         title = {
             Text(
