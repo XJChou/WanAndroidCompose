@@ -3,23 +3,25 @@ package com.zxj.wanandroid.compose.viewmodel
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zxj.wanandroid.compose.data.BannerBean
-import com.zxj.wanandroid.compose.data.Data
-import com.zxj.wanandroid.compose.data.repositories.IndexRepository
+import com.zxj.wanandroid.compose.data.bean.BannerBean
+import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class IndexViewModel @Inject constructor(
-    private val indexRepository: IndexRepository
+    private val indexRepository: ArticleRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndexViewState())
-    val uiState: StateFlow<IndexViewState> = _uiState
+    val uiState = _uiState.asStateFlow()
 
     private var pageIndex = 1
 
@@ -37,6 +39,7 @@ class IndexViewModel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun dispatchRefresh() {
         if (_uiState.value.isRefresh || _uiState.value.isLoad) return
 
@@ -44,14 +47,12 @@ class IndexViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(refreshFetchStatus = FetchStatus.Fetching)
             val bannerListAwait = async { indexRepository.loadBannerList() }
             val articleListAwait = async { indexRepository.loadDataList(1) }
-
-            val articleListResponse = articleListAwait.await()
-            val bannerListResponse = bannerListAwait.await()
-            if (articleListResponse.isSuccess && bannerListResponse.isSuccess) {
+            val isSuccess = awaitAll(bannerListAwait, articleListAwait).all { it.isSuccess }
+            if (isSuccess) {
                 _uiState.value = _uiState.value.copy(
                     refreshFetchStatus = FetchStatus.Success,
-                    bannerList = bannerListResponse.data,
-                    articleList = articleListResponse.data?.datas,
+                    bannerList = bannerListAwait.getCompleted().data,
+                    articleList = articleListAwait.getCompleted().data?.datas,
                     hasLoad = true
                 )
                 pageIndex = 1
@@ -68,7 +69,7 @@ class IndexViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(loadFetchStatus = FetchStatus.Fetching)
             indexRepository.loadDataList(nextPage)
-                .onSuccess {
+                .ifSuccess {
                     val targetList = _uiState.value.articleList as MutableList
                     val networkData = it?.datas
                     if (!networkData.isNullOrEmpty()) {
@@ -82,7 +83,7 @@ class IndexViewModel @Inject constructor(
                     )
                     this@IndexViewModel.pageIndex = nextPage
                 }
-                .onError {
+                .ifError {
                     _uiState.value = _uiState.value.copy(loadFetchStatus = FetchStatus.Error)
                 }
         }

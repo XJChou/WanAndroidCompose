@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.protobuf'
 }
 
 android {
@@ -38,9 +39,8 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
+//        kotlinCompilerExtensionVersion libs.versions.compose.get().toString()
+        kotlinCompilerExtensionVersion "1.2.0-beta02"
     }
     packagingOptions {
         resources {
@@ -50,60 +50,75 @@ android {
 }
 
 dependencies {
-    // ktx
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation "androidx.room:room-ktx:2.4.2"
-    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:${lifecycle_ktx_version}"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycle_ktx_version}"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycle_ktx_version}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_ktx_version}"
-
-    // compose
-    implementation 'androidx.activity:activity-compose:1.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-
-    //navigation-compose
-    implementation "androidx.navigation:navigation-compose:$nav_version"
-
-    // 图片加载库
-    implementation "io.coil-kt:coil-compose:2.0.0"
-
-    // 网络相关
-    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation 'io.github.ayvytr:okhttploginterceptor:3.0.6'
-    implementation 'org.ligboy.retrofit2:converter-fastjson:2.1.0'
-    implementation 'com.alibaba:fastjson:1.2.83'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-    // hilt
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-
     // room
-    kapt "androidx.room:room-compiler:$room_version"
-    implementation "androidx.room:room-runtime:$room_version"
-
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
+    // ktx
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.lifecycle.livedata.core.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    // accompanist
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
+    implementation(libs.accompanist.swiperefresh)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.webview)
+    implementation(libs.accompanist.navigation.animation)
+    // hilt
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.hilt.android)
+    implementation(libs.compose.hilt.navigation)
+    implementation(libs.compose.coil)
+    implementation(libs.compose.activity)
+    implementation(libs.compose.lifecycle.viewmodel)
+    implementation(libs.compose.material)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.navigation)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.tooling)
+    // 网络相关
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logger)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.fastjson)
+    implementation(libs.fastjson)
+    implementation(libs.kotlin.reflect)
     // datastore
-    implementation "androidx.datastore:datastore-preferences:${datastore_version}"
-
-    // pager
-    implementation "com.google.accompanist:accompanist-pager:${accompanist_version}"
-    implementation "com.google.accompanist:accompanist-pager-indicators:${accompanist_version}"
-
-    // swipe-refresh
-    implementation "com.google.accompanist:accompanist-swiperefresh:${accompanist_version}"
-
-    // system-ui
-    implementation "com.google.accompanist:accompanist-systemuicontroller:${accompanist_version}"
-
+    implementation(libs.datastore)
+    implementation(libs.datastore.core)
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore.protobuf.kotlin.lite)
     // 测试相关
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    testImplementation(libs.test)
+    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.exspresso)
 }
+
+protobuf {
+    protoc {
+        // 高版本就不用这样处理
+        def name = libs.datastore.protobuf.protoc.get().module
+        def version = libs.datastore.protobuf.protoc.get().versionConstraint
+        def result = "${name}:${version}"
+        println(result)
+        println(libs.datastore.protobuf.protoc.get().toString())
+        artifact = result
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+                kotlin {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+

@@ -1,5 +1,6 @@
 package com.zxj.wanandroid.compose.net
 
+import com.zxj.wanandroid.compose.data.HttpConstant
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.*
@@ -12,14 +13,29 @@ class API<Data>(val errorCode: Int = 0, val errorMsg: String? = null, val data: 
     val isSuccess: Boolean
         get() = errorCode == 0
 
-    fun onSuccess(block: API<Data>.(data: Data?) -> Unit):API<Data> {
+    fun ifSuccess(block: API<Data>.(data: Data?) -> Unit): API<Data> {
         if (isSuccess) {
             this.block(data)
         }
         return this
     }
 
-    fun onError(block: API<Data>.(msg: String) -> Unit):API<Data> {
+    suspend fun onSuspendSuccess(block: suspend API<Data>.(data: Data?) -> Unit): API<Data> {
+        if (isSuccess) {
+            this.block(data)
+        }
+        return this
+    }
+
+
+    fun ifError(block: API<Data>.(msg: String) -> Unit): API<Data> {
+        if (!isSuccess) {
+            this.block(errorMsg ?: "网络异常")
+        }
+        return this
+    }
+
+    suspend fun onSuspendError(block: suspend API<Data>.(msg: String) -> Unit): API<Data> {
         if (!isSuccess) {
             this.block(errorMsg ?: "网络异常")
         }
@@ -122,7 +138,11 @@ class APICall(private val originCall: Call<API<*>>) : Call<API<*>> {
     override fun clone(): Call<API<*>> = APICall(originCall.clone())
 
     private fun Response<API<*>>.check(): Response<API<*>> {
-        if (this.body() != null) {
+        val body = this.body()
+        if (body != null) {
+            if (body.errorCode == HttpConstant.ALREADY_LOGIN_OUT) {
+                HttpConstant.clearTokenSync()
+            }
             return this
         }
         return Response.success(NullPointerException().toAPI())

@@ -1,23 +1,67 @@
 package com.zxj.wanandroid.compose
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.*
-import com.zxj.wanandroid.compose.ui.page.Home
-import com.zxj.wanandroid.compose.ui.page.search.Search
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.zxj.wanandroid.compose.ui.browser.addBrowserScreen
+import com.zxj.wanandroid.compose.ui.home.addHomeScreen
+import com.zxj.wanandroid.compose.ui.search.addSearchScreen
+import com.zxj.wanandroid.compose.ui.user.addLoginScreen
+import com.zxj.wanandroid.compose.ui.user.addRegisterScreen
 
 @Composable
+@OptIn(ExperimentalAnimationApi::class)
 fun MainNavigation() {
-    val navController = rememberNavController()
-    NavHost(
+    val navController = rememberAnimatedNavController()
+    AnimatedNavHost(
         navController = navController,
         startDestination = NavigationRoute.HOME,
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        }
     ) {
-//        composable(NavigationRoute.HOME) { Home(navController) }
-//        composable(NavigationRoute.SEARCH) { Search(navController) }
+        addHomeScreen(navController)
+        addSearchScreen(navController)
+        addLoginScreen(navController)
+        addRegisterScreen(navController)
+        addBrowserScreen(navController)
     }
 }
 
-object NavigationRoute{
+object NavigationRoute {
     val HOME = "/app/home"
     val SEARCH = "/app/search"
+    val LOGIN = "/user/login"
+    val REGISTER = "/user/register";
+    val BROWSER = buildBrowserRoute("{webUrl}")
+
+    fun buildBrowserRoute(webUrl: String): String {
+        return "/browser?webUrl=${webUrl}"
+    }
 }
