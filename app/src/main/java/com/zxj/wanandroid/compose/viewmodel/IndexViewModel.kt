@@ -69,7 +69,7 @@ class IndexViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(loadFetchStatus = FetchStatus.Fetching)
             indexRepository.loadDataList(nextPage)
-                .onSuccess {
+                .ifSuccess {
                     val targetList = _uiState.value.articleList as MutableList
                     val networkData = it?.datas
                     if (!networkData.isNullOrEmpty()) {
@@ -83,7 +83,7 @@ class IndexViewModel @Inject constructor(
                     )
                     this@IndexViewModel.pageIndex = nextPage
                 }
-                .onError {
+                .ifError {
                     _uiState.value = _uiState.value.copy(loadFetchStatus = FetchStatus.Error)
                 }
         }

@@ -55,6 +55,13 @@
     <string name="nav_grade">等级:</string>
     <string name="nav_rank">排名:</string>
 
+    <!-- Search -->
+    <string name="search_tint">发现更多干货</string>
+    <string name="hot_search">热门搜索</string>
+    <string name="clear_all">清空</string>
+    <string name="history_search">搜索历史</string>
+    <string name="search_null_tint">快来搜点干货吧</string>
+
 
     <string name="nav_line_4" translatable="false">----</string>
     <string name="nav_line_2" translatable="false">--</string>

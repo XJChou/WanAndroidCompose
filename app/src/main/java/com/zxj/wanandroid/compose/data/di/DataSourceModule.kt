@@ -4,9 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.zxj.wanandroid.compose.data.datasource.ArticleNetworkDataSource
-import com.zxj.wanandroid.compose.data.datasource.UserNetworkDataSource
-import com.zxj.wanandroid.compose.data.datasource.UserPreferencesSerializer
+import com.zxj.wanandroid.compose.data.database.AppDatabase
+import com.zxj.wanandroid.compose.data.datasource.*
 import com.zxj.wanandroid.compose.datastore.UserPreferences
 import com.zxj.wanandroid.compose.net.APIFactory
 import dagger.Module
@@ -42,5 +41,13 @@ object DataSourceModule {
     @Provides
     @Singleton
     fun providerIndexNetworkDataSource(): ArticleNetworkDataSource = APIFactory.get()
+
+    @Provides
+    @Singleton
+    fun providerSearchNetworkDataSource(): SearchNetworkDataSource = APIFactory.get()
+
+    @Provides
+    @Singleton
+    fun providerSearchLocalDataSource(): SearchLocalDataSource = AppDatabase.Instance().searchDao()
 }
 
