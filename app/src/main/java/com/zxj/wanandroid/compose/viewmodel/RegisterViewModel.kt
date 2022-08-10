@@ -53,10 +53,10 @@ class RegisterViewModel @Inject constructor(
             // step2: 网络请求
             userRepository
                 .register(username, password, confirmPassword)
-                .onSuspendSuccess {
+                .ifSuspendSuccess {
                     _uiEvent.send(RegisterViewEvent.RegisterSuccess)
                 }
-                .onSuspendError {
+                .ifSuspendError {
                     _uiEvent.send(RegisterViewEvent.RegisterError(it))
                 }
         }
