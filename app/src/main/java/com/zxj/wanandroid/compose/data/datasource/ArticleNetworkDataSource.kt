@@ -4,8 +4,7 @@ import com.zxj.wanandroid.compose.data.bean.ArticleBean
 import com.zxj.wanandroid.compose.data.bean.BannerBean
 import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.net.API
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ArticleNetworkDataSource {
 
@@ -16,6 +15,17 @@ interface ArticleNetworkDataSource {
     @GET("/article/list/{page}/json")
     suspend fun loadArticleList(@Path("page") page: Int): API<ArticleBean>
 
+    /**
+     * 加载关键字相关的文章列表
+     * @param page 页码
+     * @param key 关键字
+     */
+    @FormUrlEncoded
+    @POST("/article/query/{page}/json")
+    suspend fun loadSearchArticleList(
+        @Path("page") page: Int,
+        @Field("k") key: String
+    ): API<ArticleBean>
 
     /**
      * 置顶
