@@ -23,9 +23,7 @@ import javax.inject.Inject
  * 包含业务逻辑。
  */
 class RealArticleRepository @Inject constructor(
-    // 网络数据源
     private val networkDataSource: ArticleNetworkDataSource,
-    // 数据库数据源
     private val networkLocalSource: IndexLocalDataSource
 ) : ArticleRepository {
 
@@ -83,6 +81,10 @@ class RealArticleRepository @Inject constructor(
         } else {
             networkDataSource.loadArticleList(page)
         }
+    }
+
+    override suspend fun loadSearchArticleList(page: Int, key: String): API<ArticleBean> {
+        return networkDataSource.loadSearchArticleList(page, key)
     }
 
 }

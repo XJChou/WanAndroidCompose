@@ -10,6 +10,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.zxj.wanandroid.compose.ui.browser.addBrowserScreen
 import com.zxj.wanandroid.compose.ui.home.addHomeScreen
+import com.zxj.wanandroid.compose.ui.search.addSearchResultScreen
 import com.zxj.wanandroid.compose.ui.search.addSearchScreen
 import com.zxj.wanandroid.compose.ui.user.addLoginScreen
 import com.zxj.wanandroid.compose.ui.user.addRegisterScreen
@@ -48,6 +49,7 @@ fun MainNavigation() {
     ) {
         addHomeScreen(navController)
         addSearchScreen(navController)
+        addSearchResultScreen(navController)
         addLoginScreen(navController)
         addRegisterScreen(navController)
         addBrowserScreen(navController)
@@ -57,9 +59,14 @@ fun MainNavigation() {
 object NavigationRoute {
     val HOME = "/app/home"
     val SEARCH = "/app/search"
+    val SEARCH_RESULT = buildSearchResultRoute("{content}")
     val LOGIN = "/user/login"
     val REGISTER = "/user/register";
     val BROWSER = buildBrowserRoute("{webUrl}")
+
+    fun buildSearchResultRoute(content: String): String {
+        return "/app/search/result?content=${content}"
+    }
 
     fun buildBrowserRoute(webUrl: String): String {
         return "/browser?webUrl=${webUrl}"

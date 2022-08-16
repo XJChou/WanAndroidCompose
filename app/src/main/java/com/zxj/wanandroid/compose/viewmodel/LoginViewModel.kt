@@ -49,10 +49,10 @@ class LoginViewModel @Inject constructor(
             viewModelScope.launch {
                 userRepository
                     .signIn(username, password)
-                    .onSuspendSuccess {
+                    .ifSuspendSuccess {
                         _uiEvent.send(LoginViewEvent.LoginSuccess)
                     }
-                    .onSuspendError {
+                    .ifSuspendError {
                         _uiEvent.send(LoginViewEvent.LoginError(it))
                     }
             }

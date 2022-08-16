@@ -13,4 +13,7 @@ interface ArticleRepository {
     suspend fun loadBannerList(): API<List<BannerBean>>
 
     suspend fun loadDataList(page: Int): API<ArticleBean>
+
+    suspend fun loadSearchArticleList(page: Int, key: String): API<ArticleBean>
+
 }

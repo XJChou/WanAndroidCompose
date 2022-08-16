@@ -29,25 +29,25 @@ class RealUserRepository @Inject constructor(
         confirmPassword: String
     ): API<User> {
         return userNetworkDataSource.register(username, password, confirmPassword)
-            .onSuspendSuccess {
+            .ifSuspendSuccess {
                 updateUser(it!!)
             }
     }
 
     override suspend fun signIn(username: String, password: String): API<User> {
-        return userNetworkDataSource.login(username, password).onSuspendSuccess {
+        return userNetworkDataSource.login(username, password).ifSuspendSuccess {
             updateUser(it!!)
         }
     }
 
     override suspend fun userInfo(): API<String> {
-        return userNetworkDataSource.userInfo().onSuspendSuccess {
+        return userNetworkDataSource.userInfo().ifSuspendSuccess {
 //            updateUser(it!!)
         }
     }
 
     override suspend fun signOut(): API<String> {
-        return userNetworkDataSource.logout().onSuspendSuccess {
+        return userNetworkDataSource.logout().ifSuspendSuccess {
             HttpConstant.clearToken()
         }
     }

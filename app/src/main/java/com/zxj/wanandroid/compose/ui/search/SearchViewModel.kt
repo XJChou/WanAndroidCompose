@@ -2,10 +2,13 @@ package com.zxj.wanandroid.compose.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.data.bean.HistorySearchBean
 import com.zxj.wanandroid.compose.data.bean.HotSearchBean
 import com.zxj.wanandroid.compose.data.repositories.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,6 +35,9 @@ class SearchViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(1000),
         initialValue = SearchViewState()
     )
+
+    private val _uiEvent = Channel<SearchViewEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
         dispatch(SearchViewAction.InitAction)
@@ -62,13 +68,17 @@ class SearchViewModel @Inject constructor(
 
     private fun search(search: String) {
         viewModelScope.launch {
+            if (search.isEmpty()) return@launch
+            _uiEvent.send(SearchViewEvent.SearchSuccess(search))
             searchRepository.insertHistorySearch(search)
         }
     }
 
     private fun refreshHotSearchList() {
         viewModelScope.launch {
-            searchRepository.refreshHotSearchList()
+            searchRepository.refreshHotSearchList().ifSuspendError {
+                _uiEvent.send(SearchViewEvent.ShowToast(getString(R.string.network_unavailable_tip)))
+            }
         }
     }
 
@@ -85,7 +95,8 @@ data class SearchViewState(
 )
 
 sealed class SearchViewEvent {
-
+    class ShowToast(val msg: String) : SearchViewEvent()
+    class SearchSuccess(val search: String) : SearchViewEvent()
 }
 
 sealed class SearchViewAction {

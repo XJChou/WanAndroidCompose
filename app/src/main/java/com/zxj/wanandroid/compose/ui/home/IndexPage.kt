@@ -1,5 +1,6 @@
 package com.zxj.wanandroid.compose.ui.screen.home
 
+import android.text.Html
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
@@ -105,10 +107,11 @@ fun IndexPage(
 fun ArticleItem(
     data: Data,
     onItemZanListener: ((targetZan: Int, data: Data) -> Unit)? = null,
-    onItemClickListener: ((data: Data) -> Unit)? = null
+    onItemClickListener: ((data: Data) -> Unit)? = null,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        Modifier
+        modifier
             .fillMaxWidth()
             .background(WanAndroidTheme.colors.viewBackground)
             .clickable {
@@ -145,9 +148,10 @@ fun ArticleItem(
             Text(text = data.niceDate, color = WanAndroidTheme.colors.itemDate, fontSize = 12.sp)
         }
 
+
         // 标题
         Text(
-            text = data.title,
+            text = Html.fromHtml(data.title).toString(),
             modifier = Modifier.padding(10.dp, 8.dp, 0.dp, 6.dp),
             fontSize = 16.sp,
             maxLines = 2,
@@ -157,7 +161,7 @@ fun ArticleItem(
         )
 
         // 来源 + 点赞
-        Row(Modifier.fillMaxWidth()) {
+        Row(Modifier.fillMaxWidth())  {
             val chapterName = remember(data.superChapterName, data.chapterName) {
                 when {
                     data.superChapterName.isNotEmpty() and data.chapterName.isNotEmpty() -> {

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.SearchToolBar
 import com.zxj.wanandroid.compose.widget.ToolBarIcon
 import com.zxj.wanandroid.compose.widget.rememberSearchState
+import kotlinx.coroutines.launch
 
 
 /**
@@ -35,8 +37,7 @@ fun NavGraphBuilder.addSearchScreen(controller: NavHostController) {
         SearchScreen(
             onBack = { controller.popBackStack() },
             onSearch = {
-                Toast.makeText(ComposeApplication.application, "搜索内容: ${it}", Toast.LENGTH_SHORT)
-                    .show()
+                controller.navigate(NavigationRoute.buildSearchResultRoute(it))
             },
         )
     }
@@ -60,13 +61,11 @@ fun SearchScreen(
             actions = {
                 ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp) {
                     val search = searchState.value
-                    onSearch(search)
                     viewModel.dispatch(SearchViewAction.SearchHistoryAction(search))
                 }
             },
             onSearch = {
                 val search = searchState.value
-                onSearch(search)
                 viewModel.dispatch(SearchViewAction.SearchHistoryAction(search))
             }
         )
@@ -80,12 +79,14 @@ fun SearchScreen(
             // 内容文本
             val uiState by viewModel.uiState.collectAsState()
             // 热门搜索
-            HotSearchPage(uiState.hotSearchList)
+            HotSearchPage(uiState.hotSearchList) {
+                viewModel.dispatch(SearchViewAction.SearchHistoryAction(it.name))
+            }
             // 历史搜索
             HistorySearchPage(
                 searchHistoryList = uiState.searchHistoryList,
                 onHistoryItemClick = {
-                    onSearch(it.search)
+                    viewModel.dispatch(SearchViewAction.SearchHistoryAction(it.search))
                 },
                 onHistoryItemDelete = {
                     viewModel.dispatch(SearchViewAction.DeleteHistoryAction(it))
@@ -96,6 +97,23 @@ fun SearchScreen(
             )
         }
     }
+
+    LaunchedEffect(viewModel.uiEvent) {
+        launch {
+            viewModel.uiEvent.collect {
+                when (it) {
+                    is SearchViewEvent.ShowToast -> {
+                        Toast.makeText(ComposeApplication.application, it.msg, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    is SearchViewEvent.SearchSuccess -> {
+                        onSearch(it.search)
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 @Preview

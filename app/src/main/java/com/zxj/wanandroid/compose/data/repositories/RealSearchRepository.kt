@@ -16,8 +16,8 @@ class RealSearchRepository @Inject constructor(
 
     override suspend fun refreshHotSearchList(): API<List<HotSearchBean>> {
         return searchNetworkDataSource.loadHotSearchData()
-            .ifSuccess {
-                // 更新内容
+            .ifSuspendSuccess {
+                searchLocalDataSource.refreshHotSearchList(it ?: emptyList())
             }
     }
 
