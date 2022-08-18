@@ -91,18 +91,13 @@ internal fun SearchResultScreen(
         val refreshState = rememberSwipeRefreshState(false)
         refreshState.isRefreshing = refresh
 
-        // 自动刷新处理
-        val listState = rememberLazyListState()
-        val visibleItemsInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo } }
-        if (visibleItemsInfo.lastOrNull()?.key == Int.MIN_VALUE && loadingUiState is LoadingUiState.Finish && !loadingUiState.over) {
-            onNextPage()
-        }
-
         SwipeRefresh(state = refreshState, onRefresh = onRefresh) {
+            // 自动刷新处理
+            val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,
                 content = {
-                    items(data, contentType = { Data::class }) {
+                    items(data, key = { it.id }, contentType = { it::class }) {
                         ArticleItem(it, { _, _ -> }, { _ -> }, modifier.padding(top = 2.dp))
                     }
                     when (loadingUiState) {
@@ -123,7 +118,7 @@ internal fun SearchResultScreen(
                             }
                         }
                         is LoadingUiState.Finish -> {
-                            item(key = Int.MIN_VALUE) {
+                            item {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth(1f)
@@ -131,9 +126,12 @@ internal fun SearchResultScreen(
                                 ) {
                                     Text(
                                         text = if (loadingUiState.over) "已全部加载" else "加载成功",
-                                        modifier = Modifier.fillMaxSize(1f),
-                                        textAlign = TextAlign.Center
+                                        modifier = Modifier.align(Alignment.Center)
                                     )
+                                    // 当加载成功的时候重组，触发加载
+                                    SideEffect {
+                                        if (!loadingUiState.over) onNextPage()
+                                    }
                                 }
                             }
                         }
@@ -143,18 +141,17 @@ internal fun SearchResultScreen(
                                     modifier = Modifier
                                         .fillMaxWidth(1f)
                                         .height(48.dp)
+                                        .clickable { onNextPage() }
                                 ) {
                                     Text(
                                         text = "加载失败",
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .clickable { onNextPage() },
-                                        textAlign = TextAlign.Center
+                                        modifier = Modifier.align(Alignment.Center)
                                     )
                                 }
                             }
                         }
                     }
+
                 },
                 modifier = Modifier.fillMaxSize()
             )
