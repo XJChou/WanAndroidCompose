@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
+import com.zxj.wanandroid.compose.widget.NextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +44,7 @@ class SearchResultViewModel @Inject constructor(
                             refresh = false,
                             page = 1,
                             data = this.data?.datas ?: emptyList(),
-                            loadingUiState = LoadingUiState.Finish(this.data?.over ?: true)
+                            nextState = if(this.data?.over != false) NextState.STATE_FINISH_OVER else NextState.STATE_FINISH_PART
                         )
                     }
                 }
@@ -62,14 +63,14 @@ class SearchResultViewModel @Inject constructor(
         if (job?.isActive == true) return
         job = viewModelScope.launch {
             _uiState.update {
-                it.copy(loadingUiState = LoadingUiState.Loading)
+                it.copy(nextState = NextState.STATE_LOADING)
             }
             val nextPage = _uiState.value.page + 1
             articleRepository.loadSearchArticleList(nextPage - 1, searchContext)
                 .ifSuccess {
                     _uiState.update {
                         it.copy(
-                            loadingUiState = LoadingUiState.Finish(this.data?.over ?: true),
+                            nextState = if(this.data?.over != false) NextState.STATE_FINISH_OVER else NextState.STATE_FINISH_PART,
                             page = nextPage,
                             data = ArrayList(it.data).also {
                                 it.addAll(this.data?.datas ?: emptyList())
@@ -79,27 +80,18 @@ class SearchResultViewModel @Inject constructor(
                 }
                 .ifError {
                     _uiState.update {
-                        it.copy(loadingUiState = LoadingUiState.Failed)
+                        it.copy(nextState = NextState.STATE_ERROR)
                     }
                 }
         }
     }
 }
 
-/**
- * 加载完成的状态[空状态、加载中、加载失败、全加载完成]
- */
-sealed interface LoadingUiState {
-    object Init : LoadingUiState
-    object Loading : LoadingUiState
-    object Failed : LoadingUiState
-    data class Finish(val over: Boolean) : LoadingUiState
-}
 
 data class SearchResultUiState(
     val data: List<Data> = emptyList(),
     val page: Int = 1,
     val refresh: Boolean = false,
-    val loadingUiState: LoadingUiState = LoadingUiState.Init
+    val nextState: Int = NextState.STATE_NONE
 )
 
