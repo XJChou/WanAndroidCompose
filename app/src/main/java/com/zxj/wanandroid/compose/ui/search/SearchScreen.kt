@@ -6,11 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +19,8 @@ import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.ComposeApplication
 import com.zxj.wanandroid.compose.application.GetString
+import com.zxj.wanandroid.compose.data.bean.HistorySearchBean
+import com.zxj.wanandroid.compose.data.bean.HotSearchBean
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.SearchToolBar
 import com.zxj.wanandroid.compose.widget.ToolBarIcon
@@ -34,71 +34,47 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addSearchScreen(controller: NavHostController) {
     composable(route = NavigationRoute.SEARCH) { backStackEntry ->
-        SearchScreen(
+        SearchRoute(
             onBack = { controller.popBackStack() },
             onSearch = {
                 controller.navigate(NavigationRoute.buildSearchResultRoute(it))
-            },
+            }
         )
     }
 }
 
+/**
+ * 屏蔽viewModel的存在
+ */
 @Composable
-fun SearchScreen(
+fun SearchRoute(
     onBack: () -> Unit,
-    onSearch: (search: String) -> Unit
+    onSearch: (search: String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
-    val viewModel: SearchViewModel = hiltViewModel()
-    Column {
-        // ToolBar
-        val searchState = rememberSearchState(value = "")
-        SearchToolBar(
-            searchState,
-            GetString(id = R.string.search_tint),
-            navigationIcon = {
-                ToolBarIcon(drawableRes = R.drawable.ic_back, onBack)
-            },
-            actions = {
-                ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp) {
-                    val search = searchState.value
-                    viewModel.dispatch(SearchViewAction.SearchHistoryAction(search))
-                }
-            },
-            onSearch = {
-                val search = searchState.value
-                viewModel.dispatch(SearchViewAction.SearchHistoryAction(search))
-            }
-        )
-        // .verticalScroll(rememberScrollState())
-        Column(
-            modifier = Modifier
-                .background(WanAndroidTheme.colors.viewBackground)
-                .padding(16.dp)
-                .fillMaxSize()
-        ) {
-            // 内容文本
-            val uiState by viewModel.uiState.collectAsState()
-            // 热门搜索
-            HotSearchPage(uiState.hotSearchList) {
-                viewModel.dispatch(SearchViewAction.SearchHistoryAction(it.name))
-            }
-            // 历史搜索
-            HistorySearchPage(
-                searchHistoryList = uiState.searchHistoryList,
-                onHistoryItemClick = {
-                    viewModel.dispatch(SearchViewAction.SearchHistoryAction(it.search))
-                },
-                onHistoryItemDelete = {
-                    viewModel.dispatch(SearchViewAction.DeleteHistoryAction(it))
-                },
-                onClearHistoryClick = {
-                    viewModel.dispatch(SearchViewAction.ClearHistoryAction)
-                }
-            )
+    val searchViewState by viewModel.uiState.collectAsState()
+    SearchScreen(
+        modifier = modifier,
+        searchHistoryList = searchViewState.searchHistoryList,
+        hotSearchList = searchViewState.hotSearchList,
+        hotSearchColorList = searchViewState.hotSearchColorList,
+        onBack = onBack,
+        onSearch = {
+            viewModel.search(it)
+        },
+        onClearHistory = {
+            viewModel.clearHistorySearch()
+        },
+        onHistoryClick = {
+            viewModel.search(it.search)
+        },
+        onHistoryDelete = {
+            viewModel.deleteHistorySearch(it)
         }
-    }
+    )
 
-    LaunchedEffect(viewModel.uiEvent) {
+    LaunchedEffect(Unit) {
         launch {
             viewModel.uiEvent.collect {
                 when (it) {
@@ -113,14 +89,60 @@ fun SearchScreen(
             }
         }
     }
+}
 
+@Composable
+fun SearchScreen(
+    modifier: Modifier = Modifier,
+    searchHistoryList: List<HistorySearchBean> = emptyList(),
+    hotSearchList: List<HotSearchBean> = emptyList(),
+    hotSearchColorList: List<Color> = emptyList(),
+    onBack: () -> Unit,
+    onSearch: (search: String) -> Unit,
+    onClearHistory: () -> Unit,
+    onHistoryClick: (HistorySearchBean) -> Unit,
+    onHistoryDelete: (HistorySearchBean) -> Unit,
+) {
+    Column(modifier) {
+        val searchState = rememberSearchState(value = "")
+        SearchToolBar(
+            searchState,
+            GetString(id = R.string.search_tint),
+            navigationIcon = {
+                ToolBarIcon(drawableRes = R.drawable.ic_back, onBack)
+            },
+            actions = {
+                ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp) {
+                    onSearch(searchState.value)
+                }
+            },
+            onSearch = onSearch
+        )
+
+        Column(
+            modifier = Modifier
+                .background(WanAndroidTheme.colors.viewBackground)
+                .padding(16.dp)
+                .fillMaxSize()
+        ) {
+            // 热门搜索
+            HotSearchPage(hotSearchList, hotSearchColorList) { onSearch(it.name) }
+            // 历史搜索
+            HistorySearchPage(
+                searchHistoryList = searchHistoryList,
+                onHistoryItemClick = onHistoryClick,
+                onHistoryItemDelete = onHistoryDelete,
+                onClearHistoryClick = onClearHistory
+            )
+        }
+    }
 }
 
 @Preview
 @Composable
 fun PreviewSearch() {
-    SearchScreen(
+    SearchRoute(
         onBack = {},
-        onSearch = {},
+        onSearch = {}
     )
 }

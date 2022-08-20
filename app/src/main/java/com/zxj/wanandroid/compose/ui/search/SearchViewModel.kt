@@ -1,5 +1,6 @@
 package com.zxj.wanandroid.compose.ui.search
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zxj.wanandroid.compose.R
@@ -7,16 +8,23 @@ import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.data.bean.HistorySearchBean
 import com.zxj.wanandroid.compose.data.bean.HotSearchBean
 import com.zxj.wanandroid.compose.data.repositories.SearchRepository
+import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchRepository: SearchRepository
 ) : ViewModel() {
+
+    // 相关数据流
+    private val searchListFlow = searchRepository.loadHistorySearchList()
+    private val hotSearchListFlow = searchRepository.loadHotSearchList()
+    private val hotSearchColorListFlow = hotSearchListFlow.map { it.map { Color(randomColor()) } }
 
     /**
      * 加载2部分：
@@ -25,10 +33,15 @@ class SearchViewModel @Inject constructor(
      * 2. 加载搜索历史内容
      */
     val uiState: StateFlow<SearchViewState> = combine(
-        searchRepository.loadHistorySearchList(),
-        searchRepository.loadHotSearchList(),
-        transform = { historySearchList, hotSearchList ->
-            SearchViewState(hotSearchList, historySearchList)
+        searchListFlow,
+        hotSearchListFlow,
+        hotSearchColorListFlow,
+        transform = { historySearchList, hotSearchList, hotSearchColorList ->
+            SearchViewState(
+                hotSearchList,
+                hotSearchColorList,
+                historySearchList
+            )
         }
     ).stateIn(
         viewModelScope,
@@ -40,35 +53,21 @@ class SearchViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        dispatch(SearchViewAction.InitAction)
+        refreshHotSearchList()
     }
 
-    fun dispatch(action: SearchViewAction) {
-        when (action) {
-            is SearchViewAction.InitAction -> {
-                refreshHotSearchList()
-            }
-            is SearchViewAction.SearchHistoryAction -> {
-                search(action.search)
-            }
-            is SearchViewAction.DeleteHistoryAction -> {
-                deleteHistorySearch(action.item)
-            }
-            is SearchViewAction.ClearHistoryAction -> {
-                clearHistorySearch()
-            }
-        }
-    }
-
-    private fun deleteHistorySearch(item: HistorySearchBean) {
+    fun deleteHistorySearch(item: HistorySearchBean) {
         viewModelScope.launch {
             searchRepository.deleteHistorySearch(item)
         }
     }
 
-    private fun search(search: String) {
+    fun search(search: String) {
         viewModelScope.launch {
-            if (search.isEmpty()) return@launch
+            if (search.isEmpty()) {
+                _uiEvent.send(SearchViewEvent.ShowToast(getString(R.string.search_not_empty)))
+                return@launch
+            }
             _uiEvent.send(SearchViewEvent.SearchSuccess(search))
             searchRepository.insertHistorySearch(search)
         }
@@ -82,7 +81,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun clearHistorySearch() {
+    fun clearHistorySearch() {
         viewModelScope.launch {
             searchRepository.clearHistorySearch()
         }
@@ -91,6 +90,7 @@ class SearchViewModel @Inject constructor(
 
 data class SearchViewState(
     val hotSearchList: List<HotSearchBean> = listOf(),
+    val hotSearchColorList: List<Color> = listOf(),
     val searchHistoryList: List<HistorySearchBean> = listOf()
 )
 
@@ -99,10 +99,18 @@ sealed class SearchViewEvent {
     class SearchSuccess(val search: String) : SearchViewEvent()
 }
 
-sealed class SearchViewAction {
-    object InitAction : SearchViewAction()
-
-    class SearchHistoryAction(val search: String) : SearchViewAction()
-    class DeleteHistoryAction(val item: HistorySearchBean) : SearchViewAction()
-    object ClearHistoryAction : SearchViewAction()
+private fun randomColor(): Int {
+    val random = Random()
+    //0-190, 如果颜色值过大,就越接近白色,就看不清了,所以需要限定范围
+    var red = random.nextInt(190)
+    var green = random.nextInt(190)
+    var blue = random.nextInt(190)
+    if (WanAndroidTheme.theme == WanAndroidTheme.Theme.Night) {
+        //150-255
+        red = random.nextInt(105) + 150
+        green = random.nextInt(105) + 150
+        blue = random.nextInt(105) + 150
+    }
+    //使用rgb混合生成一种新的颜色,Color.rgb生成的是一个int数
+    return android.graphics.Color.rgb(red, green, blue)
 }

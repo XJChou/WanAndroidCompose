@@ -37,11 +37,15 @@ fun ColumnScope.HistorySearchPage(
     LazyColumn(
         content = {
             if (searchHistoryList.isEmpty()) {
-                item { HistorySearchEmptyPage() }
-                return@LazyColumn
-            }
-            items(searchHistoryList.size) {
-                HistorySearchItem(searchHistoryList[it], onHistoryItemClick, onHistoryItemDelete)
+                item(contentType = 0) { HistorySearchEmptyPage() }
+            } else {
+                items(searchHistoryList.size, contentType = { 1 }) {
+                    HistorySearchItem(
+                        searchHistoryList[it],
+                        onHistoryItemClick,
+                        onHistoryItemDelete
+                    )
+                }
             }
         },
         modifier = Modifier.padding(top = 12.dp)
