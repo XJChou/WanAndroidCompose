@@ -52,10 +52,8 @@ fun NavGraphBuilder.addHomeScreen(controller: NavHostController) {
     composable(route = NavigationRoute.HOME) { backStackEntry ->
         HomeScreen(
             navigation = { controller.navigate(it) },
-            onItemClick = { data ->
-                controller.navigate(
-                    NavigationRoute.buildBrowserRoute(data.link)
-                )
+            onBrowser = { data ->
+                controller.navigate(NavigationRoute.buildBrowserRoute(data))
             }
         )
     }
@@ -66,7 +64,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     navigation: (String) -> Unit,
-    onItemClick: (Data) -> Unit,
+    onBrowser: (String) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -96,7 +94,7 @@ fun HomeScreen(
             {
                 coroutineScope.launch { drawerState.open() }
             },
-            onItemClick
+            onBrowser
         )
     }
 }
@@ -258,7 +256,7 @@ private fun DrawItemContent(@DrawableRes icon: Int, title: String, itemClick: ()
 fun HomeContent(
     navigation: (String) -> Unit,
     onMenuClickListener: () -> Unit,
-    onItemClick: (Data) -> Unit
+    onBrowser: (String) -> Unit
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val pagerState = rememberPagerState()
@@ -288,7 +286,7 @@ fun HomeContent(
         )
         {
             when (it) {
-                0 -> IndexPage(onItemClick)
+                0 -> IndexPage(onBrowser = onBrowser)
                 1 -> SquarePage()
                 2 -> PublicPage()
                 3 -> SystemPage()

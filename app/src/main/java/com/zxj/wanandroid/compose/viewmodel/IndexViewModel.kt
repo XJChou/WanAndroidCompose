@@ -1,17 +1,18 @@
 package com.zxj.wanandroid.compose.viewmodel
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zxj.wanandroid.compose.data.bean.BannerBean
 import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
+import com.zxj.wanandroid.compose.widget.NextState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,69 +23,59 @@ class IndexViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(IndexViewState())
     val uiState = _uiState.asStateFlow()
-
+    private var job: Job? = null
     private var pageIndex = 1
 
     init {
-        dispatch(IndexViewAction.RefreshAction)
+        refresh()
     }
 
     /* ------------------------ action处理 ------------------------ */
-    fun dispatch(action: IndexViewAction) = when (action) {
-        IndexViewAction.RefreshAction -> {
-            dispatchRefresh()
-        }
-        IndexViewAction.LoadAction -> {
-            dispatchLoadAction()
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun dispatchRefresh() {
-        if (_uiState.value.isRefresh || _uiState.value.isLoad) return
-
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(refreshFetchStatus = FetchStatus.Fetching)
+    fun refresh() {
+        if (job?.isActive == true) return
+        job = viewModelScope.launch {
+            _uiState.update { it.copy(refresh = true) }
             val bannerListAwait = async { indexRepository.loadBannerList() }
             val articleListAwait = async { indexRepository.loadDataList(1) }
-            val isSuccess = awaitAll(bannerListAwait, articleListAwait).all { it.isSuccess }
-            if (isSuccess) {
-                _uiState.value = _uiState.value.copy(
-                    refreshFetchStatus = FetchStatus.Success,
-                    bannerList = bannerListAwait.getCompleted().data,
-                    articleList = articleListAwait.getCompleted().data?.datas,
-                    hasLoad = true
-                )
+            if (awaitAll(bannerListAwait, articleListAwait).all { it.isSuccess }) {
+                val bannerList = bannerListAwait.await().data ?: emptyList()
+                val articleData = articleListAwait.await().data
+                _uiState.update {
+                    it.copy(
+                        refresh = false,
+                        bannerList = bannerList,
+                        articleList = articleData?.datas ?: emptyList(),
+                        nextState = if (articleData?.over == true) NextState.STATE_FINISH_OVER else NextState.STATE_FINISH_PART
+                    )
+                }
                 pageIndex = 1
             } else {
-                _uiState.value = _uiState.value.copy(refreshFetchStatus = FetchStatus.Error)
+                _uiState.update { it.copy(refresh = false) }
             }
         }
     }
 
-    private fun dispatchLoadAction() {
-        if (_uiState.value.isRefresh || _uiState.value.isLoad) return
-
+    fun nextPage() {
+        if (job?.isActive == true) return
         val nextPage = this.pageIndex + 1
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(loadFetchStatus = FetchStatus.Fetching)
+        job = viewModelScope.launch {
+            _uiState.update { it.copy(nextState = NextState.STATE_LOADING) }
             indexRepository.loadDataList(nextPage)
-                .ifSuccess {
-                    val targetList = _uiState.value.articleList as MutableList
-                    val networkData = it?.datas
-                    if (!networkData.isNullOrEmpty()) {
-                        targetList.addAll(targetList)
+                .ifSuccess { data ->
+                    val originArticleList = (_uiState.value.articleList as MutableList).also {
+                        val networkData = data?.datas ?: emptyList()
+                        if (networkData.isNotEmpty()) it.addAll(networkData)
                     }
-
-                    _uiState.value = _uiState.value.copy(
-                        loadFetchStatus = FetchStatus.Success,
-                        articleList = targetList,
-                        hasLoad = !it?.datas.isNullOrEmpty()
-                    )
+                    _uiState.update {
+                        it.copy(
+                            nextState = if (data?.over == true) NextState.STATE_FINISH_OVER else NextState.STATE_FINISH_PART,
+                            articleList = originArticleList
+                        )
+                    }
                     this@IndexViewModel.pageIndex = nextPage
                 }
                 .ifError {
-                    _uiState.value = _uiState.value.copy(loadFetchStatus = FetchStatus.Error)
+                    _uiState.update { it.copy(nextState = NextState.STATE_ERROR) }
                 }
         }
     }
@@ -98,49 +89,8 @@ class IndexViewModel @Inject constructor(
  * 4. 当前加载状态
  */
 data class IndexViewState(
-    val refreshFetchStatus: FetchStatus = FetchStatus.NotFetched,
-    val bannerList: List<BannerBean>? = null,
-    val articleList: List<Data>? = null,
-    val loadFetchStatus: FetchStatus = FetchStatus.NotFetched,
-    val hasLoad: Boolean = false
-) {
-    val isRefresh: Boolean
-        get() = refreshFetchStatus == FetchStatus.Fetching
-
-    val isLoad: Boolean
-        get() = loadFetchStatus == FetchStatus.Fetching
-}
-
-sealed class FetchStatus {
-    object NotFetched : FetchStatus()
-    object Fetching : FetchStatus()
-    object Success : FetchStatus()
-    object Error : FetchStatus()
-}
-
-/**
- * 页面一次性事件
- */
-sealed class IndexViewEvent {
-    /**
-     * 显示toast
-     */
-    data class ShowToast(@StringRes val messageId: Int) : IndexViewEvent()
-}
-
-
-/**
- * 用户交互操作 action [ user -> model ]
- */
-sealed class IndexViewAction {
-
-    /**
-     * 刷新的时候
-     */
-    object RefreshAction : IndexViewAction()
-
-    /**
-     * 加载的时候
-     */
-    object LoadAction : IndexViewAction()
-}
+    val refresh: Boolean = false,
+    val bannerList: List<BannerBean> = emptyList(),
+    val articleList: List<Data> = emptyList(),
+    val nextState: Int = NextState.STATE_NONE,
+)

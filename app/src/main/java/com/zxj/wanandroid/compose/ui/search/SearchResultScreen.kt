@@ -18,7 +18,6 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.data.bean.Data
-import com.zxj.wanandroid.compose.ui.screen.home.ArticleItem
 import com.zxj.wanandroid.compose.widget.*
 
 /**
@@ -95,10 +94,10 @@ internal fun SearchResultScreen(
         ) {
             items(data, key = { it.id }, contentType = { it::class }) {
                 ArticleItem(
-                    it,
-                    { _, _ -> },
-                    onItemClick,
-                    modifier.padding(top = 2.dp)
+                    data = it,
+                    onItemZanClick = { _, _ -> },
+                    onItemClick = onItemClick,
+                    modifier = modifier.padding(top = 2.dp)
                 )
             }
         }
