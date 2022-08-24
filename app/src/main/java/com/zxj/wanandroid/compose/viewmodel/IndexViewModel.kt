@@ -10,24 +10,50 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class IndexViewModel @Inject constructor(
-    private val indexRepository: ArticleRepository
+    private val indexRepository: ArticleRepository,
+    private val articleRepository: ArticleRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IndexViewState())
     val uiState = _uiState.asStateFlow()
+
+    private val _uiEvent = Channel<UIEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
+
     private var job: Job? = null
     private var pageIndex = 1
 
     init {
         refresh()
+
+        viewModelScope.launch {
+            articleRepository.collectFlow.collect { pair ->
+                println("IndexViewModel collect")
+                val value = _uiState.value
+                var changed = false
+                val newData = value.articleList.map {
+                    if (it.id == pair.first) {
+                        changed = true
+                        it.copy(zan = if (pair.second) 1 else 0)
+                    } else {
+                        it
+                    }
+                }
+                if (changed) {
+                    _uiState.compareAndSet(value, value.copy(articleList = newData))
+                }
+            }
+        }
     }
 
     /* ------------------------ action处理 ------------------------ */
@@ -79,6 +105,22 @@ class IndexViewModel @Inject constructor(
                 }
         }
     }
+
+    /**
+     * 处理点赞action
+     */
+    fun dealZanAction(targetZan: Int, data: Data) {
+        viewModelScope.launch {
+            val apiResponse = if (targetZan == 1) {
+                articleRepository.addCollectArticle(data.id)
+            } else {
+                articleRepository.removeCollectArticle(data.id)
+            }
+            apiResponse.ifSuspendError {
+                _uiEvent.send(UIEvent.ShowToast(it))
+            }
+        }
+    }
 }
 
 /**
@@ -94,3 +136,7 @@ data class IndexViewState(
     val articleList: List<Data> = emptyList(),
     val nextState: Int = NextState.STATE_NONE,
 )
+
+interface UIEvent {
+    data class ShowToast(val msg: String) : UIEvent
+}

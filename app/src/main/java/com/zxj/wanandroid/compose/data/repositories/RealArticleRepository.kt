@@ -7,6 +7,9 @@ import com.zxj.wanandroid.compose.data.datasource.IndexLocalDataSource
 import com.zxj.wanandroid.compose.net.API
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import javax.inject.Inject
 
 /**
@@ -26,6 +29,12 @@ class RealArticleRepository @Inject constructor(
     private val networkDataSource: ArticleNetworkDataSource,
     private val networkLocalSource: IndexLocalDataSource
 ) : ArticleRepository {
+
+    //    private val _collectEvent: Channel<Pair<Int, Boolean>> = Channel()
+    private val _collectEvent = MutableSharedFlow<Pair<Int, Boolean>>(0)
+
+    override val collectFlow: Flow<Pair<Int, Boolean>>
+        get() = _collectEvent.asSharedFlow()
 
     /**
      * 提供Banner内容
@@ -85,6 +94,24 @@ class RealArticleRepository @Inject constructor(
 
     override suspend fun loadSearchArticleList(page: Int, key: String): API<ArticleBean> {
         return networkDataSource.loadSearchArticleList(page, key)
+    }
+
+    /**
+     * 添加收藏相同内容
+     */
+    override suspend fun addCollectArticle(id: Int): API<String> {
+        return networkDataSource.addCollectArticle(id).ifSuspendSuccess {
+            _collectEvent.emit(Pair(id, true))
+        }
+    }
+
+    /**
+     * 删除收藏
+     */
+    override suspend fun removeCollectArticle(id: Int): API<String> {
+        return networkDataSource.removeCollectArticle(id).ifSuspendSuccess {
+            _collectEvent.emit(Pair(id, false))
+        }
     }
 
 }

@@ -23,8 +23,6 @@
     <string name="toolbar_text_public">@string/navigation_text_public</string>
     <string name="toolbar_text_system">@string/navigation_text_system</string>
     <string name="toolbar_text_project">@string/navigation_text_project</string>
-    <string name="top_tip">置顶</string>
-    <string name="new_fresh">新</string>
 
     <!-- Login -->
     <string name="username">用户名</string>
@@ -65,6 +63,12 @@
     <string name="nav_id">ID:</string>
     <string name="nav_grade">等级:</string>
     <string name="nav_rank">排名:</string>
+
+    <!-- Home -->
+    <string name="collect_success">收藏成功</string>
+    <string name="cancel_collect_success">已取消收藏</string>
+    <string name="new_fresh">新</string>
+    <string name="top_tip">置顶</string>
 
     <!-- Search -->
     <string name="search_tint">发现更多干货</string>

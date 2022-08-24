@@ -2,9 +2,14 @@ package com.zxj.wanandroid.compose.ui.search
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,6 +22,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.widget.*
 
@@ -55,8 +61,18 @@ fun SearchResultRoute(
         onRefresh = { viewModel.refresh() },
         onPageNext = { viewModel.nextPage() },
         onItemClick = onItemClick,
+        onItemZan = { targetZan, data -> viewModel.dealZanAction(targetZan, data) },
         modifier
     )
+    LaunchedEffect(key1 = Unit) {
+        viewModel.uiEvent.collect {
+            when (it) {
+                is UIEvent.ShowToast -> {
+                    toast(it.msg)
+                }
+            }
+        }
+    }
 }
 
 @VisibleForTesting
@@ -70,6 +86,7 @@ internal fun SearchResultScreen(
     onRefresh: () -> Unit,
     onPageNext: () -> Unit,
     onItemClick: (Data) -> Unit,
+    onItemZan: (Int, Data) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier.fillMaxSize()) {
@@ -95,7 +112,7 @@ internal fun SearchResultScreen(
             items(data, key = { it.id }, contentType = { it::class }) {
                 ArticleItem(
                     data = it,
-                    onItemZanClick = { _, _ -> },
+                    onItemZanClick = onItemZan,
                     onItemClick = onItemClick,
                     modifier = modifier.padding(top = 2.dp)
                 )
@@ -117,6 +134,7 @@ fun PreviewSearchResultScreen() {
         modifier = Modifier,
         onRefresh = {},
         onPageNext = {},
-        onItemClick = {}
+        onItemClick = {},
+        onItemZan = { _, _ -> }
     )
 }

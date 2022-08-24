@@ -5,17 +5,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.data.bean.BannerBean
 import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.ui.screen.view.Banner
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
+import com.zxj.wanandroid.compose.viewmodel.UIEvent
 import com.zxj.wanandroid.compose.widget.ArticleItem
 import com.zxj.wanandroid.compose.widget.NextState
 import com.zxj.wanandroid.compose.widget.SmartLazyColumn
@@ -38,8 +41,18 @@ fun IndexPage(
         nextPageState = uiState.nextState,
         bannerList = uiState.bannerList,
         articleList = uiState.articleList,
+        onItemZan = { targetZan, data -> indexViewModel.dealZanAction(targetZan, data) },
         onBrowser = onBrowser
     )
+    LaunchedEffect(Unit) {
+        indexViewModel.uiEvent.collect {
+            when (it) {
+                is UIEvent.ShowToast -> {
+                    toast(it.msg)
+                }
+            }
+        }
+    }
 }
 
 @VisibleForTesting
@@ -52,6 +65,7 @@ private fun IndexPage(
     modifier: Modifier = Modifier,
     bannerList: List<BannerBean> = emptyList(),
     articleList: List<Data> = emptyList(),
+    onItemZan: (Int, Data) -> Unit = { _, _ -> },
     onBrowser: (String) -> Unit = {},
 ) {
     // 刷新布局
@@ -76,7 +90,7 @@ private fun IndexPage(
         items(articleList.size, contentType = { 1 }) {
             ArticleItem(
                 articleList[it],
-                onItemZanClick = { _, _ -> },
+                onItemZanClick = onItemZan,
                 onItemClick = { onBrowser(it.link) }
             )
         }

@@ -2,6 +2,7 @@ package com.zxj.wanandroid.compose.widget
 
 import android.text.Html
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -110,12 +111,16 @@ fun ArticleItem(
             Image(
                 painter = painterResource(id = painter),
                 contentDescription = null,
-                modifier = Modifier.clickable {
-                    onItemZanClick?.invoke(
-                        if (data.zan == 1) 0 else 1,
-                        data
-                    )
-                }
+                modifier = Modifier.clickable(
+                    onClick = {
+                        onItemZanClick.invoke(
+                            if (data.zan == 1) 0 else 1,
+                            data
+                        )
+                    },
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
             )
         }
     }
