@@ -1,8 +1,6 @@
 package com.zxj.wanandroid.compose.data.datasource
 
-import com.zxj.wanandroid.compose.data.bean.ArticleBean
-import com.zxj.wanandroid.compose.data.bean.BannerBean
-import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.data.bean.*
 import com.zxj.wanandroid.compose.net.API
 import retrofit2.http.*
 
@@ -40,19 +38,4 @@ interface ArticleNetworkDataSource {
     @GET("/banner/json")
     suspend fun loadBanner(): API<List<BannerBean>>
 
-    /**
-     * 收藏站内文章
-     * http://www.wanandroid.com/lg/collect/1165/json
-     * @param id article id
-     */
-    @POST("lg/collect/{id}/json")
-    suspend fun addCollectArticle(@Path("id") id: Int): API<String>
-
-    /**
-     * 文章列表中取消收藏文章
-     * http://www.wanandroid.com/lg/uncollect_originId/2333/json
-     * @param id
-     */
-    @POST("lg/uncollect_originId/{id}/json")
-    suspend fun removeCollectArticle(@Path("id") id: Int): API<String>
 }

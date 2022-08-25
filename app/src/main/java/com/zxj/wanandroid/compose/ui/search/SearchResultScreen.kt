@@ -61,7 +61,7 @@ fun SearchResultRoute(
         onRefresh = { viewModel.refresh() },
         onPageNext = { viewModel.nextPage() },
         onItemClick = onItemClick,
-        onItemZan = { targetZan, data -> viewModel.dealZanAction(targetZan, data) },
+        onItemZan = { collect, data -> viewModel.dealZanAction(collect, data) },
         modifier
     )
     LaunchedEffect(key1 = Unit) {
@@ -86,7 +86,7 @@ internal fun SearchResultScreen(
     onRefresh: () -> Unit,
     onPageNext: () -> Unit,
     onItemClick: (Data) -> Unit,
-    onItemZan: (Int, Data) -> Unit,
+    onItemZan: (Boolean, Data) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier.fillMaxSize()) {

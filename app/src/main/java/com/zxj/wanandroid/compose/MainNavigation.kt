@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.zxj.wanandroid.compose.ui.browser.addBrowserScreen
+import com.zxj.wanandroid.compose.ui.collect.addCollectScreen
 import com.zxj.wanandroid.compose.ui.home.addHomeScreen
 import com.zxj.wanandroid.compose.ui.search.addSearchResultScreen
 import com.zxj.wanandroid.compose.ui.search.addSearchScreen
@@ -53,6 +54,7 @@ fun MainNavigation() {
         addLoginScreen(navController)
         addRegisterScreen(navController)
         addBrowserScreen(navController)
+        addCollectScreen(navController)
     }
 }
 
@@ -63,6 +65,7 @@ object NavigationRoute {
     val LOGIN = "/user/login"
     val REGISTER = "/user/register";
     val BROWSER = buildBrowserRoute("{webUrl}")
+    val COLLECT = "/user/collect"
 
     fun buildSearchResultRoute(content: String): String {
         return "/app/search/result?content=${content}"

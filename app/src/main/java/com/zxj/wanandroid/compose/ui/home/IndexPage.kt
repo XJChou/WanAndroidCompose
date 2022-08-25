@@ -41,7 +41,7 @@ fun IndexPage(
         nextPageState = uiState.nextState,
         bannerList = uiState.bannerList,
         articleList = uiState.articleList,
-        onItemZan = { targetZan, data -> indexViewModel.dealZanAction(targetZan, data) },
+        onItemZan = { collect, data -> indexViewModel.dealZanAction(collect, data) },
         onBrowser = onBrowser
     )
     LaunchedEffect(Unit) {
@@ -65,7 +65,7 @@ private fun IndexPage(
     modifier: Modifier = Modifier,
     bannerList: List<BannerBean> = emptyList(),
     articleList: List<Data> = emptyList(),
-    onItemZan: (Int, Data) -> Unit = { _, _ -> },
+    onItemZan: (Boolean, Data) -> Unit = { _, _ -> },
     onBrowser: (String) -> Unit = {},
 ) {
     // 刷新布局

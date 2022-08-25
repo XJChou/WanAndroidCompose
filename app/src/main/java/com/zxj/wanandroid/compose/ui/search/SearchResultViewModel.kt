@@ -36,13 +36,12 @@ class SearchResultViewModel @Inject constructor(
     private fun collectZan() {
         viewModelScope.launch {
             articleRepository.collectFlow.collect { pair ->
-                println("SearchResultViewModel collect")
                 val value = _uiState.value
                 var changed = false
                 val newData = value.data.map {
                     if (it.id == pair.first) {
                         changed = true
-                        it.copy(zan = if (pair.second) 1 else 0)
+                        it.copy(collect = pair.second)
                     } else {
                         it
                     }
@@ -111,9 +110,9 @@ class SearchResultViewModel @Inject constructor(
     /**
      * 处理点赞action
      */
-    fun dealZanAction(targetZan: Int, data: Data) {
+    fun dealZanAction(collect: Boolean, data: Data) {
         viewModelScope.launch {
-            val apiResponse = if (targetZan == 1) {
+            val apiResponse = if (collect) {
                 articleRepository.addCollectArticle(data.id)
             } else {
                 articleRepository.removeCollectArticle(data.id)

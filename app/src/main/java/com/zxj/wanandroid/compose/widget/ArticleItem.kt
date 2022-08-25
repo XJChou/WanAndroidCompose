@@ -28,7 +28,7 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 fun ArticleItem(
     data: Data,
     modifier: Modifier = Modifier,
-    onItemZanClick: (targetZan: Int, data: Data) -> Unit = { _, _ -> },
+    onItemZanClick: (collect: Boolean, data: Data) -> Unit = { _, _ -> },
     onItemClick: (data: Data) -> Unit = {},
 ) {
     Column(
@@ -105,8 +105,8 @@ fun ArticleItem(
                 color = WanAndroidTheme.colors.itemChapter,
                 fontSize = 12.sp
             )
-            val painter = remember(data.zan) {
-                if (data.zan == 1) R.drawable.ic_like else R.drawable.ic_like_not
+            val painter = remember(data.collect) {
+                if (data.collect) R.drawable.ic_like else R.drawable.ic_like_not
             }
             Image(
                 painter = painterResource(id = painter),
@@ -114,7 +114,7 @@ fun ArticleItem(
                 modifier = Modifier.clickable(
                     onClick = {
                         onItemZanClick.invoke(
-                            if (data.zan == 1) 0 else 1,
+                            !data.collect,
                             data
                         )
                     },

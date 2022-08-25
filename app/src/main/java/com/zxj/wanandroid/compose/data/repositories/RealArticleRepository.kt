@@ -3,6 +3,7 @@ package com.zxj.wanandroid.compose.data.repositories
 import com.zxj.wanandroid.compose.data.bean.ArticleBean
 import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.data.datasource.ArticleNetworkDataSource
+import com.zxj.wanandroid.compose.data.datasource.CollectNetworkDataSource
 import com.zxj.wanandroid.compose.data.datasource.IndexLocalDataSource
 import com.zxj.wanandroid.compose.net.API
 import kotlinx.coroutines.async
@@ -27,7 +28,8 @@ import javax.inject.Inject
  */
 class RealArticleRepository @Inject constructor(
     private val networkDataSource: ArticleNetworkDataSource,
-    private val networkLocalSource: IndexLocalDataSource
+    private val networkLocalSource: IndexLocalDataSource,
+    private val collectNetworkDataSource: CollectNetworkDataSource
 ) : ArticleRepository {
 
     //    private val _collectEvent: Channel<Pair<Int, Boolean>> = Channel()
@@ -100,7 +102,7 @@ class RealArticleRepository @Inject constructor(
      * 添加收藏相同内容
      */
     override suspend fun addCollectArticle(id: Int): API<String> {
-        return networkDataSource.addCollectArticle(id).ifSuspendSuccess {
+        return collectNetworkDataSource.addCollectArticle(id).ifSuspendSuccess {
             _collectEvent.emit(Pair(id, true))
         }
     }
@@ -109,7 +111,7 @@ class RealArticleRepository @Inject constructor(
      * 删除收藏
      */
     override suspend fun removeCollectArticle(id: Int): API<String> {
-        return networkDataSource.removeCollectArticle(id).ifSuspendSuccess {
+        return collectNetworkDataSource.removeCollectArticle(id).ifSuspendSuccess {
             _collectEvent.emit(Pair(id, false))
         }
     }

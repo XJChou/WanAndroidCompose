@@ -49,5 +49,9 @@ object DataSourceModule {
     @Provides
     @Singleton
     fun providerSearchLocalDataSource(): SearchLocalDataSource = AppDatabase.Instance().searchDao()
+
+    @Provides
+    @Singleton
+    fun providerCollectNetworkDataSource(): CollectNetworkDataSource = APIFactory.get()
 }
 
