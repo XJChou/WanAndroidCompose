@@ -54,6 +54,9 @@ fun NavGraphBuilder.addHomeScreen(controller: NavHostController) {
             navigation = { controller.navigate(it) },
             onBrowser = { data ->
                 controller.navigate(NavigationRoute.buildBrowserRoute(data))
+            },
+            enterMineCollect = {
+                controller.navigate(NavigationRoute.COLLECT)
             }
         )
     }
@@ -64,7 +67,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     navigation: (String) -> Unit,
-    onBrowser: (String) -> Unit
+    onBrowser: (String) -> Unit,
+    enterMineCollect: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -80,6 +84,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .clickable {
                     },
+                enterMineCollect = enterMineCollect,
                 signOut = {
                     viewModel.dispatch(HomeViewAction.SignOutAction)
                 }
@@ -175,6 +180,7 @@ private fun DrawContent(
     drawerUIState: DrawerUIState,
     navigation: (String) -> Unit = {},
     modifier: Modifier,
+    enterMineCollect: () -> Unit = {},
     signOut: () -> Unit = {}
 ) {
     Column(
@@ -188,9 +194,7 @@ private fun DrawContent(
             }
         }
         DrawItemContent(R.drawable.ic_like_not, GetString(id = R.string.nav_my_collect)) {
-            drawerUIState.ifLogin(navigation) {
-
-            }
+            drawerUIState.ifLogin(navigation) { enterMineCollect() }
         }
         DrawItemContent(R.drawable.ic_share_white_24dp, GetString(id = R.string.my_share)) {
             drawerUIState.ifLogin(navigation) {

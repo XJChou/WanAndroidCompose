@@ -1,9 +1,11 @@
 package com.zxj.wanandroid.compose.ui.collect
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,7 +20,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.GetString
-import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.application.toast
+import com.zxj.wanandroid.compose.data.bean.CollectionArticle
+import com.zxj.wanandroid.compose.data.bean.collectionArticleDemoData
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.*
 
@@ -46,7 +50,7 @@ fun NavGraphBuilder.addCollectScreen(
 fun CollectRoute(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
-    onItemClick: (Data) -> Unit = {},
+    onItemClick: (CollectionArticle) -> Unit = {},
     viewModel: CollectViewModel = hiltViewModel()
 ) {
     val collectUiState by viewModel.uiState.collectAsState()
@@ -54,19 +58,28 @@ fun CollectRoute(
         modifier = modifier,
         onBack = onBack,
         refresh = collectUiState.refresh,
-        onRefresh = { viewModel.refresh() },
+        onRefresh = viewModel::refresh,
         nextState = collectUiState.nextState,
-        onNextPage = { viewModel.nextPage() },
-        onItemClick = onItemClick
+        onNextPage = viewModel::nextPage,
+        onItemClick = onItemClick,
+        onRemoveCollect = viewModel::removeCollect,
+        dataList = collectUiState.dataList
     )
     LaunchedEffect(key1 = Unit) {
-
+        viewModel.uiEvent.collect {
+            when (it) {
+                is CollectUIEvent.ShowToast -> {
+                    toast(it.msg)
+                }
+            }
+        }
     }
 }
 
 /**
  * 只负责响应和向上传递事件
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun CollectScreen(
     modifier: Modifier = Modifier,
@@ -75,7 +88,9 @@ internal fun CollectScreen(
     onRefresh: () -> Unit = {},
     nextState: Int,
     onNextPage: () -> Unit = {},
-    onItemClick: (Data) -> Unit = {}
+    onItemClick: (CollectionArticle) -> Unit = {},
+    onRemoveCollect: (CollectionArticle) -> Unit = {},
+    dataList: List<CollectionArticle>
 ) {
     Column(modifier) {
         TextToolBar(
@@ -95,17 +110,16 @@ internal fun CollectScreen(
             nextState = rememberNextState().also { it.state = nextState },
             onPageNext = onNextPage,
         ) {
-
+            items(dataList, key = { it.id }) {
+                CollectItem(
+                    modifier = Modifier.animateItemPlacement(),
+                    collectionArticle = it,
+                    onItemClick = onItemClick,
+                    onRemoveCollect = onRemoveCollect
+                )
+            }
         }
     }
-}
-
-@Composable
-fun CollectItem(
-    modifier: Modifier = Modifier,
-
-    ) {
-
 }
 
 @Preview
@@ -114,15 +128,9 @@ fun PreviewCollectScreen() {
     WanAndroidTheme {
         CollectScreen(
             refresh = false,
-            nextState = NextState.STATE_NONE
+            nextState = NextState.STATE_NONE,
+            dataList = arrayListOf(collectionArticleDemoData)
         )
     }
 }
 
-@Preview
-@Composable
-fun PreviewCollectItem() {
-    WanAndroidTheme {
-        CollectItem()
-    }
-}

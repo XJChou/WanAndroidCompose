@@ -31,3 +31,13 @@ data class CollectionArticle(
     @JSONField(name = "visible") val visible: Int,
     @JSONField(name = "zan") val zan: Int
 )
+
+
+// demo数据
+val collectionArticleDemoData by lazy {
+    CollectionArticle(
+        author = "鸿洋", 577, "开始动手实践", 13, "",
+        "", 275110, "https://www.jianshu.com/p/e9d8420b1b9c", "6小时前", "",
+        24169, 1661590161000, "Carson带你学Android：手把手教你写一个完整的自定义View", 131042, 0, 0
+    )
+}

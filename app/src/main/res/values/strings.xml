@@ -78,6 +78,10 @@
     <string name="search_null_tint">快来搜点干货吧</string>
     <string name="search_not_empty">搜索内容不能为空</string>
 
+    <!-- Collect -->
+    <string name="collect">收藏</string>
+    <string name="anonymous">匿名</string>
+
 
     <string name="nav_line_4" translatable="false">----</string>
     <string name="nav_line_2" translatable="false">--</string>

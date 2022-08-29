@@ -1,7 +1,9 @@
 package com.zxj.wanandroid.compose.data.repositories
 
 import com.zxj.wanandroid.compose.data.bean.ArticleBean
+import com.zxj.wanandroid.compose.data.bean.CollectionArticle
 import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.data.datasource.ArticleNetworkDataSource
 import com.zxj.wanandroid.compose.data.datasource.CollectNetworkDataSource
 import com.zxj.wanandroid.compose.data.datasource.IndexLocalDataSource
@@ -96,6 +98,10 @@ class RealArticleRepository @Inject constructor(
 
     override suspend fun loadSearchArticleList(page: Int, key: String): API<ArticleBean> {
         return networkDataSource.loadSearchArticleList(page, key)
+    }
+
+    override suspend fun loadCollectArticleList(page: Int): API<ListData<CollectionArticle>> {
+        return collectNetworkDataSource.loadCollectList(page)
     }
 
     /**
