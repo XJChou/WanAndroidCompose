@@ -14,12 +14,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 
@@ -44,10 +44,10 @@ fun ArticleItem(
         Row(Modifier) {
             // 标签 [置顶 + 刷新 + Tag]
             if (data.top == "1") {
-                ArticleTag(text = getString(R.string.top_tip), Color.Red)
+                ArticleTag(text = stringResource(R.string.top_tip), Color.Red)
             }
             if (data.fresh) {
-                ArticleTag(text = getString(R.string.new_fresh), Color.Red)
+                ArticleTag(text = stringResource(R.string.new_fresh), Color.Red)
             }
             if (data.tags.isNotEmpty()) {
                 ArticleTag(text = data.tags.first().name, WanAndroidTheme.colors.colorAccent)

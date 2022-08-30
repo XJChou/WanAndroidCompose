@@ -10,13 +10,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.data.bean.CollectionArticle
 import com.zxj.wanandroid.compose.data.bean.collectionArticleDemoData
 import com.zxj.wanandroid.compose.ui.theme.Shapes
@@ -41,7 +41,7 @@ fun CollectItem(
 
         Row(modifier = Modifier.padding(start = 10.dp)) {
             Text(
-                text = collectionArticle.author.ifEmpty { getString(R.string.anonymous) },
+                text = collectionArticle.author.ifEmpty { stringResource(R.string.anonymous) },
                 color = WanAndroidTheme.colors.itemAuthor,
                 modifier = Modifier.weight(1f),
                 fontSize = 12.sp

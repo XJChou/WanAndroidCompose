@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +29,6 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.composable
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.GetString
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.RegisterViewAction
@@ -64,7 +64,7 @@ fun RegisterScreen(
 ) {
     Column(Modifier.fillMaxSize()) {
         TextToolBar(
-            title = GetString(R.string.register),
+            title = stringResource(R.string.register),
             fitsSystemWindows = true,
             navigationIcon = {
                 ToolBarIcon(drawableRes = R.drawable.ic_back) {
@@ -123,12 +123,12 @@ fun ColumnScope.RegisterPage(
             .weight(1f)
     ) {
         Text(
-            text = GetString(R.string.register_tip),
+            text = stringResource(R.string.register_tip),
             color = WanAndroidTheme.colors.commonColor,
             fontSize = 18.sp
         )
         Text(
-            text = GetString(R.string.register_tip),
+            text = stringResource(R.string.register_tip),
             fontSize = 14.sp,
             modifier = Modifier.padding(0.dp, 6.dp, 0.dp, 0.dp)
         )
@@ -141,7 +141,7 @@ fun ColumnScope.RegisterPage(
                 viewModel.dispatch(RegisterViewAction.InputUsernameAction(it))
             },
             singleLine = true,
-            label = { Text(text = GetString(id = R.string.username)) }
+            label = { Text(text = stringResource(id = R.string.username)) }
         )
         OutlinedTextField(
             modifier = Modifier
@@ -152,7 +152,7 @@ fun ColumnScope.RegisterPage(
             onValueChange = {
                 viewModel.dispatch(RegisterViewAction.InputPasswordAction(it))
             },
-            label = { Text(text = GetString(id = R.string.password)) },
+            label = { Text(text = stringResource(id = R.string.password)) },
             visualTransformation = PasswordVisualTransformation()
         )
         OutlinedTextField(
@@ -164,11 +164,11 @@ fun ColumnScope.RegisterPage(
             onValueChange = {
                 viewModel.dispatch(RegisterViewAction.InputConfirmPasswordAction(it))
             },
-            label = { Text(text = GetString(id = R.string.enter_password_again)) },
+            label = { Text(text = stringResource(id = R.string.enter_password_again)) },
             visualTransformation = PasswordVisualTransformation()
         )
         Text(
-            text = GetString(id = R.string.register),
+            text = stringResource(id = R.string.register),
             modifier = Modifier
                 .padding(0.dp, 24.dp)
                 .fillMaxWidth()
@@ -180,7 +180,7 @@ fun ColumnScope.RegisterPage(
             textAlign = TextAlign.Center
         )
         Text(
-            text = GetString(id = R.string.have_account),
+            text = stringResource(id = R.string.have_account),
             modifier = Modifier
                 .padding(0.dp, 0.dp, 0.dp, 24.dp)
                 .align(Alignment.End)

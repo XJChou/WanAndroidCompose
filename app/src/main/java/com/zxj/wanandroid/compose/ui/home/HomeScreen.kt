@@ -1,9 +1,7 @@
 package com.zxj.wanandroid.compose.ui.home
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,8 +31,6 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.GetString
-import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.ui.NavigationBar
 import com.zxj.wanandroid.compose.ui.screen.home.*
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
@@ -136,7 +133,7 @@ private fun DrawHead(drawerUIState: DrawerUIState, navigation: (String) -> Unit)
 
         // 根据当前状态
         Text(
-            text = if (drawerUIState.isLogin) drawerUIState.user.username else GetString(R.string.go_login),
+            text = if (drawerUIState.isLogin) drawerUIState.user.username else stringResource(R.string.go_login),
             modifier = Modifier
                 .padding(0.dp, 12.dp, 0.dp, 0.dp)
                 .align(Alignment.CenterHorizontally),
@@ -151,23 +148,23 @@ private fun DrawHead(drawerUIState: DrawerUIState, navigation: (String) -> Unit)
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = GetString(id = R.string.nav_grade),
+                text = stringResource(id = R.string.nav_grade),
                 color = Color(0xFFF5F5F5),
                 fontSize = 12.sp
             )
             Text(
-                text = GetString(id = R.string.nav_line_2),
+                text = stringResource(id = R.string.nav_line_2),
                 fontSize = 12.sp,
                 color = Color(0xFFF5F5F5),
             )
             Text(
-                text = GetString(id = R.string.nav_rank),
+                text = stringResource(id = R.string.nav_rank),
                 modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
                 fontSize = 12.sp,
                 color = Color(0xFFF5F5F5),
             )
             Text(
-                text = GetString(id = R.string.nav_line_2),
+                text = stringResource(id = R.string.nav_line_2),
                 fontSize = 12.sp,
                 color = Color(0xFFF5F5F5),
             )
@@ -188,34 +185,34 @@ private fun DrawContent(
             .background(WanAndroidTheme.colors.viewBackground)
             .padding(0.dp, 10.dp, 0.dp, 0.dp)
     ) {
-        DrawItemContent(R.drawable.ic_score_white_24dp, GetString(id = R.string.nav_my_score)) {
+        DrawItemContent(R.drawable.ic_score_white_24dp, stringResource(id = R.string.nav_my_score)) {
             drawerUIState.ifLogin(navigation) {
 
             }
         }
-        DrawItemContent(R.drawable.ic_like_not, GetString(id = R.string.nav_my_collect)) {
+        DrawItemContent(R.drawable.ic_like_not, stringResource(id = R.string.nav_my_collect)) {
             drawerUIState.ifLogin(navigation) { enterMineCollect() }
         }
-        DrawItemContent(R.drawable.ic_share_white_24dp, GetString(id = R.string.my_share)) {
+        DrawItemContent(R.drawable.ic_share_white_24dp, stringResource(id = R.string.my_share)) {
             drawerUIState.ifLogin(navigation) {
 
             }
         }
-        DrawItemContent(R.drawable.ic_todo_default_24dp, GetString(id = R.string.nav_todo)) {
+        DrawItemContent(R.drawable.ic_todo_default_24dp, stringResource(id = R.string.nav_todo)) {
             drawerUIState.ifLogin(navigation) {
 
             }
         }
-        DrawItemContent(R.drawable.ic_night_24dp, GetString(id = R.string.nav_night_mode)) {
+        DrawItemContent(R.drawable.ic_night_24dp, stringResource(id = R.string.nav_night_mode)) {
             WanAndroidTheme.changeTheme()
         }
-        DrawItemContent(R.drawable.ic_setting_24dp, GetString(id = R.string.nav_setting)) {
+        DrawItemContent(R.drawable.ic_setting_24dp, stringResource(id = R.string.nav_setting)) {
             drawerUIState.ifLogin(navigation) {
 
             }
         }
         if (drawerUIState.isLogin) {
-            DrawItemContent(R.drawable.ic_logout_white_24dp, GetString(id = R.string.nav_logout)) {
+            DrawItemContent(R.drawable.ic_logout_white_24dp, stringResource(id = R.string.nav_logout)) {
                 signOut()
             }
         }

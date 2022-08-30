@@ -34,9 +34,6 @@ class ComposeApplication : Application() {
 
 fun getString(@StringRes id: Int): String = ComposeApplication.application.getString(id)
 
-@Composable
-fun GetString(@StringRes id: Int): String = LocalContext.current.getString(id)
-
 fun toast(title: String, duration: Int = Toast.LENGTH_SHORT) =
     Toast.makeText(ComposeApplication.application, title, duration).show()
 

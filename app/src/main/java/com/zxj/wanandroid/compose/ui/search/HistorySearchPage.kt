@@ -13,12 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.GetString
 import com.zxj.wanandroid.compose.data.bean.HistorySearchBean
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import java.util.*
@@ -31,7 +31,7 @@ fun ColumnScope.HistorySearchPage(
     onClearHistoryClick: () -> Unit
 ) {
     // 标头
-    SearchPageHead(GetString(id = R.string.history_search), onClearHistoryClick)
+    SearchPageHead(stringResource(id = R.string.history_search), onClearHistoryClick)
 
     // 列表
     LazyColumn(
@@ -65,7 +65,7 @@ private fun SearchPageHead(text: String, onClear: () -> Unit) {
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = GetString(id = R.string.clear_all),
+            text = stringResource(id = R.string.clear_all),
             color = Color(0xFFBDBDBD),
             fontSize = 14.sp,
             modifier = Modifier
@@ -82,7 +82,7 @@ private fun SearchPageHead(text: String, onClear: () -> Unit) {
 @Composable
 private fun HistorySearchEmptyPage() {
     Text(
-        text = GetString(id = R.string.search_null_tint),
+        text = stringResource(id = R.string.search_null_tint),
         color = Color(0xFFBDBDBD),
         fontSize = 14.sp,
         textAlign = TextAlign.Center,

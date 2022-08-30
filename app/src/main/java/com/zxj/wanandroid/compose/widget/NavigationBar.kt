@@ -7,9 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.getString
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.NavigationItem
 import com.zxj.wanandroid.compose.widget.NavigationItemBean
@@ -36,7 +35,7 @@ fun NavigationBar(
                     },
                 isBig = selectIndex == index,
                 icon = item.icon,
-                text = getString(item.title),
+                text = stringResource(item.title),
                 tint = if (selectIndex == index) {
                     WanAndroidTheme.colors.blueGrey
                 } else {

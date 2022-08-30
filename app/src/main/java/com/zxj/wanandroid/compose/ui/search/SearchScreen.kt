@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,7 +19,6 @@ import com.google.accompanist.navigation.animation.composable
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.ComposeApplication
-import com.zxj.wanandroid.compose.application.GetString
 import com.zxj.wanandroid.compose.data.bean.HistorySearchBean
 import com.zxj.wanandroid.compose.data.bean.HotSearchBean
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
@@ -107,7 +107,7 @@ fun SearchScreen(
         val searchState = rememberSearchState(value = "")
         SearchToolBar(
             searchState,
-            GetString(id = R.string.search_tint),
+            stringResource(id = R.string.search_tint),
             navigationIcon = {
                 ToolBarIcon(drawableRes = R.drawable.ic_back, onBack)
             },

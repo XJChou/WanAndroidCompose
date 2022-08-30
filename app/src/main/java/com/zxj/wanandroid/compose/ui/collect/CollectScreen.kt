@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -19,7 +20,6 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.GetString
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.data.bean.CollectionArticle
 import com.zxj.wanandroid.compose.data.bean.collectionArticleDemoData
@@ -94,7 +94,7 @@ internal fun CollectScreen(
 ) {
     Column(modifier) {
         TextToolBar(
-            title = GetString(id = R.string.nav_my_collect),
+            title = stringResource(id = R.string.nav_my_collect),
             navigationIcon = {
                 ToolBarIcon(R.drawable.ic_back, onBack)
             }

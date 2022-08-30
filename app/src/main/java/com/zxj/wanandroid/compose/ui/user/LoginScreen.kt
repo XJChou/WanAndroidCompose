@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,7 +26,6 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.composable
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.application.GetString
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.LoginViewAction
@@ -59,7 +59,7 @@ fun LoginScreen(
 ) {
     Column(Modifier.fillMaxSize()) {
         TextToolBar(
-            title = GetString(id = R.string.login),
+            title = stringResource(id = R.string.login),
             fitsSystemWindows = true,
             navigationIcon = {
                 ToolBarIcon(drawableRes = R.drawable.ic_back, onBack)
@@ -117,12 +117,12 @@ fun ColumnScope.LoginPage(
             .weight(1f)
     ) {
         Text(
-            text = GetString(R.string.user_login),
+            text = stringResource(R.string.user_login),
             color = WanAndroidTheme.colors.commonColor,
             fontSize = 18.sp
         )
         Text(
-            text = GetString(R.string.register_tip),
+            text = stringResource(R.string.register_tip),
             fontSize = 14.sp,
             modifier = Modifier.padding(0.dp, 6.dp, 0.dp, 0.dp)
         )
@@ -135,7 +135,7 @@ fun ColumnScope.LoginPage(
                 viewModel.dispatch(LoginViewAction.InputUsernameAction(it))
             },
             singleLine = true,
-            label = { Text(text = GetString(id = R.string.username)) }
+            label = { Text(text = stringResource(id = R.string.username)) }
         )
         OutlinedTextField(
             modifier = Modifier
@@ -146,11 +146,11 @@ fun ColumnScope.LoginPage(
             onValueChange = {
                 viewModel.dispatch(LoginViewAction.InputPasswordAction(it))
             },
-            label = { Text(text = GetString(id = R.string.password)) },
+            label = { Text(text = stringResource(id = R.string.password)) },
             visualTransformation = PasswordVisualTransformation()
         )
         Text(
-            text = GetString(id = R.string.login),
+            text = stringResource(id = R.string.login),
             modifier = Modifier
                 .padding(0.dp, 24.dp)
                 .fillMaxWidth()
@@ -162,7 +162,7 @@ fun ColumnScope.LoginPage(
             textAlign = TextAlign.Center
         )
         Text(
-            text = GetString(id = R.string.no_account),
+            text = stringResource(id = R.string.no_account),
             modifier = Modifier
                 .padding(0.dp, 0.dp, 0.dp, 24.dp)
                 .align(Alignment.End)
