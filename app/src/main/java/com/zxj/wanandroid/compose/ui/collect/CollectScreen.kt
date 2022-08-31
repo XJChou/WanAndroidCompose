@@ -2,16 +2,18 @@ package com.zxj.wanandroid.compose.ui.collect
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -24,6 +26,7 @@ import com.zxj.wanandroid.compose.data.bean.CollectionArticle
 import com.zxj.wanandroid.compose.data.bean.collectionArticleDemoData
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.*
+import kotlinx.coroutines.launch
 
 /**
  * 添加搜索结果界面到Navigation
@@ -91,7 +94,20 @@ internal fun CollectScreen(
     onRemoveCollect: (CollectionArticle) -> Unit = {},
     dataList: List<CollectionArticle>?
 ) {
-    Column(modifier = modifier) {
+    val state = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    Column(
+        modifier = modifier.combinedClickable(
+            onDoubleClick = {
+                scope.launch {
+                    state.scrollToItem(0, 0)
+                }
+            },
+            onClick = {},
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        )
+    ) {
         TextToolBar(
             title = stringResource(id = R.string.nav_my_collect),
             navigationIcon = {
@@ -109,12 +125,13 @@ internal fun CollectScreen(
                 it.state = nextState
             },
             onPageNext = onNextPage,
+            state = state
         ) {
             if (dataList != null) {
                 if (dataList.isNotEmpty()) {
                     items(dataList, key = { it.id }) {
                         CollectItem(
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItemPlacement().padding(top = 1.dp),
                             collectionArticle = it,
                             onItemClick = onItemClick,
                             onRemoveCollect = onRemoveCollect

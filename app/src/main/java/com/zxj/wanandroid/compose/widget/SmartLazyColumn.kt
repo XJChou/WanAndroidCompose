@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -21,13 +22,13 @@ fun SmartLazyColumn(
     onRefresh: () -> Unit,
     nextState: NextState = rememberNextState(),
     onPageNext: () -> Unit,
+    state: LazyListState = rememberLazyListState(),
     content: LazyListScope.() -> Unit
 ) {
     SwipeRefresh(state = refreshState, onRefresh = onRefresh, modifier = modifier) {
         // 自动刷新处理
-        val listState = rememberLazyListState()
         LazyColumn(
-            state = listState,
+            state = state,
             content = {
                 content()
 
