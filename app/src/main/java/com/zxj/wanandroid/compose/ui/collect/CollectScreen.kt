@@ -4,7 +4,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -90,36 +89,47 @@ internal fun CollectScreen(
     onNextPage: () -> Unit = {},
     onItemClick: (CollectionArticle) -> Unit = {},
     onRemoveCollect: (CollectionArticle) -> Unit = {},
-    dataList: List<CollectionArticle>
+    dataList: List<CollectionArticle>?
 ) {
-    Column(modifier) {
+    Column(modifier = modifier) {
         TextToolBar(
             title = stringResource(id = R.string.nav_my_collect),
             navigationIcon = {
                 ToolBarIcon(R.drawable.ic_back, onBack)
             }
         )
+
         SmartLazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(1f),
+            modifier = Modifier.fillMaxSize(),
             refreshState = rememberSwipeRefreshState(isRefreshing = false).also {
                 it.isRefreshing = refresh
             },
             onRefresh = onRefresh,
-            nextState = rememberNextState().also { it.state = nextState },
+            nextState = rememberNextState().also {
+                it.state = nextState
+            },
             onPageNext = onNextPage,
         ) {
-            items(dataList, key = { it.id }) {
-                CollectItem(
-                    modifier = Modifier.animateItemPlacement(),
-                    collectionArticle = it,
-                    onItemClick = onItemClick,
-                    onRemoveCollect = onRemoveCollect
-                )
+            if (dataList != null) {
+                if (dataList.isNotEmpty()) {
+                    items(dataList, key = { it.id }) {
+                        CollectItem(
+                            modifier = Modifier.animateItemPlacement(),
+                            collectionArticle = it,
+                            onItemClick = onItemClick,
+                            onRemoveCollect = onRemoveCollect
+                        )
+                    }
+                } else {
+                    item(contentType = { 1 }) {
+                        EmptyData(modifier = modifier.fillParentMaxSize())
+                    }
+                }
             }
         }
+
     }
+
 }
 
 @Preview

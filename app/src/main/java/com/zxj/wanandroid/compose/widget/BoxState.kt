@@ -72,7 +72,7 @@ fun defaultFetchError(): @Composable BoxScope.(() -> Unit) -> Unit {
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.mipmap.ic_error),
+                painter = painterResource(id = R.drawable.ic_error),
                 contentDescription = null
             )
             Text(
@@ -102,20 +102,7 @@ fun defaultNetworkError(): @Composable BoxScope.(() -> Unit) -> Unit {
 
 fun empty(): @Composable BoxScope.() -> Unit {
     return {
-        Column(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.mipmap.ic_empty),
-                contentDescription = null
-            )
-            Text(
-                text = stringResource(id = R.string.no_data),
-                modifier = Modifier.padding(top = 10.dp),
-                color = WanAndroidTheme.colors.commonColor
-            )
-        }
+        EmptyData(modifier = Modifier.align(Alignment.Center))
     }
 }
 

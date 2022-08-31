@@ -35,7 +35,9 @@ class CollectViewModel @Inject constructor(
 
     fun refresh() {
         if (job?.isActive == true) return
+
         _uiState.update { it.copy(refresh = true) }
+
         job = viewModelScope.launch {
             articleRepository.loadCollectArticleList(0)
                 .ifSuccess { response ->
@@ -45,7 +47,11 @@ class CollectViewModel @Inject constructor(
                             refresh = false,
                             dataList = response?.datas ?: emptyList(),
                             nextState = if (response?.over != false) {
-                                NextState.STATE_FINISH_OVER
+                                if (response?.datas.isNullOrEmpty()) {
+                                    NextState.STATE_NONE
+                                } else {
+                                    NextState.STATE_FINISH_OVER
+                                }
                             } else {
                                 NextState.STATE_FINISH_PART
                             }
@@ -54,6 +60,7 @@ class CollectViewModel @Inject constructor(
                 }
                 .ifError {
                     _uiState.update { it.copy(refresh = false) }
+                    _uiEvent.trySend(CollectUIEvent.ShowToast(it))
                 }
         }
     }
@@ -68,7 +75,7 @@ class CollectViewModel @Inject constructor(
                 .ifSuccess { response ->
                     page = nextPage
                     _uiState.update {
-                        val nextDataList = ArrayList(it.dataList).also {
+                        val nextDataList = ArrayList(it.dataList!!).also {
                             it.addAll(response?.datas ?: emptyList())
                         }
                         it.copy(
@@ -95,7 +102,7 @@ class CollectViewModel @Inject constructor(
             articleRepository.removeCollectArticle(collectionArticle.originId)
                 .ifSuccess {
                     _uiState.update {
-                        it.copy(dataList = it.dataList.filter { it.originId != collectionArticle.originId })
+                        it.copy(dataList = it.dataList?.filter { it.originId != collectionArticle.originId })
                     }
                 }
                 .ifError {
@@ -106,10 +113,16 @@ class CollectViewModel @Inject constructor(
     }
 }
 
-// State一直在重复
+/**
+ * 收藏Screen的状态
+ * @param boxState Box的状态
+ * @param refresh 当前是否刷新
+ * @param dataList 数据列表
+ * @param nextState 当前加载状态
+ */
 data class CollectUiState(
     val refresh: Boolean = false,
-    val dataList: List<CollectionArticle> = emptyList(),
+    val dataList: List<CollectionArticle>? = null,
     val nextState: Int = NextState.STATE_NONE,
 )
 
