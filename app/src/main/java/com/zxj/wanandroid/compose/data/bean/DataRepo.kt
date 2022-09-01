@@ -1,6 +1,7 @@
 package com.zxj.wanandroid.compose.data.bean
 
 import com.alibaba.fastjson.annotation.JSONField
+import java.util.*
 
 // 通用的带有列表数据的实体
 data class ListData<T>(
@@ -12,6 +13,26 @@ data class ListData<T>(
     @JSONField(name = "size") val size: Int,
     @JSONField(name = "total") val total: Int
 )
+
+// 个人积分实体
+data class UserScoreBean(
+    @JSONField(name = "coinCount") val coinCount: Int,
+    @JSONField(name = "date") val date: Long,
+    @JSONField(name = "desc") val desc: String,
+    @JSONField(name = "id") val id: Int,
+    @JSONField(name = "reason") val reason: String,
+    @JSONField(name = "type") val type: Int,
+    @JSONField(name = "userId") val userId: Int,
+    @JSONField(name = "userName") val userName: String
+)
+
+val userScoreBeanDemoData by lazy {
+    UserScoreBean(
+        1, Date().time, "desc", 1,
+        "reason", 1, 1, "username"
+    )
+}
+
 
 data class CollectionArticle(
     @JSONField(name = "author") val author: String,
@@ -31,7 +52,6 @@ data class CollectionArticle(
     @JSONField(name = "visible") val visible: Int,
     @JSONField(name = "zan") val zan: Int
 )
-
 
 // demo数据
 val collectionArticleDemoData by lazy {

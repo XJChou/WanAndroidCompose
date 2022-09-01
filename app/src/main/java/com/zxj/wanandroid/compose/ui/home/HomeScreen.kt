@@ -54,6 +54,9 @@ fun NavGraphBuilder.addHomeScreen(controller: NavHostController) {
             },
             enterMineCollect = {
                 controller.navigate(NavigationRoute.COLLECT)
+            },
+            enterScoreCollect = {
+                controller.navigate(NavigationRoute.SCORE)
             }
         )
     }
@@ -65,7 +68,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     navigation: (String) -> Unit,
     onBrowser: (String) -> Unit,
-    enterMineCollect: () -> Unit
+    enterMineCollect: () -> Unit,
+    enterScoreCollect: () -> Unit,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -82,6 +86,7 @@ fun HomeScreen(
                     .clickable {
                     },
                 enterMineCollect = enterMineCollect,
+                enterScoreCollect = enterScoreCollect,
                 signOut = {
                     viewModel.dispatch(HomeViewAction.SignOutAction)
                 }
@@ -178,6 +183,7 @@ private fun DrawContent(
     navigation: (String) -> Unit = {},
     modifier: Modifier,
     enterMineCollect: () -> Unit = {},
+    enterScoreCollect: () -> Unit = {},
     signOut: () -> Unit = {}
 ) {
     Column(
@@ -185,13 +191,14 @@ private fun DrawContent(
             .background(WanAndroidTheme.colors.viewBackground)
             .padding(0.dp, 10.dp, 0.dp, 0.dp)
     ) {
-        DrawItemContent(R.drawable.ic_score_white_24dp, stringResource(id = R.string.nav_my_score)) {
-            drawerUIState.ifLogin(navigation) {
-
-            }
+        DrawItemContent(
+            R.drawable.ic_score_white_24dp,
+            stringResource(id = R.string.nav_my_score)
+        ) {
+            drawerUIState.ifLogin(navigation, enterScoreCollect)
         }
         DrawItemContent(R.drawable.ic_like_not, stringResource(id = R.string.nav_my_collect)) {
-            drawerUIState.ifLogin(navigation) { enterMineCollect() }
+            drawerUIState.ifLogin(navigation, enterMineCollect)
         }
         DrawItemContent(R.drawable.ic_share_white_24dp, stringResource(id = R.string.my_share)) {
             drawerUIState.ifLogin(navigation) {
@@ -212,7 +219,10 @@ private fun DrawContent(
             }
         }
         if (drawerUIState.isLogin) {
-            DrawItemContent(R.drawable.ic_logout_white_24dp, stringResource(id = R.string.nav_logout)) {
+            DrawItemContent(
+                R.drawable.ic_logout_white_24dp,
+                stringResource(id = R.string.nav_logout)
+            ) {
                 signOut()
             }
         }

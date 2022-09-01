@@ -1,11 +1,10 @@
 package com.zxj.wanandroid.compose.data.datasource
 
+import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.data.bean.User
+import com.zxj.wanandroid.compose.data.bean.UserScoreBean
 import com.zxj.wanandroid.compose.net.API
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface UserNetworkDataSource {
     @POST("/user/register")
@@ -29,6 +28,14 @@ interface UserNetworkDataSource {
      */
     @GET("/lg/coin/userinfo/json")
     suspend fun userInfo(): API<String>
+
+    /**
+     * 获取个人积分列表，需要登录后访问
+     * https://www.wanandroid.com//lg/coin/list/1/json
+     * @param page 页码 从1开始
+     */
+    @GET("/lg/coin/list/{page}/json")
+    suspend fun loadUserScoreList(@Path("page") page: Int): API<ListData<UserScoreBean>>
 
     @GET("/user/logout/json")
     suspend fun logout(): API<String>
