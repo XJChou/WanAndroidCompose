@@ -14,6 +14,14 @@ data class ListData<T>(
     @JSONField(name = "total") val total: Int
 )
 
+// 用户个人信息
+data class UserInfoBody(
+    @JSONField(name = "coinCount") val coinCount: Int, // 总积分
+    @JSONField(name = "rank") val rank: Int, // 当前排名
+    @JSONField(name = "userId") val userId: Int,
+    @JSONField(name = "username") val username: String
+)
+
 // 个人积分实体
 data class UserScoreBean(
     @JSONField(name = "coinCount") val coinCount: Int,

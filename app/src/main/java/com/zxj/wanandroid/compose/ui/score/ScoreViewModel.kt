@@ -7,9 +7,7 @@ import com.zxj.wanandroid.compose.data.repositories.UserRepository
 import com.zxj.wanandroid.compose.widget.NextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,11 +16,20 @@ class ScoreViewModel @Inject constructor(
     val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ScoreUiState())
-    val uiState = _uiState.asStateFlow()
+    private val scoreFlow = userRepository.userInfo.map { it?.coinCount }.distinctUntilChanged()
+    private val scoreListFlow = MutableStateFlow(ScoreDataUiState())
 
-//    private val _uiEvent = Channel<CollectUIEvent>()
-//    val uiEvent = _uiEvent.receiveAsFlow()
+    val uiState = combine(
+        scoreFlow,
+        scoreListFlow
+    ) { score, scoreList ->
+        ScoreUiState(score, scoreList)
+    }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            ScoreUiState(null, ScoreDataUiState())
+        )
 
     private var page = 0
     private var job: Job? = null
@@ -34,13 +41,13 @@ class ScoreViewModel @Inject constructor(
     fun refresh() {
         if (job?.isActive == true) return
 
-        _uiState.update { it.copy(refresh = true) }
+        scoreListFlow.update { it.copy(refresh = true) }
 
         job = viewModelScope.launch {
             userRepository.loadUserScoreList(0)
                 .ifSuccess { response ->
                     page = 0
-                    _uiState.update {
+                    scoreListFlow.update {
                         it.copy(
                             refresh = false,
                             dataList = response?.datas ?: emptyList(),
@@ -57,7 +64,7 @@ class ScoreViewModel @Inject constructor(
                     }
                 }
                 .ifError {
-                    _uiState.update { it.copy(refresh = false) }
+                    scoreListFlow.update { it.copy(refresh = false) }
 //                    _uiEvent.trySend(CollectUIEvent.ShowToast(it))
                 }
         }
@@ -68,11 +75,11 @@ class ScoreViewModel @Inject constructor(
 
         val nextPage = page + 1
         job = viewModelScope.launch {
-            _uiState.update { it.copy(nextState = NextState.STATE_LOADING) }
+            scoreListFlow.update { it.copy(nextState = NextState.STATE_LOADING) }
             userRepository.loadUserScoreList(nextPage)
                 .ifSuccess { response ->
                     page = nextPage
-                    _uiState.update {
+                    scoreListFlow.update {
                         val nextDataList = ArrayList(it.dataList!!).also {
                             it.addAll(response?.datas ?: emptyList())
                         }
@@ -87,7 +94,7 @@ class ScoreViewModel @Inject constructor(
                     }
                 }
                 .ifError {
-                    _uiState.update {
+                    scoreListFlow.update {
                         it.copy(nextState = NextState.STATE_ERROR)
                     }
                 }
@@ -103,6 +110,11 @@ class ScoreViewModel @Inject constructor(
  * @param nextState 当前加载状态
  */
 data class ScoreUiState(
+    val score: Int? = null,
+    val scoreListUiState: ScoreDataUiState
+)
+
+data class ScoreDataUiState(
     val refresh: Boolean = false,
     val dataList: List<UserScoreBean>? = null,
     val nextState: Int = NextState.STATE_NONE,

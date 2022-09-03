@@ -2,6 +2,7 @@ package com.zxj.wanandroid.compose.data.datasource
 
 import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.data.bean.User
+import com.zxj.wanandroid.compose.data.bean.UserInfoBody
 import com.zxj.wanandroid.compose.data.bean.UserScoreBean
 import com.zxj.wanandroid.compose.net.API
 import retrofit2.http.*
@@ -27,7 +28,7 @@ interface UserNetworkDataSource {
      * https://www.wanandroid.com/lg/coin/userinfo/json
      */
     @GET("/lg/coin/userinfo/json")
-    suspend fun userInfo(): API<String>
+    suspend fun userInfo(): API<UserInfoBody>
 
     /**
      * 获取个人积分列表，需要登录后访问

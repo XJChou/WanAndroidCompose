@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.zxj.wanandroid.compose.data.bean.User
+import com.zxj.wanandroid.compose.data.bean.UserInfoBody
 import com.zxj.wanandroid.compose.datastore.UserPreferences
 import com.zxj.wanandroid.compose.datastore.copy
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 val Context.userPreferences: DataStore<UserPreferences> by dataStore(
@@ -24,6 +24,9 @@ class UserLocalDataSource @Inject constructor(
         User(it.id, it.icon, it.username, it.email, it.type)
     }
 
+    private val _userInfo = MutableStateFlow<UserInfoBody?>(null)
+    val userInfo = _userInfo.asStateFlow()
+
     suspend fun updateUser(user: User) {
         // 设置DataSource
         context.userPreferences.updateData {
@@ -35,5 +38,9 @@ class UserLocalDataSource @Inject constructor(
                 type = user.type
             }
         }
+    }
+
+    fun saveUserInfo(userInfoBody: UserInfoBody?) {
+        _userInfo.value = userInfoBody
     }
 }

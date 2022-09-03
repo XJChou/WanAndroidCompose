@@ -3,6 +3,7 @@ package com.zxj.wanandroid.compose.data.repositories
 import com.zxj.wanandroid.compose.data.HttpConstant
 import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.data.bean.User
+import com.zxj.wanandroid.compose.data.bean.UserInfoBody
 import com.zxj.wanandroid.compose.data.bean.UserScoreBean
 import com.zxj.wanandroid.compose.data.datasource.UserLocalDataSource
 import com.zxj.wanandroid.compose.data.datasource.UserNetworkDataSource
@@ -20,6 +21,8 @@ class RealUserRepository @Inject constructor(
 
     override val user: Flow<User>
         get() = userLocalDataSource.user
+    override val userInfo: Flow<UserInfoBody?>
+        get() = userLocalDataSource.userInfo
 
     private suspend fun updateUser(user: User) {
         userLocalDataSource.updateUser(user)
@@ -42,9 +45,9 @@ class RealUserRepository @Inject constructor(
         }
     }
 
-    override suspend fun userInfo(): API<String> {
+    override suspend fun loadUserInfo(): API<UserInfoBody> {
         return userNetworkDataSource.userInfo().ifSuspendSuccess {
-//            updateUser(it!!)
+            userLocalDataSource.saveUserInfo(it)
         }
     }
 

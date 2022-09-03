@@ -2,6 +2,7 @@ package com.zxj.wanandroid.compose.data.repositories
 
 import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.data.bean.User
+import com.zxj.wanandroid.compose.data.bean.UserInfoBody
 import com.zxj.wanandroid.compose.data.bean.UserScoreBean
 import com.zxj.wanandroid.compose.net.API
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,11 @@ interface UserRepository {
      */
     val user: Flow<User>
 
+    /**
+     * 用户信息
+     */
+    val userInfo: Flow<UserInfoBody?>
+
     suspend fun register(
         username: String,
         password: String,
@@ -27,7 +33,7 @@ interface UserRepository {
 
     suspend fun signIn(username: String, password: String): API<User>
 
-    suspend fun userInfo(): API<String>
+    suspend fun loadUserInfo(): API<UserInfoBody>
 
     suspend fun signOut(): API<String>
 

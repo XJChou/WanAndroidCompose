@@ -18,7 +18,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val drawerUIState: StateFlow<DrawerUIState> = combine(
-        userRepository.isLogin.distinctUntilChanged().onEach { if (it) userRepository.userInfo() },
+        userRepository.isLogin.distinctUntilChanged().onEach { if (it) userRepository.loadUserInfo() },
         userRepository.user,
         transform = { isLogin, user ->
             DrawerUIState(isLogin, user)
@@ -57,7 +57,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
             is HomeViewAction.UserInfo -> {
-                viewModelScope.launch { userRepository.userInfo() }
+                viewModelScope.launch { userRepository.loadUserInfo() }
             }
         }
     }

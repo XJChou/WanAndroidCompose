@@ -56,15 +56,17 @@ fun ScoreRoute(
     onQuestion: () -> Unit
 ) {
     val uiState by scoreViewModel.uiState.collectAsState()
+
     ScoreScreen(
         modifier = modifier,
         onBack = onBack,
         onQuestion = onQuestion,
-        refresh = uiState.refresh,
+        refresh = uiState.scoreListUiState.refresh,
         onRefresh = scoreViewModel::refresh,
-        nextState = uiState.nextState,
+        nextState = uiState.scoreListUiState.nextState,
         onNextPage = scoreViewModel::nextPage,
-        dataList = uiState.dataList
+        dataList = uiState.scoreListUiState.dataList,
+        score = uiState.score
     )
 }
 
@@ -78,7 +80,8 @@ fun ScoreScreen(
     onRefresh: () -> Unit = {},
     nextState: Int = NextState.STATE_NONE,
     onNextPage: () -> Unit = {},
-    dataList: List<UserScoreBean>?
+    dataList: List<UserScoreBean>?,
+    score: Int? = null
 ) {
     val state = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -124,10 +127,10 @@ fun ScoreScreen(
                     modifier = Modifier
                         .background(WanAndroidTheme.colors.colorPrimary)
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .height(150.dp)
                 ) {
                     Text(
-                        text = "200",
+                        text = "${(score ?: "--")}",
                         modifier = Modifier.align(Alignment.Center),
                         fontSize = 50.sp,
                         color = Color.White
@@ -141,7 +144,6 @@ fun ScoreScreen(
                     ScoreItem(userScoreBean = it)
                 }
             }
-
         }
     }
 }
@@ -152,6 +154,8 @@ fun PreviewScoreScreen() {
     ScoreScreen(
         onBack = {},
         onQuestion = {},
-        dataList = emptyList()
+        dataList = emptyList(),
+        score = null
+
     )
 }
