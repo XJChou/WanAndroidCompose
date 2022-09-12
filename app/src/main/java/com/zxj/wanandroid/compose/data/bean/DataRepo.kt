@@ -69,3 +69,17 @@ val collectionArticleDemoData by lazy {
         24169, 1661590161000, "Carson带你学Android：手把手教你写一个完整的自定义View", 131042, 0, 0
     )
 }
+
+
+// 排行榜实体
+data class CoinInfoBean(
+    @JSONField(name = "coinCount") val coinCount: Int,
+    @JSONField(name = "level") val level: Int,
+    @JSONField(name = "rank") val rank: Int,
+    @JSONField(name = "userId") val userId: Int,
+    @JSONField(name = "username") val username: String
+)
+
+val coinInfoBeanDemoData = CoinInfoBean(
+    1, 2, 3, 4, "username"
+)

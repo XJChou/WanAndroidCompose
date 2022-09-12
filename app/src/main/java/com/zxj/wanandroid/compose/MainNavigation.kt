@@ -11,6 +11,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.zxj.wanandroid.compose.ui.browser.addBrowserScreen
 import com.zxj.wanandroid.compose.ui.collect.addCollectScreen
 import com.zxj.wanandroid.compose.ui.home.addHomeScreen
+import com.zxj.wanandroid.compose.ui.rank.addRankScreen
 import com.zxj.wanandroid.compose.ui.score.addScoreScreen
 import com.zxj.wanandroid.compose.ui.search.addSearchResultScreen
 import com.zxj.wanandroid.compose.ui.search.addSearchScreen
@@ -57,6 +58,7 @@ fun MainNavigation() {
         addBrowserScreen(navController)
         addCollectScreen(navController)
         addScoreScreen(navController)
+        addRankScreen(navController)
     }
 }
 
@@ -69,6 +71,7 @@ object NavigationRoute {
     val BROWSER = buildBrowserRoute("{webUrl}")
     val COLLECT = "/user/collect"
     val SCORE = "/user/score"
+    val RANK = "/user/rank"
 
     fun buildSearchResultRoute(content: String): String {
         return "/app/search/result?content=${content}"

@@ -34,6 +34,7 @@ import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.ui.NavigationBar
 import com.zxj.wanandroid.compose.ui.screen.home.*
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
+import com.zxj.wanandroid.compose.utils.clickableNotEffect
 import com.zxj.wanandroid.compose.viewmodel.DrawerUIState
 import com.zxj.wanandroid.compose.viewmodel.HomeViewAction
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
@@ -57,6 +58,9 @@ fun NavGraphBuilder.addHomeScreen(controller: NavHostController) {
             },
             enterScoreCollect = {
                 controller.navigate(NavigationRoute.SCORE)
+            },
+            onRankClick = {
+                controller.navigate(NavigationRoute.RANK)
             }
         )
     }
@@ -70,13 +74,18 @@ fun HomeScreen(
     onBrowser: (String) -> Unit,
     enterMineCollect: () -> Unit,
     enterScoreCollect: () -> Unit,
+    onRankClick: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
     val drawerUIState by viewModel.drawerUIState.collectAsState()
     ModalDrawer(
         drawerContent = {
-            DrawHead(drawerUIState, navigation)
+            DrawHead(
+                drawerUIState = drawerUIState,
+                navigation = navigation,
+                onRankClick = onRankClick
+            )
             DrawContent(
                 drawerUIState,
                 navigation = navigation,
@@ -107,7 +116,11 @@ fun HomeScreen(
 }
 
 @Composable
-private fun DrawHead(drawerUIState: DrawerUIState, navigation: (String) -> Unit) {
+private fun DrawHead(
+    drawerUIState: DrawerUIState,
+    navigation: (String) -> Unit,
+    onRankClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,8 +134,7 @@ private fun DrawHead(drawerUIState: DrawerUIState, navigation: (String) -> Unit)
             modifier = Modifier
                 .size(20.dp)
                 .align(Alignment.End)
-                .clickable {
-                },
+                .clickableNotEffect(onClick = onRankClick),
             tint = Color.White
         )
 

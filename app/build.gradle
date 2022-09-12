@@ -97,6 +97,8 @@ dependencies {
     testImplementation(libs.test)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.exspresso)
+    // 约束布局
+    implementation(libs.constraintlayout.compose)
 }
 
 protobuf {

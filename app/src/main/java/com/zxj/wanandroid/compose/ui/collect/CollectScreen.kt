@@ -117,13 +117,9 @@ internal fun CollectScreen(
 
         SmartLazyColumn(
             modifier = Modifier.fillMaxSize(),
-            refreshState = rememberSwipeRefreshState(isRefreshing = false).also {
-                it.isRefreshing = refresh
-            },
+            refreshState = rememberSwipeRefreshState(isRefreshing = refresh),
             onRefresh = onRefresh,
-            nextState = rememberNextState().also {
-                it.state = nextState
-            },
+            nextState = rememberNextState(nextState),
             onPageNext = onNextPage,
             state = state
         ) {
@@ -131,7 +127,9 @@ internal fun CollectScreen(
                 if (dataList.isNotEmpty()) {
                     items(dataList, key = { it.id }) {
                         CollectItem(
-                            modifier = Modifier.animateItemPlacement().padding(top = 1.dp),
+                            modifier = Modifier
+                                .animateItemPlacement()
+                                .padding(top = 1.dp),
                             collectionArticle = it,
                             onItemClick = onItemClick,
                             onRemoveCollect = onRemoveCollect

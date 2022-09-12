@@ -99,4 +99,10 @@
     <string name="audited">待审核</string>
     <string name="submit_ing">正在提交...</string>
 
+    <!--  积分  -->
+    <string name="score">积分</string>
+    <string name="score_detail">积分明细</string>
+    <string name="help_label">帮助</string>
+    <string name="score_list">积分排行榜</string>
+
 </resources>

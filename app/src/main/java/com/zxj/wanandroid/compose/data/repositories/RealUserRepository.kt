@@ -1,10 +1,7 @@
 package com.zxj.wanandroid.compose.data.repositories
 
 import com.zxj.wanandroid.compose.data.HttpConstant
-import com.zxj.wanandroid.compose.data.bean.ListData
-import com.zxj.wanandroid.compose.data.bean.User
-import com.zxj.wanandroid.compose.data.bean.UserInfoBody
-import com.zxj.wanandroid.compose.data.bean.UserScoreBean
+import com.zxj.wanandroid.compose.data.bean.*
 import com.zxj.wanandroid.compose.data.datasource.UserLocalDataSource
 import com.zxj.wanandroid.compose.data.datasource.UserNetworkDataSource
 import com.zxj.wanandroid.compose.net.API
@@ -59,5 +56,9 @@ class RealUserRepository @Inject constructor(
 
     override suspend fun loadUserScoreList(page: Int): API<ListData<UserScoreBean>> {
         return userNetworkDataSource.loadUserScoreList(page)
+    }
+
+    override suspend fun loadRankList(page: Int): API<ListData<CoinInfoBean>> {
+        return userNetworkDataSource.loadRankList(page + 1)
     }
 }

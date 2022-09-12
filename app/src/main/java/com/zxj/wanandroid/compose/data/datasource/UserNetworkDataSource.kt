@@ -1,9 +1,6 @@
 package com.zxj.wanandroid.compose.data.datasource
 
-import com.zxj.wanandroid.compose.data.bean.ListData
-import com.zxj.wanandroid.compose.data.bean.User
-import com.zxj.wanandroid.compose.data.bean.UserInfoBody
-import com.zxj.wanandroid.compose.data.bean.UserScoreBean
+import com.zxj.wanandroid.compose.data.bean.*
 import com.zxj.wanandroid.compose.net.API
 import retrofit2.http.*
 
@@ -29,6 +26,14 @@ interface UserNetworkDataSource {
      */
     @GET("/lg/coin/userinfo/json")
     suspend fun userInfo(): API<UserInfoBody>
+
+    /**
+     * 获取积分排行榜
+     * https://www.wanandroid.com/coin/rank/1/json
+     * @param page 页码 从1开始
+     */
+    @GET("/coin/rank/{page}/json")
+    suspend fun loadRankList(@Path("page") page: Int): API<ListData<CoinInfoBean>>
 
     /**
      * 获取个人积分列表，需要登录后访问

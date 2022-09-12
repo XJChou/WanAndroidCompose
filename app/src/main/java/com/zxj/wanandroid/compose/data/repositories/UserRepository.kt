@@ -1,9 +1,6 @@
 package com.zxj.wanandroid.compose.data.repositories
 
-import com.zxj.wanandroid.compose.data.bean.ListData
-import com.zxj.wanandroid.compose.data.bean.User
-import com.zxj.wanandroid.compose.data.bean.UserInfoBody
-import com.zxj.wanandroid.compose.data.bean.UserScoreBean
+import com.zxj.wanandroid.compose.data.bean.*
 import com.zxj.wanandroid.compose.net.API
 import kotlinx.coroutines.flow.Flow
 
@@ -38,4 +35,6 @@ interface UserRepository {
     suspend fun signOut(): API<String>
 
     suspend fun loadUserScoreList(page: Int): API<ListData<UserScoreBean>>
+
+    suspend fun loadRankList(page: Int): API<ListData<CoinInfoBean>>
 }

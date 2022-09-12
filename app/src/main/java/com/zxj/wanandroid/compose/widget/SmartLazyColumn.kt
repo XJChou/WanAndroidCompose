@@ -97,7 +97,9 @@ fun SmartLazyColumn(
 
 @Composable
 fun rememberNextState(state: Int = NextState.STATE_NONE): NextState {
-    return remember { NextState(state) }
+    return remember { NextState(state) }.also {
+        it.state = state
+    }
 }
 
 class NextState(state: Int = STATE_NONE) {
