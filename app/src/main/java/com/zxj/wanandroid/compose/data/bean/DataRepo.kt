@@ -14,6 +14,50 @@ data class ListData<T>(
     @JSONField(name = "total") val total: Int
 )
 
+// 文章相关
+data class Article(
+    val apkLink: String,
+    val audit: Int,
+    val author: String,
+    val canEdit: Boolean,
+    val chapterId: Int,
+    val chapterName: String,
+    val collect: Boolean,
+    val courseId: Int,
+    val desc: String,
+    val descMd: String,
+    val envelopePic: String,
+    val top:String?,
+    val fresh: Boolean,
+    val host: String,
+    val id: Int,
+    val link: String,
+    val niceDate: String,
+    val niceShareDate: String,
+    val origin: String,
+    val prefix: String,
+    val projectLink: String,
+    val publishTime: Long,
+    val realSuperChapterId: Int,
+    val selfVisible: Int,
+    val shareDate: Long,
+    val shareUser: String,
+    val superChapterId: Int,
+    val superChapterName: String,
+    val tags: List<Tag>,
+    val title: String,
+    val type: Int,
+    val userId: Int,
+    val visible: Int,
+    val zan: Int
+) {
+    data class Tag(
+        val name: String,
+        val url: String
+    )
+}
+
+
 // 用户个人信息
 data class UserInfoBody(
     @JSONField(name = "coinCount") val coinCount: Int, // 总积分
@@ -34,14 +78,7 @@ data class UserScoreBean(
     @JSONField(name = "userName") val userName: String
 )
 
-val userScoreBeanDemoData by lazy {
-    UserScoreBean(
-        1, Date().time, "desc", 1,
-        "reason", 1, 1, "username"
-    )
-}
-
-
+// 收藏实体
 data class CollectionArticle(
     @JSONField(name = "author") val author: String,
     @JSONField(name = "chapterId") val chapterId: Int,
@@ -61,16 +98,6 @@ data class CollectionArticle(
     @JSONField(name = "zan") val zan: Int
 )
 
-// demo数据
-val collectionArticleDemoData by lazy {
-    CollectionArticle(
-        author = "鸿洋", 577, "开始动手实践", 13, "",
-        "", 275110, "https://www.jianshu.com/p/e9d8420b1b9c", "6小时前", "",
-        24169, 1661590161000, "Carson带你学Android：手把手教你写一个完整的自定义View", 131042, 0, 0
-    )
-}
-
-
 // 排行榜实体
 data class CoinInfoBean(
     @JSONField(name = "coinCount") val coinCount: Int,
@@ -80,6 +107,8 @@ data class CoinInfoBean(
     @JSONField(name = "username") val username: String
 )
 
-val coinInfoBeanDemoData = CoinInfoBean(
-    1, 2, 3, 4, "username"
+// 我的分享
+data class ShareResponseBody(
+    val coinInfo: CoinInfoBean,
+    val shareArticles: ListData<Article>
 )

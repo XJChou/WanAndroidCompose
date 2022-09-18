@@ -1,6 +1,6 @@
 [versions]
 accompanist = "0.26.0-alpha"
-compose = '1.3.0-alpha01'
+compose = '1.3.0-beta02'
 room = '2.4.3'
 hilt = '2.40.1'
 retrofit = "2.9.0"

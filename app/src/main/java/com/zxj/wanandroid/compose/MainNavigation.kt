@@ -1,8 +1,6 @@
 package com.zxj.wanandroid.compose
 
 import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
@@ -15,6 +13,7 @@ import com.zxj.wanandroid.compose.ui.rank.addRankScreen
 import com.zxj.wanandroid.compose.ui.score.addScoreScreen
 import com.zxj.wanandroid.compose.ui.search.addSearchResultScreen
 import com.zxj.wanandroid.compose.ui.search.addSearchScreen
+import com.zxj.wanandroid.compose.ui.share.addShareScreen
 import com.zxj.wanandroid.compose.ui.user.addLoginScreen
 import com.zxj.wanandroid.compose.ui.user.addRegisterScreen
 
@@ -59,19 +58,21 @@ fun MainNavigation() {
         addCollectScreen(navController)
         addScoreScreen(navController)
         addRankScreen(navController)
+        addShareScreen(navController)
     }
 }
 
 object NavigationRoute {
-    val HOME = "/app/home"
-    val SEARCH = "/app/search"
+    const val HOME = "/app/home"
+    const val SEARCH = "/app/search"
     val SEARCH_RESULT = buildSearchResultRoute("{content}")
-    val LOGIN = "/user/login"
-    val REGISTER = "/user/register";
+    const val LOGIN = "/user/login"
+    const val REGISTER = "/user/register";
     val BROWSER = buildBrowserRoute("{webUrl}")
-    val COLLECT = "/user/collect"
-    val SCORE = "/user/score"
-    val RANK = "/user/rank"
+    const val COLLECT = "/user/collect"
+    const val SCORE = "/user/score"
+    const val RANK = "/user/rank"
+    const val SHARE = "/user/share"
 
     fun buildSearchResultRoute(content: String): String {
         return "/app/search/result?content=${content}"

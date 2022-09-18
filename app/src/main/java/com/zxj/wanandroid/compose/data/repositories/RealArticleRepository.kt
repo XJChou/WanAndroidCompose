@@ -1,9 +1,6 @@
 package com.zxj.wanandroid.compose.data.repositories
 
-import com.zxj.wanandroid.compose.data.bean.ArticleBean
-import com.zxj.wanandroid.compose.data.bean.CollectionArticle
-import com.zxj.wanandroid.compose.data.bean.Data
-import com.zxj.wanandroid.compose.data.bean.ListData
+import com.zxj.wanandroid.compose.data.bean.*
 import com.zxj.wanandroid.compose.data.datasource.ArticleNetworkDataSource
 import com.zxj.wanandroid.compose.data.datasource.CollectNetworkDataSource
 import com.zxj.wanandroid.compose.data.datasource.IndexLocalDataSource
@@ -48,7 +45,7 @@ class RealArticleRepository @Inject constructor(
     /**
      * 提供每一页内容
      */
-    override suspend fun loadDataList(page: Int): API<ArticleBean> {
+    override suspend fun loadDataList(page: Int): API<ListData<Article>> {
         return if (page == 1) {
             coroutineScope {
                 val topArticleListAsync = async { networkDataSource.loadTopArticleList() }
@@ -58,23 +55,20 @@ class RealArticleRepository @Inject constructor(
                 val articleListAwait = articleListAsync.await()
 
                 if (topArticleListAwait.isSuccess && articleListAwait.isSuccess) {
-                    val targetArticleList = arrayListOf<Data>()
+                    val targetArticleList = arrayListOf<Article>()
 
                     val topArticleList = topArticleListAwait.data
                     if (!topArticleList.isNullOrEmpty()) {
-                        targetArticleList.addAll(topArticleList.map { it.copy(top = "1") })
+                        targetArticleList += topArticleList.map { it.copy(top = "1") }
                     }
 
                     val articleList = articleListAwait.data?.datas
                     if (!articleList.isNullOrEmpty()) {
-                        targetArticleList.addAll(articleList)
+                        targetArticleList += articleList
                     }
 
                     // 组合数据
-                    val result = articleListAwait.data?.copy(
-                        topCount = topArticleList?.size ?: 0,
-                        datas = targetArticleList
-                    )
+                    val result = articleListAwait.data?.copy(datas = targetArticleList)
 
                     API(
                         topArticleListAwait.errorCode,
@@ -96,7 +90,7 @@ class RealArticleRepository @Inject constructor(
         }
     }
 
-    override suspend fun loadSearchArticleList(page: Int, key: String): API<ArticleBean> {
+    override suspend fun loadSearchArticleList(page: Int, key: String): API<ListData<Article>> {
         return networkDataSource.loadSearchArticleList(page, key)
     }
 

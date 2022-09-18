@@ -3,13 +3,16 @@ package com.zxj.wanandroid.compose.ui.search
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.data.bean.Article
 import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
 import com.zxj.wanandroid.compose.widget.NextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -110,7 +113,7 @@ class SearchResultViewModel @Inject constructor(
     /**
      * 处理点赞action
      */
-    fun dealZanAction(collect: Boolean, data: Data) {
+    fun dealZanAction(collect: Boolean, data: Article) {
         viewModelScope.launch {
             val apiResponse = if (collect) {
                 articleRepository.addCollectArticle(data.id)
@@ -126,7 +129,7 @@ class SearchResultViewModel @Inject constructor(
 
 
 data class SearchResultUiState(
-    val data: List<Data> = emptyList(),
+    val data: List<Article> = emptyList(),
     val page: Int = 1,
     val refresh: Boolean = false,
     val nextState: Int = NextState.STATE_NONE

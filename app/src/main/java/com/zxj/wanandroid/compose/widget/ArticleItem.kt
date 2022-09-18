@@ -20,16 +20,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.data.bean.Article
+import com.zxj.wanandroid.compose.data.bean.articleBeanDemoData
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 
 
 @Composable
 fun ArticleItem(
-    data: Data,
+    data: Article,
     modifier: Modifier = Modifier,
-    onItemZanClick: (collect: Boolean, data: Data) -> Unit = { _, _ -> },
-    onItemClick: (data: Data) -> Unit = {},
+    onItemZanClick: (collect: Boolean, data: Article) -> Unit = { _, _ -> },
+    onItemClick: (data: Article) -> Unit = {},
 ) {
     Column(
         modifier
@@ -143,7 +144,7 @@ fun ArticleTag(text: String, color: Color) {
 @Preview
 @Composable
 fun PreviewArticleItem() {
-    ArticleItem(Data.Demo)
+    ArticleItem(articleBeanDemoData)
 }
 
 @Preview

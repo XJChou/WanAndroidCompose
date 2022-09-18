@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.zxj.wanandroid.compose"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -107,8 +107,6 @@ protobuf {
         def name = libs.datastore.protobuf.protoc.get().module
         def version = libs.datastore.protobuf.protoc.get().versionConstraint
         def result = "${name}:${version}"
-        println(result)
-        println(libs.datastore.protobuf.protoc.get().toString())
         artifact = result
     }
     generateProtoTasks {

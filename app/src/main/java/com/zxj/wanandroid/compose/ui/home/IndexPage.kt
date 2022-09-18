@@ -13,8 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.zxj.wanandroid.compose.application.toast
+import com.zxj.wanandroid.compose.data.bean.Article
 import com.zxj.wanandroid.compose.data.bean.BannerBean
-import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.ui.screen.view.Banner
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
@@ -64,8 +64,8 @@ private fun IndexPage(
     nextPageState: Int,
     modifier: Modifier = Modifier,
     bannerList: List<BannerBean> = emptyList(),
-    articleList: List<Data> = emptyList(),
-    onItemZan: (Boolean, Data) -> Unit = { _, _ -> },
+    articleList: List<Article> = emptyList(),
+    onItemZan: (Boolean, Article) -> Unit = { _, _ -> },
     onBrowser: (String) -> Unit = {},
 ) {
     // 刷新布局
@@ -73,8 +73,8 @@ private fun IndexPage(
         modifier = modifier,
         onRefresh = onRefresh,
         onPageNext = onPageNext,
-        refreshState = rememberSwipeRefreshState(isRefresh).also { it.isRefreshing = isRefresh },
-        nextState = rememberNextState().also { it.state = nextPageState }
+        refreshState = rememberSwipeRefreshState(isRefresh),
+        nextState = rememberNextState(nextPageState)
     ) {
 
         // BannerList 点击

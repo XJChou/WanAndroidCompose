@@ -1,9 +1,6 @@
 package com.zxj.wanandroid.compose.data.repositories
 
-import com.zxj.wanandroid.compose.data.bean.ArticleBean
-import com.zxj.wanandroid.compose.data.bean.BannerBean
-import com.zxj.wanandroid.compose.data.bean.CollectionArticle
-import com.zxj.wanandroid.compose.data.bean.ListData
+import com.zxj.wanandroid.compose.data.bean.*
 import com.zxj.wanandroid.compose.net.API
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Path
@@ -18,9 +15,9 @@ interface ArticleRepository {
 
     suspend fun loadBannerList(): API<List<BannerBean>>
 
-    suspend fun loadDataList(page: Int): API<ArticleBean>
+    suspend fun loadDataList(page: Int): API<ListData<Article>>
 
-    suspend fun loadSearchArticleList(page: Int, key: String): API<ArticleBean>
+    suspend fun loadSearchArticleList(page: Int, key: String): API<ListData<Article>>
 
     suspend fun loadCollectArticleList(page: Int): API<ListData<CollectionArticle>>
 

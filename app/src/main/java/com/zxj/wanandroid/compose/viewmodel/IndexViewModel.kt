@@ -2,8 +2,8 @@ package com.zxj.wanandroid.compose.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zxj.wanandroid.compose.data.bean.Article
 import com.zxj.wanandroid.compose.data.bean.BannerBean
-import com.zxj.wanandroid.compose.data.bean.Data
 import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
 import com.zxj.wanandroid.compose.widget.NextState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -108,7 +108,7 @@ class IndexViewModel @Inject constructor(
     /**
      * 处理点赞action
      */
-    fun dealZanAction(collect: Boolean, data: Data) {
+    fun dealZanAction(collect: Boolean, data: Article) {
         viewModelScope.launch {
             val apiResponse = if (collect) {
                 articleRepository.addCollectArticle(data.id)
@@ -132,7 +132,7 @@ class IndexViewModel @Inject constructor(
 data class IndexViewState(
     val refresh: Boolean = false,
     val bannerList: List<BannerBean> = emptyList(),
-    val articleList: List<Data> = emptyList(),
+    val articleList: List<Article> = emptyList(),
     val nextState: Int = NextState.STATE_NONE,
 )
 

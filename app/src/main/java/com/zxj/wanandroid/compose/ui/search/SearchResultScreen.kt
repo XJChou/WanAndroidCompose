@@ -23,7 +23,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.application.toast
-import com.zxj.wanandroid.compose.data.bean.Data
+import com.zxj.wanandroid.compose.data.bean.Article
 import com.zxj.wanandroid.compose.widget.*
 
 /**
@@ -47,7 +47,7 @@ fun NavGraphBuilder.addSearchResultScreen(
 @Composable
 fun SearchResultRoute(
     onBack: () -> Unit,
-    onItemClick: (Data) -> Unit,
+    onItemClick: (Article) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SearchResultViewModel = hiltViewModel()
 ) {
@@ -80,13 +80,13 @@ fun SearchResultRoute(
 internal fun SearchResultScreen(
     refresh: Boolean,
     nextPageState: Int,
-    data: List<Data>,
+    data: List<Article>,
     content: String,
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onPageNext: () -> Unit,
-    onItemClick: (Data) -> Unit,
-    onItemZan: (Boolean, Data) -> Unit,
+    onItemClick: (Article) -> Unit,
+    onItemZan: (Boolean, Article) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier.fillMaxSize()) {
