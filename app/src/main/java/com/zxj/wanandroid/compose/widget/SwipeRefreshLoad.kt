@@ -54,7 +54,7 @@ class SwipeRefreshLoadState(isRefreshing: Boolean, isLoading: Boolean, isLoadFin
     private val mutatorMutex = androidx.compose.foundation.MutatorMutex()
 
     // 当前内容偏移
-    private val _contentOffset = Animatable(0f)
+    private val _contentOffset = mutableStateOf(0f)
     val contentOffset: Float get() = _contentOffset.value
 
     // 当前是否拖拽
@@ -72,56 +72,42 @@ class SwipeRefreshLoadState(isRefreshing: Boolean, isLoading: Boolean, isLoadFin
 
     internal suspend fun animateOffsetTo(offset: Float) {
         mutatorMutex.mutate {
-            _contentOffset.animateTo(offset)
+            AnimationState(initialValue = contentOffset).animateTo(offset) {
+                _contentOffset.value = this.value
+            }
         }
     }
-
-    private var animationJob: Job? = null
 
     internal suspend fun animateDecay(
         range: ClosedFloatingPointRange<Float>,
         target: Float,
         velocity: Velocity
     ): Velocity {
+        // reset Data
         var endVelocity = 0f
+
         mutatorMutex.mutate {
-            // 自己算的
-            coroutineScope {
-                animationJob = launch {
-                    animateDecay(
-                        initialValue = _contentOffset.value,
-                        initialVelocity = velocity.y,
-                        animationSpec = FloatExponentialDecaySpec(frictionMultiplier = 1.25f)
-                    ) { value, velocity ->
-                        if (value !in range) {
-                            animationJob?.cancel()
-                            endVelocity = velocity
-                            runBlocking { _contentOffset.snapTo(target) }
-                        } else {
-                            runBlocking { _contentOffset.snapTo(value) }
-                        }
-                    }
-//                _contentOffset.animateDecay(
-//                    initialVelocity = _contentOffset.value,
-//                    animationSpec = exponentialDecay()
-//                ) {
-//                    if (value !in range) {
-//                        animationJob?.cancel()
-//                        endVelocity = this.velocity
-//                    }
-//                }
-                    animationJob?.join()
-                    animationJob = null
+            AnimationState(
+                initialValue = _contentOffset.value,
+                initialVelocity = velocity.y
+            ).animateDecay(exponentialDecay(frictionMultiplier = 2.5f)) {
+                if (value !in range) {
+                    cancelAnimation()
+                    endVelocity = this.velocity
+                    _contentOffset.value = target
+                } else {
+                    _contentOffset.value = value
                 }
             }
         }
+        // 返回消费的
         println("origin = ${velocity.y}, remind = ${endVelocity}, comsumed = ${velocity.y - endVelocity}")
         return velocity.copy(y = velocity.y - endVelocity)
     }
 
     internal suspend fun snapDeltaTo(delta: Float) {
         mutatorMutex.mutate(androidx.compose.foundation.MutatePriority.UserInput) {
-            _contentOffset.snapTo(_contentOffset.value + delta)
+            _contentOffset.value += delta
         }
     }
 }
@@ -157,7 +143,7 @@ fun SwipeRefreshLoad(
 
         }
     },
-    loadHeight: Dp = 360.dp,
+    loadHeight: Dp = 60.dp,
     content: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -294,6 +280,7 @@ private class SwipeRefreshLoadNestedScrollConnect(
         state.isSwipeInProgress = true
         val newOffset = (available.y * DragMultiplier + state.contentOffset)
             .coerceAtLeast(-loadTrigger)
+            .coerceAtMost(0f)
         val dragConsumed = newOffset - state.contentOffset
         return if (dragConsumed.absoluteValue >= 0.5f) {
             coroutineScope.launch { state.snapDeltaTo(dragConsumed) }
@@ -309,7 +296,7 @@ private class SwipeRefreshLoadNestedScrollConnect(
 
         // 加载显示 + 快滑下来
         if (state.contentOffset < 0 && available.y > 0) {
-            return state.animateDecay((-360.dp.value..0f), 0f, available)
+            return state.animateDecay((-60.dp.value..0f), 0f, available)
         }
         return Velocity.Zero
     }
@@ -317,7 +304,8 @@ private class SwipeRefreshLoadNestedScrollConnect(
     override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
         // 如果当前 available.y < 0, 则直接处理偏移值
         if (available.y < 0) {
-            return state.animateDecay((-360.dp.value..0f), -360.dp.value, available)
+            state.animateDecay((-60.dp.value..0f), -60.dp.value, available)
+            return Velocity.Zero
         }
         return Velocity.Zero
     }
