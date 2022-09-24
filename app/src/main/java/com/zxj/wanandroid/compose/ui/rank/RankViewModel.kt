@@ -3,11 +3,7 @@ package com.zxj.wanandroid.compose.ui.rank
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zxj.wanandroid.compose.data.bean.CoinInfoBean
-import com.zxj.wanandroid.compose.data.bean.CollectionArticle
-import com.zxj.wanandroid.compose.data.bean.UserScoreBean
 import com.zxj.wanandroid.compose.data.repositories.UserRepository
-import com.zxj.wanandroid.compose.ui.collect.CollectUIEvent
-import com.zxj.wanandroid.compose.ui.collect.CollectUiState
 import com.zxj.wanandroid.compose.widget.NextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

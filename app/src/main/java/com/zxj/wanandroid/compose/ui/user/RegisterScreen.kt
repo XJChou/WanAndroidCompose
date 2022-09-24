@@ -111,6 +111,9 @@ fun ColumnScope.RegisterPage(
                 is RegisterViewEvent.RegisterError -> {
                     toast("注册失败：${it.message}")
                 }
+                else -> {
+
+                }
             }
         }
     }

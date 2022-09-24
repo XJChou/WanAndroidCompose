@@ -32,15 +32,14 @@ val TOOLBAR_HEIGHT = 48.dp
 @Composable
 fun TextToolBar(
     title: String,
+    modifier: Modifier = Modifier,
     fitsSystemWindows: Boolean = true,
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable (RowScope.() -> Unit)? = null
 ) {
-    var modifier: Modifier = Modifier.background(WanAndroidTheme.colors.colorPrimary)
+    var modifier: Modifier = modifier.background(WanAndroidTheme.colors.colorPrimary)
     if (fitsSystemWindows) modifier = modifier.statusBarsPadding()
-    modifier = modifier
-        .fillMaxWidth(1f)
-        .height(TOOLBAR_HEIGHT)
+    modifier = modifier.fillMaxWidth(1f).height(TOOLBAR_HEIGHT)
     Toolbar(
         title = {
             Text(

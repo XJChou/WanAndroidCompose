@@ -63,7 +63,6 @@ fun BrowserScreen(url: String, onBack: () -> Unit) {
         )
         TextToolBar(
             webState.pageTitle ?: "",
-            true,
             navigationIcon = { ToolBarIcon(R.drawable.ic_back, onBack) }
         )
     }

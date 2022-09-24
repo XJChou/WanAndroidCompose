@@ -1,0 +1,37 @@
+package com.zxj.wanandroid.compose.utils
+
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
+import com.zxj.wanandroid.compose.data.bean.ListData
+import com.zxj.wanandroid.compose.net.API
+
+fun <Item : Any> createIntPagingSource(fetch: suspend (Int) -> API<ListData<Item>>): PagingSource<Int, Item> {
+    return IntPagingSource(fetch)
+}
+
+private class IntPagingSource<Item : Any>(val fetch: suspend (Int) -> API<ListData<Item>>) :
+    PagingSource<Int, Item>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Item> {
+        val pageIndex = params.key ?: 1
+        val response = fetch(pageIndex)
+        return if (response.isSuccess) {
+            val prevKey = if (pageIndex == 1) null else pageIndex.minus(1)
+            val dataList = response.data?.datas ?: emptyList()
+            val nextKey =
+                if (dataList.isEmpty() || response.data?.over == true) null else pageIndex.plus(1)
+            LoadResult.Page(dataList, prevKey, nextKey)
+        } else {
+            LoadResult.Error(RuntimeException(response.errorMsg))
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, Item>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        }
+    }
+
+}
+

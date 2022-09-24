@@ -40,7 +40,7 @@ android {
     }
     composeOptions {
 //        kotlinCompilerExtensionVersion libs.versions.compose.get().toString()
-        kotlinCompilerExtensionVersion "1.2.0-beta02"
+        kotlinCompilerExtensionVersion "1.3.0"
     }
     packagingOptions {
         resources {
@@ -82,9 +82,9 @@ dependencies {
     androidTestImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.tooling)
     // page3
-    testImplementation(libs.pageing.tests)
-    implementation(libs.pageing)
-    implementation(libs.pageing.compose)
+    testImplementation(libs.paging.tests)
+    implementation(libs.paging)
+    implementation(libs.paging.compose)
     // 网络相关
     implementation(libs.okhttp)
     implementation(libs.okhttp.logger)
