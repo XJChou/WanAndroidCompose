@@ -116,4 +116,9 @@ class RealArticleRepository @Inject constructor(
         }
     }
 
+    override suspend fun loadShareList(page: Int): API<ShareResponseBody> {
+        return networkDataSource.loadShareList(page)
+    }
+
+
 }

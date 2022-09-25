@@ -61,7 +61,7 @@ fun CollectRoute(
     onItemClick: (CollectionArticle) -> Unit = {},
     viewModel: CollectViewModel = hiltViewModel()
 ) {
-    val pagingItems = viewModel.pageData.collectAsLazyPagingItems()
+    val pagingItems = viewModel.pagingData.collectAsLazyPagingItems()
     CollectScreen(
         modifier = modifier,
         onBack = onBack,
@@ -94,16 +94,9 @@ internal fun CollectScreen(
 ) {
     val state = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    val isRefresh by remember {
-        derivedStateOf { pagingItems.loadState.refresh is LoadState.Loading }
-    }
-    val isLoading by remember {
-        derivedStateOf { pagingItems.loadState.append is LoadState.Loading }
-    }
-    val isShowFloating by remember(state) {
-        derivedStateOf { state.firstVisibleItemIndex > 5 }
-    }
+    val isShowFloating by remember(state) { derivedStateOf { state.firstVisibleItemIndex > 5 } }
     Scaffold(
+        modifier = modifier,
         topBar = {
             TextToolBar(
                 title = stringResource(id = R.string.nav_my_collect),
@@ -130,42 +123,22 @@ internal fun CollectScreen(
             }
         },
     ) { padding ->
-        SwipeRefresh(
-            modifier = Modifier.padding(padding),
-            state = rememberSwipeRefreshState(isRefreshing = isRefresh),
-            onRefresh = { pagingItems.refresh() }) {
-            LazyColumn(
-                state = state
-            ) {
-                if (!isRefresh && !isLoading && pagingItems.itemCount == 0) {
-                    item { EmptyData(modifier = modifier.fillParentMaxSize()) }
-                } else {
-                    items(pagingItems, { it.id }) {
-                        CollectItem(
-                            modifier = Modifier
-                                .animateItemPlacement()
-                                .padding(top = 1.dp),
-                            collectionArticle = it!!,
-                            onItemClick = onItemClick,
-                            onRemoveCollect = onRemoveCollect
-                        )
-                    }
-                    handleLoadState(pagingItems)
-                }
+        PagingLazyColumn(
+            pagingItems = pagingItems,
+            padding = padding,
+            state = state,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(pagingItems, { it.id }) {
+                CollectItem(
+                    modifier = Modifier
+                        .animateItemPlacement()
+                        .padding(top = 1.dp),
+                    collectionArticle = it!!,
+                    onItemClick = onItemClick,
+                    onRemoveCollect = onRemoveCollect
+                )
             }
         }
     }
 }
-
-@Preview
-@Composable
-fun PreviewCollectScreen() {
-    WanAndroidTheme {
-//        CollectScreen(
-//            refresh = false,
-//            nextState = NextState.STATE_NONE,
-//            dataList = arrayListOf(collectionArticleDemoData)
-//        )
-    }
-}
-

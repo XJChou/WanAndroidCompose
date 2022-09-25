@@ -45,7 +45,7 @@ interface ArticleNetworkDataSource {
      * @param page 页码 从1开始
      */
     @GET("user/lg/private_articles/{page}/json")
-    fun loadShareList(@Path("page") page: Int): API<ShareResponseBody>
+    suspend fun loadShareList(@Path("page") page: Int): API<ShareResponseBody>
 
     /**
      * 分享文章
@@ -56,7 +56,7 @@ interface ArticleNetworkDataSource {
      */
     @POST("lg/user_article/add/json")
     @FormUrlEncoded
-    fun shareArticle(@FieldMap map: MutableMap<String, Any>): API<Any>
+    suspend fun shareArticle(@FieldMap map: MutableMap<String, Any>): API<Any>
 
     /**
      * 删除自己分享的文章
@@ -64,7 +64,7 @@ interface ArticleNetworkDataSource {
      * @param id 文章id，拼接在链接上
      */
     @POST("lg/user_article/delete/{id}/json")
-    fun deleteShareArticle(@Path("id") id: Int): API<Any>
+    suspend fun deleteShareArticle(@Path("id") id: Int): API<Any>
 
 
 }

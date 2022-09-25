@@ -24,4 +24,6 @@ interface ArticleRepository {
     suspend fun addCollectArticle(@Path("id") id: Int): API<String>
 
     suspend fun removeCollectArticle(@Path("id") id: Int): API<String>
+
+    suspend fun loadShareList(page: Int): API<ShareResponseBody>
 }

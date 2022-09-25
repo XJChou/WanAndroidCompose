@@ -61,6 +61,9 @@ fun NavGraphBuilder.addHomeScreen(controller: NavHostController) {
             },
             onRankClick = {
                 controller.navigate(NavigationRoute.RANK)
+            },
+            onShareClick = {
+                controller.navigate(NavigationRoute.SHARE)
             }
         )
     }
@@ -74,7 +77,8 @@ fun HomeScreen(
     onBrowser: (String) -> Unit,
     enterMineCollect: () -> Unit,
     enterScoreCollect: () -> Unit,
-    onRankClick: () -> Unit
+    onRankClick: () -> Unit,
+    onShareClick: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -96,6 +100,7 @@ fun HomeScreen(
                     },
                 enterMineCollect = enterMineCollect,
                 enterScoreCollect = enterScoreCollect,
+                onShareClick = onShareClick,
                 signOut = {
                     viewModel.dispatch(HomeViewAction.SignOutAction)
                 }
@@ -196,6 +201,7 @@ private fun DrawContent(
     modifier: Modifier,
     enterMineCollect: () -> Unit = {},
     enterScoreCollect: () -> Unit = {},
+    onShareClick: () -> Unit = {},
     signOut: () -> Unit = {}
 ) {
     Column(
@@ -213,9 +219,7 @@ private fun DrawContent(
             drawerUIState.ifLogin(navigation, enterMineCollect)
         }
         DrawItemContent(R.drawable.ic_share_white_24dp, stringResource(id = R.string.my_share)) {
-            drawerUIState.ifLogin(navigation) {
-
-            }
+            drawerUIState.ifLogin(navigation, onShareClick)
         }
         DrawItemContent(R.drawable.ic_todo_default_24dp, stringResource(id = R.string.nav_todo)) {
             drawerUIState.ifLogin(navigation) {

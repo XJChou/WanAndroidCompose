@@ -3,16 +3,17 @@ package com.zxj.wanandroid.compose.ui.search
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.*
 import com.zxj.wanandroid.compose.data.bean.Article
+import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
+import com.zxj.wanandroid.compose.net.API
+import com.zxj.wanandroid.compose.utils.createIntPagingSource
 import com.zxj.wanandroid.compose.widget.NextState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,91 +23,27 @@ class SearchResultViewModel @Inject constructor(
     private val articleRepository: ArticleRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SearchResultUiState())
-    val uiState = _uiState.asStateFlow()
+    private val pager = Pager(PagingConfig(20)) { createIntPagingSource(::fetch) }
+    val pagingItems = pager.flow.cachedIn(viewModelScope)
+//        .combine(articleRepository.collectFlow, ::combineFlow)
 
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private var job: Job? = null
     val searchContext: String = checkNotNull(savedStateHandle["content"])
 
-    init {
-        refresh()
-        collectZan()
+    private suspend fun fetch(pageIndex: Int): API<ListData<Article>> {
+        return articleRepository.loadSearchArticleList(pageIndex - 1, searchContext)
     }
 
-    private fun collectZan() {
-        viewModelScope.launch {
-            articleRepository.collectFlow.collect { pair ->
-                val value = _uiState.value
-                var changed = false
-                val newData = value.data.map {
-                    if (it.id == pair.first) {
-                        changed = true
-                        it.copy(collect = pair.second)
-                    } else {
-                        it
-                    }
-                }
-                if (changed) {
-                    _uiState.compareAndSet(value, value.copy(data = newData))
-                }
-            }
-        }
-    }
-
-    /**
-     * 刷新
-     */
-    fun refresh() {
-        if (job?.isActive == true) return
-        job = viewModelScope.launch {
-            _uiState.update { it.copy(refresh = true) }
-            articleRepository.loadSearchArticleList(0, searchContext)
-                .ifSuccess {
-                    _uiState.update {
-                        it.copy(
-                            refresh = false,
-                            page = 1,
-                            data = this.data?.datas ?: emptyList(),
-                            nextState = if (this.data?.over != false) NextState.STATE_FINISH_OVER else NextState.STATE_FINISH_PART
-                        )
-                    }
-                }
-                .ifError {
-                    _uiState.update { it.copy(refresh = false) }
-                }
-        }
-    }
-
-    /**
-     * 下一页
-     */
-    fun nextPage() {
-        if (job?.isActive == true) return
-        job = viewModelScope.launch {
-            _uiState.update {
-                it.copy(nextState = NextState.STATE_LOADING)
-            }
-            val nextPage = _uiState.value.page + 1
-            articleRepository.loadSearchArticleList(nextPage - 1, searchContext)
-                .ifSuccess {
-                    _uiState.update {
-                        it.copy(
-                            nextState = if (this.data?.over != false) NextState.STATE_FINISH_OVER else NextState.STATE_FINISH_PART,
-                            page = nextPage,
-                            data = ArrayList(it.data).also {
-                                it.addAll(this.data?.datas ?: emptyList())
-                            }
-                        )
-                    }
-                }
-                .ifError {
-                    _uiState.update {
-                        it.copy(nextState = NextState.STATE_ERROR)
-                    }
-                }
+    private suspend fun combineFlow(
+        pageData: PagingData<Article>,
+        collect: Pair<Int, Boolean>
+    ) = pageData.map {
+        if (it.id == collect.first && it.collect != collect.second) {
+            it.copy(collect = collect.second)
+        } else {
+            it
         }
     }
 
@@ -127,13 +64,6 @@ class SearchResultViewModel @Inject constructor(
     }
 }
 
-
-data class SearchResultUiState(
-    val data: List<Article> = emptyList(),
-    val page: Int = 1,
-    val refresh: Boolean = false,
-    val nextState: Int = NextState.STATE_NONE
-)
 
 interface UIEvent {
     data class ShowToast(val msg: String) : UIEvent

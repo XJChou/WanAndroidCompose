@@ -26,7 +26,7 @@ class CollectViewModel @Inject constructor(
     private val removedItemsFlow: Flow<List<Int>> get() = _removeItemFlow.asStateFlow()
 
     private var pager = Pager(PagingConfig(20)) { createIntPagingSource(::fetch) }
-    val pageData = pager.flow.cachedIn(viewModelScope)
+    val pagingData = pager.flow.cachedIn(viewModelScope)
         .combine(removedItemsFlow) { pagingData, removed ->
             pagingData.filter { it.originId !in removed }
         }

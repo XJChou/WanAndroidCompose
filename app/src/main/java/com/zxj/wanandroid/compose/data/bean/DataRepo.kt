@@ -1,9 +1,11 @@
 package com.zxj.wanandroid.compose.data.bean
 
+import androidx.annotation.Keep
 import com.alibaba.fastjson.annotation.JSONField
 import java.util.*
 
 // 通用的带有列表数据的实体
+@Keep
 data class ListData<T>(
     @JSONField(name = "curPage") val curPage: Int,
     @JSONField(name = "datas") val datas: List<T>,
@@ -15,6 +17,7 @@ data class ListData<T>(
 )
 
 // 文章相关
+@Keep
 data class Article(
     val apkLink: String,
     val audit: Int,
@@ -59,6 +62,7 @@ data class Article(
 
 
 // 用户个人信息
+@Keep
 data class UserInfoBody(
     @JSONField(name = "coinCount") val coinCount: Int, // 总积分
     @JSONField(name = "rank") val rank: Int, // 当前排名
@@ -67,6 +71,7 @@ data class UserInfoBody(
 )
 
 // 个人积分实体
+@Keep
 data class UserScoreBean(
     @JSONField(name = "coinCount") val coinCount: Int,
     @JSONField(name = "date") val date: Long,
@@ -79,6 +84,7 @@ data class UserScoreBean(
 )
 
 // 收藏实体
+@Keep
 data class CollectionArticle(
     @JSONField(name = "author") val author: String,
     @JSONField(name = "chapterId") val chapterId: Int,
@@ -99,6 +105,7 @@ data class CollectionArticle(
 )
 
 // 排行榜实体
+@Keep
 data class CoinInfoBean(
     @JSONField(name = "coinCount") val coinCount: Int,
     @JSONField(name = "level") val level: Int,
@@ -108,6 +115,7 @@ data class CoinInfoBean(
 )
 
 // 我的分享
+@Keep
 data class ShareResponseBody(
     val coinInfo: CoinInfoBean,
     val shareArticles: ListData<Article>
