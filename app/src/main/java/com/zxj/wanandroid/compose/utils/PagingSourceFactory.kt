@@ -1,12 +1,18 @@
 package com.zxj.wanandroid.compose.utils
 
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
+import androidx.paging.*
 import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.net.API
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 
 fun <Item : Any> createIntPagingSource(fetch: suspend (Int) -> API<ListData<Item>>): PagingSource<Int, Item> {
     return IntPagingSource(fetch)
+}
+
+fun <Item : Any> CoroutineScope.createIntPagingFlow(fetch: suspend (Int) -> API<ListData<Item>>): Flow<PagingData<Item>> {
+    val pager = Pager(PagingConfig(20)) { createIntPagingSource(fetch) }
+    return pager.flow.cachedIn(this)
 }
 
 private class IntPagingSource<Item : Any>(val fetch: suspend (Int) -> API<ListData<Item>>) :

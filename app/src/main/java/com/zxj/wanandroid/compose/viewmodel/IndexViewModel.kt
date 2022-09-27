@@ -2,19 +2,19 @@ package com.zxj.wanandroid.compose.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.map
 import com.zxj.wanandroid.compose.data.bean.Article
 import com.zxj.wanandroid.compose.data.bean.BannerBean
+import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
-import com.zxj.wanandroid.compose.widget.NextState
+import com.zxj.wanandroid.compose.net.API
+import com.zxj.wanandroid.compose.utils.createIntPagingFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,81 +27,40 @@ class IndexViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(IndexViewState())
     val uiState = _uiState.asStateFlow()
 
+    private val collectFlow =
+        articleRepository.collectFlow.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    val pageItems = viewModelScope.createIntPagingFlow(::fetch)
+        .combine(collectFlow) { pagingData, collect ->
+            pagingData.map {
+                if (it.id == collect?.first) {
+                    it.collect = collect.second
+                }
+                it
+            }
+        }
+
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private var job: Job? = null
-    private var pageIndex = 1
-
-    init {
-        refresh()
-
-        viewModelScope.launch {
-            articleRepository.collectFlow.collect { pair ->
-                val value = _uiState.value
-                var changed = false
-                val newData = value.articleList.map {
-                    if (it.id == pair.first) {
-                        changed = true
-                        it.copy(collect = pair.second)
-                    } else {
-                        it
-                    }
-                }
-                if (changed) {
-                    _uiState.compareAndSet(value, value.copy(articleList = newData))
-                }
-            }
-        }
-    }
-
     /* ------------------------ action处理 ------------------------ */
-    fun refresh() {
-        if (job?.isActive == true) return
-        job = viewModelScope.launch {
-            _uiState.update { it.copy(refresh = true) }
-            val bannerListAwait = async { indexRepository.loadBannerList() }
-            val articleListAwait = async { indexRepository.loadDataList(1) }
-            if (awaitAll(bannerListAwait, articleListAwait).all { it.isSuccess }) {
-                val bannerList = bannerListAwait.await().data ?: emptyList()
-                val articleData = articleListAwait.await().data
-                _uiState.update {
-                    it.copy(
-                        refresh = false,
-                        bannerList = bannerList,
-                        articleList = articleData?.datas ?: emptyList(),
-                        nextState = if (articleData?.over == true) NextState.STATE_FINISH_OVER else NextState.STATE_FINISH_PART
-                    )
+    private suspend fun fetch(pageIndex: Int): API<ListData<Article>> {
+        return if (pageIndex == 1) {
+            coroutineScope {
+                val bannerListAwait = async { indexRepository.loadBannerList() }
+                val dataListAwait = async { indexRepository.loadDataList(pageIndex) }
+                awaitAll(bannerListAwait, dataListAwait)
+                val bannerListResponse = bannerListAwait.await().also { response ->
+                    _uiState.update { it.copy(bannerList = response.data ?: emptyList()) }
                 }
-                pageIndex = 1
-            } else {
-                _uiState.update { it.copy(refresh = false) }
+                val dataListResponse = dataListAwait.await()
+                API(
+                    errorCode = bannerListResponse.errorCode + dataListResponse.errorCode,
+                    errorMsg = dataListResponse.errorMsg ?: bannerListResponse.errorMsg,
+                    dataListResponse.data
+                )
             }
-        }
-    }
-
-    fun nextPage() {
-        if (job?.isActive == true) return
-        val nextPage = this.pageIndex + 1
-        job = viewModelScope.launch {
-            _uiState.update { it.copy(nextState = NextState.STATE_LOADING) }
-            indexRepository.loadDataList(nextPage)
-                .ifSuccess { data ->
-                    val originArticleList = (_uiState.value.articleList as MutableList).also {
-                        val networkData = data?.datas ?: emptyList()
-                        if (networkData.isNotEmpty()) it.addAll(networkData)
-                    }
-                    _uiState.update {
-                        it.copy(
-                            nextState = if (data?.over == true) NextState.STATE_FINISH_OVER else NextState.STATE_FINISH_PART,
-                            articleList = originArticleList
-                        )
-                    }
-                    this@IndexViewModel.pageIndex = nextPage
-                }
-                .ifError {
-                    _uiState.update { it.copy(nextState = NextState.STATE_ERROR) }
-                }
+        } else {
+            indexRepository.loadDataList(pageIndex)
         }
     }
 
@@ -122,18 +81,9 @@ class IndexViewModel @Inject constructor(
     }
 }
 
-/**
- * 承载了页面所有状态 state [ model -> view ]
- * 1. 当前刷新状态
- * 2. banner列表
- * 3. 文章列表
- * 4. 当前加载状态
- */
+
 data class IndexViewState(
-    val refresh: Boolean = false,
     val bannerList: List<BannerBean> = emptyList(),
-    val articleList: List<Article> = emptyList(),
-    val nextState: Int = NextState.STATE_NONE,
 )
 
 interface UIEvent {

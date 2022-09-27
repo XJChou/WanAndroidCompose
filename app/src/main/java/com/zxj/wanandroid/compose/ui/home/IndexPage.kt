@@ -11,7 +11,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.data.bean.Article
 import com.zxj.wanandroid.compose.data.bean.BannerBean
@@ -20,9 +23,8 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 import com.zxj.wanandroid.compose.viewmodel.UIEvent
 import com.zxj.wanandroid.compose.widget.ArticleItem
-import com.zxj.wanandroid.compose.widget.NextState
-import com.zxj.wanandroid.compose.widget.SmartLazyColumn
-import com.zxj.wanandroid.compose.widget.rememberNextState
+import com.zxj.wanandroid.compose.widget.PagingLazyColumn
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun IndexPage(
@@ -31,16 +33,13 @@ fun IndexPage(
     indexViewModel: IndexViewModel = hiltViewModel()
 ) {
     val uiState by indexViewModel.uiState.collectAsState()
+    val pagingItems = indexViewModel.pageItems.collectAsLazyPagingItems()
     IndexPage(
         modifier = modifier
             .fillMaxSize()
             .background(WanAndroidTheme.colors.windowBackground),
-        onRefresh = { indexViewModel.refresh() },
-        isRefresh = uiState.refresh,
-        onPageNext = { indexViewModel.nextPage() },
-        nextPageState = uiState.nextState,
         bannerList = uiState.bannerList,
-        articleList = uiState.articleList,
+        pagingItems = pagingItems,
         onItemZan = { collect, data -> indexViewModel.dealZanAction(collect, data) },
         onBrowser = onBrowser
     )
@@ -58,25 +57,13 @@ fun IndexPage(
 @VisibleForTesting
 @Composable
 private fun IndexPage(
-    onRefresh: () -> Unit,
-    isRefresh: Boolean,
-    onPageNext: () -> Unit,
-    nextPageState: Int,
+    bannerList: List<BannerBean>,
+    pagingItems: LazyPagingItems<Article>,
     modifier: Modifier = Modifier,
-    bannerList: List<BannerBean> = emptyList(),
-    articleList: List<Article> = emptyList(),
     onItemZan: (Boolean, Article) -> Unit = { _, _ -> },
     onBrowser: (String) -> Unit = {},
 ) {
-    // 刷新布局
-    SmartLazyColumn(
-        modifier = modifier,
-        onRefresh = onRefresh,
-        onPageNext = onPageNext,
-        refreshState = rememberSwipeRefreshState(isRefresh),
-        nextState = rememberNextState(nextPageState)
-    ) {
-
+    PagingLazyColumn(modifier = modifier, pagingItems = pagingItems) {
         // BannerList 点击
         if (bannerList.isNotEmpty()) {
             item(contentType = 0) {
@@ -85,11 +72,9 @@ private fun IndexPage(
                 }
             }
         }
-
-        // 列表内容
-        items(articleList.size, contentType = { 1 }) {
+        items(pagingItems, key = { it.id }) {
             ArticleItem(
-                articleList[it],
+                it!!,
                 onItemZanClick = onItemZan,
                 onItemClick = { onBrowser(it.link) }
             )
@@ -102,10 +87,8 @@ private fun IndexPage(
 fun PreviewIndexPage() {
     WanAndroidTheme {
         IndexPage(
-            onRefresh = { },
-            isRefresh = false,
-            onPageNext = { },
-            nextPageState = NextState.STATE_NONE,
+            bannerList = emptyList(),
+            pagingItems = flowOf(PagingData.empty<Article>()).collectAsLazyPagingItems(),
             onBrowser = {}
         )
     }

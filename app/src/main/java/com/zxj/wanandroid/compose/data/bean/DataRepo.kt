@@ -1,6 +1,9 @@
 package com.zxj.wanandroid.compose.data.bean
 
 import androidx.annotation.Keep
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.alibaba.fastjson.annotation.JSONField
 import java.util.*
 
@@ -18,19 +21,19 @@ data class ListData<T>(
 
 // 文章相关
 @Keep
-data class Article(
+class Article(
     val apkLink: String,
     val audit: Int,
     val author: String,
     val canEdit: Boolean,
     val chapterId: Int,
     val chapterName: String,
-    val collect: Boolean,
+    collect: Boolean,
     val courseId: Int,
     val desc: String,
     val descMd: String,
     val envelopePic: String,
-    val top:String?,
+    top: String?,
     val fresh: Boolean,
     val host: String,
     val id: Int,
@@ -54,6 +57,10 @@ data class Article(
     val visible: Int,
     val zan: Int
 ) {
+    var collect by mutableStateOf(collect)
+
+    var top by mutableStateOf(top)
+
     data class Tag(
         val name: String,
         val url: String

@@ -59,7 +59,9 @@ class RealArticleRepository @Inject constructor(
 
                     val topArticleList = topArticleListAwait.data
                     if (!topArticleList.isNullOrEmpty()) {
-                        targetArticleList += topArticleList.map { it.copy(top = "1") }
+                        targetArticleList += topArticleList.also {
+                            it.forEach { it.top = "1" }
+                        }
                     }
 
                     val articleList = articleListAwait.data?.datas

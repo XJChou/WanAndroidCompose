@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -23,7 +24,7 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 fun <Item : Any> PagingLazyColumn(
     modifier: Modifier,
     pagingItems: LazyPagingItems<Item>,
-    padding: PaddingValues,
+    padding: PaddingValues = PaddingValues(0.dp),
     state: LazyListState = rememberLazyListState(),
     content: LazyListScope.() -> Unit,
 ) {

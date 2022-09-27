@@ -3,17 +3,17 @@ package com.zxj.wanandroid.compose.ui.search
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.zxj.wanandroid.compose.data.bean.Article
 import com.zxj.wanandroid.compose.data.bean.ListData
 import com.zxj.wanandroid.compose.data.repositories.ArticleRepository
 import com.zxj.wanandroid.compose.net.API
 import com.zxj.wanandroid.compose.utils.createIntPagingSource
-import com.zxj.wanandroid.compose.widget.NextState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +25,6 @@ class SearchResultViewModel @Inject constructor(
 
     private val pager = Pager(PagingConfig(20)) { createIntPagingSource(::fetch) }
     val pagingItems = pager.flow.cachedIn(viewModelScope)
-//        .combine(articleRepository.collectFlow, ::combineFlow)
 
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
@@ -34,17 +33,6 @@ class SearchResultViewModel @Inject constructor(
 
     private suspend fun fetch(pageIndex: Int): API<ListData<Article>> {
         return articleRepository.loadSearchArticleList(pageIndex - 1, searchContext)
-    }
-
-    private suspend fun combineFlow(
-        pageData: PagingData<Article>,
-        collect: Pair<Int, Boolean>
-    ) = pageData.map {
-        if (it.id == collect.first && it.collect != collect.second) {
-            it.copy(collect = collect.second)
-        } else {
-            it
-        }
     }
 
     /**
@@ -57,9 +45,8 @@ class SearchResultViewModel @Inject constructor(
             } else {
                 articleRepository.removeCollectArticle(data.id)
             }
-            apiResponse.ifSuspendError {
-                _uiEvent.send(UIEvent.ShowToast(it))
-            }
+            apiResponse.ifSuspendSuccess { data.collect = collect }
+                .ifSuspendError { _uiEvent.send(UIEvent.ShowToast(it)) }
         }
     }
 }
