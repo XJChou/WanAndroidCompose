@@ -2,15 +2,12 @@ package com.zxj.wanandroid.compose.ui.search
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -21,12 +18,14 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.data.bean.Article
-import com.zxj.wanandroid.compose.widget.*
+import com.zxj.wanandroid.compose.widget.ArticleItem
+import com.zxj.wanandroid.compose.widget.PagingLazyColumn
+import com.zxj.wanandroid.compose.widget.TextToolBar
+import com.zxj.wanandroid.compose.widget.ToolBarIcon
 
 /**
  * 添加搜索结果界面到Navigation
@@ -36,12 +35,12 @@ fun NavGraphBuilder.addSearchResultScreen(
     controller: NavHostController
 ) {
     composable(
-        route = NavigationRoute.SEARCH_RESULT,
+        route = Screen.SearchDetails.route,
         listOf(navArgument("content") { type = NavType.StringType }),
     ) {
         SearchResultRoute(
             onBack = { controller.popBackStack() },
-            onItemClick = { controller.navigate(NavigationRoute.buildBrowserRoute(it.link)) },
+            onItemClick = { controller.navigate(Screen.Web.browser(it.link)) },
             modifier = Modifier.fillMaxSize()
         )
     }

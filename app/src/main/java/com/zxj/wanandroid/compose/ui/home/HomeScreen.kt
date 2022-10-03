@@ -29,8 +29,8 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.ui.NavigationBar
 import com.zxj.wanandroid.compose.ui.screen.home.*
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
@@ -47,23 +47,23 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addHomeScreen(controller: NavHostController) {
-    composable(route = NavigationRoute.HOME) { backStackEntry ->
+    composable(route = Screen.Home.route) { backStackEntry ->
         HomeScreen(
             navigation = { controller.navigate(it) },
             onBrowser = { data ->
-                controller.navigate(NavigationRoute.buildBrowserRoute(data))
+                controller.navigate(Screen.Web.browser(data))
             },
             enterMineCollect = {
-                controller.navigate(NavigationRoute.COLLECT)
+                controller.navigate(Screen.MineCollect.route)
             },
             enterScoreCollect = {
-                controller.navigate(NavigationRoute.SCORE)
+                controller.navigate(Screen.Score.route)
             },
             onRankClick = {
-                controller.navigate(NavigationRoute.RANK)
+                controller.navigate(Screen.Rank.route)
             },
             onShareClick = {
-                controller.navigate(NavigationRoute.SHARE)
+                controller.navigate(Screen.Share.route)
             }
         )
     }
@@ -249,7 +249,7 @@ private fun DrawerUIState.ifLogin(navigation: (String) -> Unit, block: () -> Uni
     if (isLogin) {
         block()
     } else {
-        navigation(NavigationRoute.LOGIN)
+        navigation(Screen.Login.route)
     }
 }
 
@@ -300,7 +300,7 @@ fun HomeContent(
             },
             actions = {
                 ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp) {
-                    navigation(NavigationRoute.SEARCH)
+                    navigation(Screen.Search.route)
                 }
             }
         )

@@ -27,8 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.composable
-import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.viewmodel.RegisterViewAction
@@ -44,13 +44,13 @@ import kotlinx.coroutines.flow.collectLatest
  */
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addRegisterScreen(controller: NavHostController) {
-    composable(NavigationRoute.REGISTER) {
+    composable(Screen.Register.route) {
         RegisterScreen(
             onBack = {
                 controller.popBackStack()
             },
             loginAction = {
-                controller.navigate(NavigationRoute.LOGIN)
+                controller.navigate(Screen.Login.route)
             }
         )
     }

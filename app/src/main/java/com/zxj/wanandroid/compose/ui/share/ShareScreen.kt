@@ -1,10 +1,7 @@
 package com.zxj.wanandroid.compose.ui.share
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,21 +10,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
-import com.zxj.wanandroid.compose.data.bean.*
+import com.zxj.wanandroid.compose.Screen
+import com.zxj.wanandroid.compose.data.bean.Article
+import com.zxj.wanandroid.compose.data.bean.defaultArticleCollectClick
+import com.zxj.wanandroid.compose.data.bean.defaultArticleItemClick
+import com.zxj.wanandroid.compose.data.bean.defaultBack
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
-import com.zxj.wanandroid.compose.widget.*
+import com.zxj.wanandroid.compose.widget.ArticleItem
+import com.zxj.wanandroid.compose.widget.PagingLazyColumn
+import com.zxj.wanandroid.compose.widget.TextToolBar
+import com.zxj.wanandroid.compose.widget.ToolBarIcon
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addShareScreen(controller: NavHostController) {
-    composable(route = NavigationRoute.SHARE) {
+    composable(route = Screen.Share.route) {
         ShareRoute(
             onBack = { controller.popBackStack() }
         )

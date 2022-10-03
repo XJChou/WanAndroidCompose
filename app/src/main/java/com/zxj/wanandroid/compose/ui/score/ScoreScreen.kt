@@ -26,8 +26,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.navigation.animation.composable
-import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.data.bean.UserScoreBean
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.PagingLazyColumn
@@ -43,13 +43,13 @@ import kotlinx.coroutines.flow.flowOf
 fun NavGraphBuilder.addScoreScreen(
     controller: NavHostController
 ) {
-    composable(route = NavigationRoute.SCORE) {
+    composable(route = Screen.Score.route) {
         ScoreRoute(
             modifier = Modifier.fillMaxSize(1f),
             onBack = { controller.popBackStack() },
             onQuestion = {
                 val url = "https://www.wanandroid.com/blog/show/2653"
-                controller.navigate(NavigationRoute.buildBrowserRoute(url))
+                controller.navigate(Screen.Web.browser(url))
             }
         )
     }

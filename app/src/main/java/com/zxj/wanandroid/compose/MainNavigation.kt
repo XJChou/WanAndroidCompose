@@ -23,7 +23,7 @@ fun MainNavigation() {
     val navController = rememberAnimatedNavController()
     AnimatedNavHost(
         navController = navController,
-        startDestination = NavigationRoute.HOME,
+        startDestination = Screen.Home.route,
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentScope.SlideDirection.Left,
@@ -62,23 +62,23 @@ fun MainNavigation() {
     }
 }
 
-object NavigationRoute {
-    const val HOME = "/app/home"
-    const val SEARCH = "/app/search"
-    val SEARCH_RESULT = buildSearchResultRoute("{content}")
-    const val LOGIN = "/user/login"
-    const val REGISTER = "/user/register";
-    val BROWSER = buildBrowserRoute("{webUrl}")
-    const val COLLECT = "/user/collect"
-    const val SCORE = "/user/score"
-    const val RANK = "/user/rank"
-    const val SHARE = "/user/share"
+sealed class Screen(val route: String) {
+    operator fun invoke(): String = route
 
-    fun buildSearchResultRoute(content: String): String {
-        return "/app/search/result?content=${content}"
+    object Home : Screen("/app/home")
+    object Search : Screen("/app/search")
+    object Register : Screen("/user/register")
+    object MineCollect : Screen("/mine/collect")
+    object Score : Screen("/user/score")
+    object Rank : Screen("/user/rank")
+    object Share : Screen("/user/share")
+    object Login : Screen("/user/login")
+
+    object SearchDetails : Screen("/app/search/result/{content}") {
+        fun search(content: String) = "/app/search/result/${content}"
     }
 
-    fun buildBrowserRoute(webUrl: String): String {
-        return "/browser?webUrl=${webUrl}"
+    object Web : Screen("/browser?webUrl={webUrl}") {
+        fun browser(webUrl: String) = "/browser?webUrl=${webUrl}"
     }
 }

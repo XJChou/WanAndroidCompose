@@ -6,7 +6,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.*
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -16,8 +20,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.composable
-import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.application.ComposeApplication
 import com.zxj.wanandroid.compose.data.bean.HistorySearchBean
 import com.zxj.wanandroid.compose.data.bean.HotSearchBean
@@ -33,11 +37,11 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addSearchScreen(controller: NavHostController) {
-    composable(route = NavigationRoute.SEARCH) { backStackEntry ->
+    composable(route = Screen.Search.route) { backStackEntry ->
         SearchRoute(
             onBack = { controller.popBackStack() },
             onSearch = {
-                controller.navigate(NavigationRoute.buildSearchResultRoute(it))
+                controller.navigate(Screen.SearchDetails.search(it))
             }
         )
     }
@@ -103,25 +107,29 @@ fun SearchScreen(
     onHistoryClick: (HistorySearchBean) -> Unit,
     onHistoryDelete: (HistorySearchBean) -> Unit,
 ) {
-    Column(modifier) {
-        val searchState = rememberSearchState(value = "")
-        SearchToolBar(
-            searchState,
-            stringResource(id = R.string.search_tint),
-            navigationIcon = {
-                ToolBarIcon(drawableRes = R.drawable.ic_back, onBack)
-            },
-            actions = {
-                ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp) {
-                    onSearch(searchState.value)
-                }
-            },
-            onSearch = onSearch
-        )
-
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            val searchState = rememberSearchState(value = "")
+            SearchToolBar(
+                searchState,
+                stringResource(id = R.string.search_tint),
+                navigationIcon = {
+                    ToolBarIcon(drawableRes = R.drawable.ic_back, onBack)
+                },
+                actions = {
+                    ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp) {
+                        onSearch(searchState.value)
+                    }
+                },
+                onSearch = onSearch
+            )
+        }
+    ) {
         Column(
             modifier = Modifier
                 .background(WanAndroidTheme.colors.viewBackground)
+                .padding(it)
                 .padding(16.dp)
                 .fillMaxSize()
         ) {

@@ -2,10 +2,8 @@ package com.zxj.wanandroid.compose.ui.rank
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Scaffold
@@ -13,31 +11,27 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.data.bean.CoinInfoBean
-import com.zxj.wanandroid.compose.data.bean.coinInfoBeanDemoData
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
-import com.zxj.wanandroid.compose.widget.*
+import com.zxj.wanandroid.compose.widget.PagingLazyColumn
+import com.zxj.wanandroid.compose.widget.TextToolBar
+import com.zxj.wanandroid.compose.widget.ToolBarIcon
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addRankScreen(
     controller: NavHostController
 ) {
-    composable(route = NavigationRoute.RANK) {
+    composable(route = Screen.Rank.route) {
         RankRoute(
             onBack = { controller.popBackStack() },
             modifier = Modifier

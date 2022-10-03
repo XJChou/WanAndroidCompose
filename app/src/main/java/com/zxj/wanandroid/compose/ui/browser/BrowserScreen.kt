@@ -12,8 +12,8 @@ import androidx.navigation.*
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
-import com.zxj.wanandroid.compose.NavigationRoute
 import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.TOOLBAR_HEIGHT
 import com.zxj.wanandroid.compose.widget.TextToolBar
@@ -26,7 +26,7 @@ import com.zxj.wanandroid.compose.widget.ToolBarIcon
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addBrowserScreen(controller: NavHostController) {
     composable(
-        route = NavigationRoute.BROWSER,
+        route = Screen.Web.route,
         listOf(navArgument("webUrl") { type = NavType.StringType }),
 //        deepLinks = listOf(navDeepLink { uriPattern })
     ) { backStackEntry ->
