@@ -66,5 +66,20 @@ interface ArticleNetworkDataSource {
     @POST("lg/user_article/delete/{id}/json")
     suspend fun deleteShareArticle(@Path("id") id: Int): API<Any>
 
+    /**
+     * 获取公众号列表
+     * http://wanandroid.com/wxarticle/chapters/json
+     */
+    @GET("/wxarticle/chapters/json")
+    suspend fun loadWechatChapters(): API<List<WXChapterBean>>
+
+    /**
+     * 知识体系下的文章
+     * http://www.wanandroid.com/article/list/0/json?cid=168
+     * @param page
+     * @param cid
+     */
+    @GET("article/list/{page}/json")
+    suspend fun loadKnowledgeList(@Path("page") page: Int, @Query("cid") cid: Int): API<ListData<Article>>
 
 }

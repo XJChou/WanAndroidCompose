@@ -12,7 +12,6 @@ import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
-import com.zxj.wanandroid.compose.utils.MyLog
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

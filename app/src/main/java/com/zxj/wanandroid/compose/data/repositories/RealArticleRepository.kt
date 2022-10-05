@@ -122,5 +122,13 @@ class RealArticleRepository @Inject constructor(
         return networkDataSource.loadShareList(page)
     }
 
+    override suspend fun loadWechatChapters(): API<List<WXChapterBean>> {
+        return networkDataSource.loadWechatChapters()
+    }
+
+    override suspend fun loadKnowledgeList(page: Int, cid: Int): API<ListData<Article>> {
+        return networkDataSource.loadKnowledgeList(page, cid)
+    }
+
 
 }

@@ -26,4 +26,12 @@ interface ArticleRepository {
     suspend fun removeCollectArticle(@Path("id") id: Int): API<String>
 
     suspend fun loadShareList(page: Int): API<ShareResponseBody>
+
+    /**
+     * 查作者列表
+     */
+    suspend fun loadWechatChapters(): API<List<WXChapterBean>>
+
+    suspend fun loadKnowledgeList(page: Int, cid: Int): API<ListData<Article>>
+
 }
