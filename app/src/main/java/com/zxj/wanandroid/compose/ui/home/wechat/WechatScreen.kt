@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun WechatRoute(
+    onBrowser: (String) -> Unit,
     modifier: Modifier = Modifier,
     wechatViewModel: WechatViewModel = hiltViewModel()
 ) {
@@ -36,7 +37,8 @@ fun WechatRoute(
     ) {
         WechatScreen(
             modifier = Modifier.fillMaxSize(),
-            chapters = this.getData()
+            chapters = getData(),
+            onBrowser = onBrowser
         )
     }
 }
@@ -45,14 +47,14 @@ fun WechatRoute(
 @Composable
 private fun WechatScreen(
     modifier: Modifier,
-    chapters: List<WXChapterBean>
+    chapters: List<WXChapterBean>,
+    onBrowser: (String) -> Unit
 ) {
     val pagerState = rememberPagerState()
     val selectedTab by remember { derivedStateOf { pagerState.currentPage } }
     val scope = rememberCoroutineScope()
 
     Column(modifier = modifier) {
-        // TabLayout        
         ScrollableTabRow(
             selectedTabIndex = selectedTab,
             backgroundColor = WanAndroidTheme.colors.colorPrimary,
@@ -87,7 +89,8 @@ private fun WechatScreen(
         ) {
             WechatArticleDetailRoute(
                 modifier = Modifier.fillMaxSize(),
-                chapter = chapters[it]
+                chapter = chapters[it],
+                onBrowser = onBrowser
             )
         }
     }
@@ -105,7 +108,8 @@ fun PreviewPublicPage() {
                 WXChapterBean(listOf(), 0, 0, "郭霖", 0, 0, false, 0),
                 WXChapterBean(listOf(), 0, 0, "玉刚说", 0, 0, false, 0),
                 WXChapterBean(listOf(), 0, 0, "陈翔魔音", 0, 0, false, 0),
-            )
+            ),
+            onBrowser = {}
         )
     }
 }

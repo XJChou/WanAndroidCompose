@@ -46,7 +46,7 @@ fun LazyListScope.handleLoadState(items: LazyPagingItems<*>) {
 }
 
 @Composable
-fun ShowLoading() {
+private fun ShowLoading() {
     Box(
         modifier = Modifier
             .fillMaxWidth(1f)

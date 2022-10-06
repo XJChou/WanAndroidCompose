@@ -27,7 +27,8 @@ fun WechatArticleDetailRoute(
     modifier: Modifier = Modifier,
     wechatArticleDetailViewModel: WechatArticleDetailViewModel = wechatArticleDetailViewModel(
         chapter.id
-    )
+    ),
+    onBrowser: (String) -> Unit
 ) {
     val pagingItems = wechatArticleDetailViewModel.pagingData.collectAsLazyPagingItems()
     WechatArticleDetailScreen(
@@ -37,7 +38,7 @@ fun WechatArticleDetailRoute(
             wechatArticleDetailViewModel.collectArticle(collect, article.id)
         },
         onArticleClick = {
-            Screen.Web.browser(it.link)
+            onBrowser(it.link)
         }
     )
 }

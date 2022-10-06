@@ -11,3 +11,7 @@
 UI框架：compose
 
 本地数据库：Room
+
+
+运行时参数注入：
+https://medium.com/scalereal/providing-assistedinject-supported-viewmodel-for-composable-using-hilt-ae973632e29a

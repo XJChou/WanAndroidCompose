@@ -1,9 +1,52 @@
 package com.zxj.wanandroid.compose.widget
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.zxj.wanandroid.compose.R
+import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
+
+private val showInitial = @Composable {
+
+}
+
+private val showLoading = @Composable {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center),
+            color = WanAndroidTheme.colors.colorPrimary
+        )
+    }
+}
+
+private val showError = @Composable { msg: String ->
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Image(
+            painter = painterResource(id = R.drawable.ic_error),
+            contentDescription = null
+        )
+
+        Text(
+            text = msg,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 10.dp)
+        )
+    }
+}
 
 /**
  * 状态显示Composable
@@ -12,9 +55,9 @@ import androidx.compose.ui.Modifier
 fun MultipleStatus(
     status: Status,
     modifier: Modifier = Modifier,
-    initial: @Composable () -> Unit = {},
-    loading: @Composable () -> Unit = {},
-    error: @Composable (msg: String) -> Unit = {},
+    initial: @Composable () -> Unit = showInitial,
+    loading: @Composable () -> Unit = showLoading,
+    error: @Composable (msg: String) -> Unit = showError,
     retry: () -> Unit,
     content: @Composable Status.Success.() -> Unit,
 ) {
@@ -48,6 +91,21 @@ fun MultipleStatus(
 
     }
 }
+
+@Preview
+@Composable
+private fun PreviewMultipleStatus() {
+    WanAndroidTheme {
+        MultipleStatus(
+            status = Status.Loading,
+            modifier = Modifier.fillMaxSize(),
+            retry = {}
+        ) {
+
+        }
+    }
+}
+
 
 sealed interface Status {
     object Initial : Status

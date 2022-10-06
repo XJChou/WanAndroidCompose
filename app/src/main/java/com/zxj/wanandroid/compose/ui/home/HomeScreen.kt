@@ -315,7 +315,7 @@ fun HomeContent(
             when (it) {
                 0 -> IndexPage(onBrowser = onBrowser)
                 1 -> SquarePage()
-                2 -> WechatRoute(modifier = Modifier.fillMaxSize())
+                2 -> WechatRoute(modifier = Modifier.fillMaxSize(), onBrowser = onBrowser)
                 3 -> SystemPage()
                 4 -> ProjectPage()
             }
