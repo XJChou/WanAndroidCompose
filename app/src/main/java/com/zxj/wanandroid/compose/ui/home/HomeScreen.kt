@@ -143,7 +143,6 @@ private fun HomeScreen(
     // 准备数据
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentPage by remember {
@@ -176,7 +175,7 @@ private fun HomeScreen(
     ) {
         // UI显示部分
         Scaffold(
-            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = modifier,
             topBar = {
                 HomeTopContent(
                     title = stringResource(id = title),
@@ -207,7 +206,7 @@ private fun HomeScreen(
             ) {
                 addHomeIndex(onBrowser)
                 addHomeSquare(controller = navController)
-                addHomeWechat(controller = navController)
+                addHomeWechat(onBrowser)
                 addHomeSystem(controller = navController)
                 addHomeProject(controller = navController)
             }

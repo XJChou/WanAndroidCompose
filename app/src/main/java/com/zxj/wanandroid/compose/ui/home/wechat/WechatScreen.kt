@@ -25,20 +25,20 @@ import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.MultipleStatus
 import kotlinx.coroutines.launch
 
-fun NavGraphBuilder.addHomeWechat(controller: NavHostController) {
+fun NavGraphBuilder.addHomeWechat(onBrowser: (String) -> Unit) {
     composable(Screen.HomeWechat.route) {
         WechatRoute(
             modifier = Modifier.fillMaxSize(),
-            onBrowser = { Screen.Browser.navigation(controller, it) }
+            onBrowser = onBrowser
         )
     }
 }
 
 @Composable
 fun WechatRoute(
-    onBrowser: (String) -> Unit,
     modifier: Modifier = Modifier,
-    wechatViewModel: WechatViewModel = hiltViewModel()
+    wechatViewModel: WechatViewModel = hiltViewModel(),
+    onBrowser: (String) -> Unit
 ) {
     val state by wechatViewModel.uiState.collectAsState()
     MultipleStatus(
