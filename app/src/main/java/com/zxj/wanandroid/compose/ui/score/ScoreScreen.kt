@@ -49,7 +49,7 @@ fun NavGraphBuilder.addScoreScreen(
             onBack = { controller.popBackStack() },
             onQuestion = {
                 val url = "https://www.wanandroid.com/blog/show/2653"
-                controller.navigate(Screen.Web.browser(url))
+                Screen.Browser.navigation(controller, url)
             }
         )
     }

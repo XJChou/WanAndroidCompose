@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.zxj.wanandroid.compose.ui.browser.addBrowserScreen
@@ -16,6 +18,7 @@ import com.zxj.wanandroid.compose.ui.search.addSearchScreen
 import com.zxj.wanandroid.compose.ui.share.addShareScreen
 import com.zxj.wanandroid.compose.ui.user.addLoginScreen
 import com.zxj.wanandroid.compose.ui.user.addRegisterScreen
+import java.net.URLEncoder
 
 @Composable
 @OptIn(ExperimentalAnimationApi::class)
@@ -63,22 +66,58 @@ fun MainNavigation() {
 }
 
 sealed class Screen(val route: String) {
-    operator fun invoke(): String = route
 
-    object Home : Screen("/app/home")
-    object Search : Screen("/app/search")
-    object Register : Screen("/user/register")
+
+    object Search : Screen("/search")
+    object Register : Screen("/register")
     object MineCollect : Screen("/mine/collect")
-    object Score : Screen("/user/score")
+    object Score : Screen("/mine/score")
     object Rank : Screen("/user/rank")
     object Share : Screen("/user/share")
     object Login : Screen("/user/login")
-
     object SearchDetails : Screen("/app/search/result/{content}") {
         fun search(content: String) = "/app/search/result/${content}"
     }
 
-    object Web : Screen("/browser?webUrl={webUrl}") {
-        fun browser(webUrl: String) = "/browser?webUrl=${webUrl}"
+    // 浏览器
+    object Browser : Screen("/browser/{url}") {
+
+        fun navigation(controller: NavController, url: String) {
+            controller.navigate("/browser/${url.encode()}")
+        }
+
+        private fun String.encode(): String {
+            return URLEncoder.encode(this, Charsets.UTF_8.toString())
+        }
+    }
+
+    // 主页相关
+    object Home : Screen("/home")
+    object HomeIndex : SaveStateScreen("/home/index")
+    object HomeSquare : SaveStateScreen("/home/square")
+    object HomeWechat : SaveStateScreen("/home/wechat")
+    object HomeSystem : SaveStateScreen("/home/system")
+    object HomeProject : SaveStateScreen("/home/project")
+
+    /**
+     * 需要保存状态
+     */
+    open class SaveStateScreen(route: String) : Screen(route) {
+        override fun navigation(controller: NavController) {
+            controller.navigate(route) {
+                this.popUpTo(controller.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                this.restoreState = true
+                this.launchSingleTop = true
+            }
+        }
+    }
+
+    /**
+     * 普通跳转
+     */
+    open fun navigation(controller: NavController) {
+        controller.navigate(route)
     }
 }

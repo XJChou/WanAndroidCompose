@@ -3,8 +3,9 @@ package com.zxj.wanandroid.compose.ui.browser
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,10 +15,9 @@ import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.Screen
-import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
-import com.zxj.wanandroid.compose.widget.TOOLBAR_HEIGHT
 import com.zxj.wanandroid.compose.widget.TextToolBar
 import com.zxj.wanandroid.compose.widget.ToolBarIcon
+import java.net.URLDecoder
 
 /**
  * 添加浏览界面到Navigation
@@ -26,34 +26,38 @@ import com.zxj.wanandroid.compose.widget.ToolBarIcon
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addBrowserScreen(controller: NavHostController) {
     composable(
-        route = Screen.Web.route,
-        listOf(navArgument("webUrl") { type = NavType.StringType }),
-//        deepLinks = listOf(navDeepLink { uriPattern })
+        route = Screen.Browser.route,
+        arguments = listOf(navArgument("url") { type = NavType.StringType }),
     ) { backStackEntry ->
+        val url = URLDecoder.decode(
+            backStackEntry.arguments!!.getString("url")!!,
+            Charsets.UTF_8.toString()
+        )
         BrowserScreen(
-            url = backStackEntry.arguments!!.getString("webUrl")!!,
+            url = url,
             onBack = { controller.popBackStack() }
         )
     }
 }
 
-/**
- * 因WebView的存在，进场动画还存在问题
- */
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrowserScreen(url: String, onBack: () -> Unit) {
     val webState = rememberWebViewState(url)
-    // 这里使用Column会导致TextToolBar延迟了绘制
-    Box(
-        Modifier
-            .background(WanAndroidTheme.colors.windowBackground)
-            .fillMaxSize()
+    Scaffold(
+        modifier = Modifier,
+        topBar = {
+            TextToolBar(
+                title = webState.pageTitle ?: "",
+                navigationIcon = { ToolBarIcon(R.drawable.ic_back, onBack) }
+            )
+        }
     ) {
         WebView(
             state = webState,
             modifier = Modifier
-                .padding(top = TOOLBAR_HEIGHT)
-                .statusBarsPadding()
+                .padding(it)
                 .fillMaxWidth(),
             onCreated = {
                 it.settings.javaScriptEnabled = true
@@ -61,17 +65,14 @@ fun BrowserScreen(url: String, onBack: () -> Unit) {
                 it.webViewClient = WebViewClient()
             }
         )
-        TextToolBar(
-            webState.pageTitle ?: "",
-            navigationIcon = { ToolBarIcon(R.drawable.ic_back, onBack) }
-        )
     }
 }
 
 @Preview
 @Composable
-fun PreviewBrowserScreen() {
-    BrowserScreen("https://www.baidu.com") {
-
-    }
+private fun PreviewBrowserScreen() {
+    BrowserScreen(
+        url = "https://www.baidu.com",
+        onBack = {}
+    )
 }

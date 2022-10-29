@@ -42,7 +42,7 @@ fun NavGraphBuilder.addCollectScreen(
             modifier = Modifier.fillMaxSize(1f),
             onBack = { controller.popBackStack() },
             onItemClick = {
-                controller.navigate(Screen.Web.browser(it.link))
+                Screen.Browser.navigation(controller, it.link)
             },
         )
     }

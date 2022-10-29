@@ -1,7 +1,5 @@
-package com.zxj.wanandroid.compose.ui.screen.home
+package com.zxj.wanandroid.compose.ui.home
 
-import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -11,10 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.application.toast
 import com.zxj.wanandroid.compose.data.bean.Article
 import com.zxj.wanandroid.compose.data.bean.BannerBean
@@ -24,24 +25,33 @@ import com.zxj.wanandroid.compose.viewmodel.IndexViewModel
 import com.zxj.wanandroid.compose.viewmodel.UIEvent
 import com.zxj.wanandroid.compose.widget.ArticleItem
 import com.zxj.wanandroid.compose.widget.PagingLazyColumn
+import com.zxj.wanandroid.compose.widget.handleLoadState
 import kotlinx.coroutines.flow.flowOf
 
+
+fun NavGraphBuilder.addHomeIndex(onBrowser: (String) -> Unit) {
+    composable(Screen.HomeIndex.route) {
+        IndexRoute(
+            onBrowser = onBrowser,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
 @Composable
-fun IndexPage(
-    onBrowser: (String) -> Unit,
+fun IndexRoute(
     modifier: Modifier = Modifier,
+    onBrowser: (String) -> Unit,
     indexViewModel: IndexViewModel = hiltViewModel()
 ) {
     val uiState by indexViewModel.uiState.collectAsState()
     val pagingItems = indexViewModel.pageItems.collectAsLazyPagingItems()
-    IndexPage(
-        modifier = modifier
-            .fillMaxSize()
-            .background(WanAndroidTheme.colors.windowBackground),
+    IndexScreen(
         bannerList = uiState.bannerList,
+        modifier = modifier,
+        onBrowser = onBrowser,
+        onItemCollect = indexViewModel::dealZanAction,
         pagingItems = pagingItems,
-        onItemZan = { collect, data -> indexViewModel.dealZanAction(collect, data) },
-        onBrowser = onBrowser
     )
     LaunchedEffect(Unit) {
         indexViewModel.uiEvent.collect {
@@ -54,14 +64,13 @@ fun IndexPage(
     }
 }
 
-@VisibleForTesting
 @Composable
-private fun IndexPage(
+private fun IndexScreen(
     bannerList: List<BannerBean>,
     pagingItems: LazyPagingItems<Article>,
     modifier: Modifier = Modifier,
-    onItemZan: (Boolean, Article) -> Unit = { _, _ -> },
-    onBrowser: (String) -> Unit = {},
+    onBrowser: (String) -> Unit,
+    onItemCollect: (Boolean, Article) -> Unit
 ) {
     PagingLazyColumn(modifier = modifier, pagingItems = pagingItems) {
         // BannerList 点击
@@ -75,21 +84,25 @@ private fun IndexPage(
         items(pagingItems, key = { it.id }) {
             ArticleItem(
                 it!!,
-                onItemZanClick = onItemZan,
+                onItemZanClick = onItemCollect,
                 onItemClick = { onBrowser(it.link) }
             )
         }
+        handleLoadState(pagingItems)
     }
+
 }
+
 
 @Preview
 @Composable
 fun PreviewIndexPage() {
     WanAndroidTheme {
-        IndexPage(
+        IndexScreen(
             bannerList = emptyList(),
             pagingItems = flowOf(PagingData.empty<Article>()).collectAsLazyPagingItems(),
-            onBrowser = {}
+            onBrowser = {},
+            onItemCollect = { _, _ -> }
         )
     }
 }

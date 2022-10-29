@@ -40,7 +40,7 @@ fun NavGraphBuilder.addSearchResultScreen(
     ) {
         SearchResultRoute(
             onBack = { controller.popBackStack() },
-            onItemClick = { controller.navigate(Screen.Web.browser(it.link)) },
+            onItemClick = { Screen.Browser.navigation(controller, it.link) },
             modifier = Modifier.fillMaxSize()
         )
     }

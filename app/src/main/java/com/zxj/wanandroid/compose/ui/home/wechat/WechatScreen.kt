@@ -1,4 +1,4 @@
-package com.zxj.wanandroid.compose.ui.screen.home
+package com.zxj.wanandroid.compose.ui.home.wechat
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,15 +13,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.zxj.wanandroid.compose.Screen
 import com.zxj.wanandroid.compose.data.bean.WXChapterBean
-import com.zxj.wanandroid.compose.ui.home.wechat.WechatArticleDetailRoute
-import com.zxj.wanandroid.compose.ui.home.wechat.WechatViewModel
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
 import com.zxj.wanandroid.compose.widget.MultipleStatus
 import kotlinx.coroutines.launch
+
+fun NavGraphBuilder.addHomeWechat(controller: NavHostController) {
+    composable(Screen.HomeWechat.route) {
+        WechatRoute(
+            modifier = Modifier.fillMaxSize(),
+            onBrowser = { Screen.Browser.navigation(controller, it) }
+        )
+    }
+}
 
 @Composable
 fun WechatRoute(
