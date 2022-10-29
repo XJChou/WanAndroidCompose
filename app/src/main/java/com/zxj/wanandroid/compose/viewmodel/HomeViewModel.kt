@@ -24,43 +24,22 @@ class HomeViewModel @Inject constructor(
             DrawerUIState(isLogin, user)
         }
     )
-        .onEach {
 
-        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(1000),
             initialValue = DrawerUIState()
         )
 
-    val navigationItems = arrayOf(
-        NavigationItemBean(R.drawable.ic_home_black_24dp, R.string.navigation_text_home),
-        NavigationItemBean(R.drawable.ic_square_black_24dp, R.string.navigation_text_square),
-        NavigationItemBean(R.drawable.ic_wechat_black_24dp, R.string.navigation_text_public),
-        NavigationItemBean(R.drawable.ic_apps_black_24dp, R.string.navigation_text_system),
-        NavigationItemBean(R.drawable.ic_project_black_24dp, R.string.navigation_text_project),
-    )
 
-    val TITLE = arrayOf(
-        getString(R.string.toolbar_text_home),
-        getString(R.string.toolbar_text_square),
-        getString(R.string.toolbar_text_public),
-        getString(R.string.toolbar_text_system),
-        getString(R.string.toolbar_text_project)
-    )
-
-    fun dispatch(action: HomeViewAction) {
-        when (action) {
-            is HomeViewAction.SignOutAction -> {
-                viewModelScope.launch {
-                    userRepository.signOut()
-                }
-            }
-            is HomeViewAction.UserInfo -> {
-                viewModelScope.launch { userRepository.loadUserInfo() }
-            }
-        }
+    fun signOut() {
+        viewModelScope.launch { userRepository.signOut() }
     }
+
+    fun loadUserInfo() {
+        viewModelScope.launch { userRepository.loadUserInfo() }
+    }
+
 }
 
 data class DrawerUIState(
@@ -68,8 +47,3 @@ data class DrawerUIState(
     val user: User = User()
 )
 
-sealed class HomeViewAction {
-    object SignOutAction : HomeViewAction()
-
-    object UserInfo : HomeViewAction()
-}

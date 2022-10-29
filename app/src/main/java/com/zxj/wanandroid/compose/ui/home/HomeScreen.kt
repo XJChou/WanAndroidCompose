@@ -1,43 +1,27 @@
 package com.zxj.wanandroid.compose.ui.home
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.zxj.wanandroid.compose.R
 import com.zxj.wanandroid.compose.Screen
-import com.zxj.wanandroid.compose.ui.NavigationBar
-import com.zxj.wanandroid.compose.ui.screen.home.*
+import com.zxj.wanandroid.compose.data.bean.User
+import com.zxj.wanandroid.compose.ui.home.wechat.addHomeWechat
 import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
-import com.zxj.wanandroid.compose.utils.clickableNotEffect
-import com.zxj.wanandroid.compose.viewmodel.DrawerUIState
-import com.zxj.wanandroid.compose.viewmodel.HomeViewAction
 import com.zxj.wanandroid.compose.viewmodel.HomeViewModel
+import com.zxj.wanandroid.compose.widget.NavigationItemBean
 import com.zxj.wanandroid.compose.widget.TextToolBar
 import com.zxj.wanandroid.compose.widget.ToolBarIcon
 import kotlinx.coroutines.launch
@@ -48,295 +32,210 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addHomeScreen(controller: NavHostController) {
     composable(route = Screen.Home.route) { backStackEntry ->
-        HomeScreen(
-            navigation = { controller.navigate(it) },
-            onBrowser = { data ->
-                controller.navigate(Screen.Web.browser(data))
-            },
-            enterMineCollect = {
-                controller.navigate(Screen.MineCollect.route)
-            },
-            enterScoreCollect = {
-                controller.navigate(Screen.Score.route)
-            },
-            onRankClick = {
-                controller.navigate(Screen.Rank.route)
-            },
-            onShareClick = {
-                controller.navigate(Screen.Share.route)
-            }
+        HomeRoute(
+            modifier = Modifier.fillMaxSize(),
+            onNavigation = { it.navigation(controller) },
+            onBrowser = { Screen.Browser.navigation(controller, it) }
         )
     }
 }
 
 @Composable
-fun HomeScreen(
+fun HomeRoute(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    navigation: (String) -> Unit,
-    onBrowser: (String) -> Unit,
-    enterMineCollect: () -> Unit,
-    enterScoreCollect: () -> Unit,
-    onRankClick: () -> Unit,
-    onShareClick: () -> Unit
-) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val coroutineScope = rememberCoroutineScope()
-    val drawerUIState by viewModel.drawerUIState.collectAsState()
-    ModalDrawer(
-        drawerContent = {
-            DrawHead(
-                drawerUIState = drawerUIState,
-                navigation = navigation,
-                onRankClick = onRankClick
-            )
-            DrawContent(
-                drawerUIState,
-                navigation = navigation,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .clickable {
-                    },
-                enterMineCollect = enterMineCollect,
-                enterScoreCollect = enterScoreCollect,
-                onShareClick = onShareClick,
-                signOut = {
-                    viewModel.dispatch(HomeViewAction.SignOutAction)
-                }
-            )
-        },
-        modifier = Modifier.fillMaxSize(),
-        drawerState = drawerState,
-        drawerBackgroundColor = WanAndroidTheme.colors.viewBackground,
-    ) {
-        HomeContent(
-            navigation,
-            {
-                coroutineScope.launch { drawerState.open() }
-            },
-            onBrowser
-        )
-    }
-}
-
-@Composable
-private fun DrawHead(
-    drawerUIState: DrawerUIState,
-    navigation: (String) -> Unit,
-    onRankClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(WanAndroidTheme.colors.colorPrimary)
-            .padding(16.dp, 36.dp, 16.dp, 10.dp),
-    ) {
-        // 排名
-        Icon(
-            painter = painterResource(id = R.drawable.ic_rank_white_24dp),
-            contentDescription = null,
-            modifier = Modifier
-                .size(20.dp)
-                .align(Alignment.End)
-                .clickableNotEffect(onClick = onRankClick),
-            tint = Color.White
-        )
-
-        // 圆形图边
-        AsyncImage(
-            model = "",
-            contentDescription = null,
-            modifier = Modifier
-                .size(80.dp)
-                .border(2.dp, Color.White, CircleShape)
-                .align(Alignment.CenterHorizontally)
-        )
-
-        // 根据当前状态
-        Text(
-            text = if (drawerUIState.isLogin) drawerUIState.user.username else stringResource(R.string.go_login),
-            modifier = Modifier
-                .padding(0.dp, 12.dp, 0.dp, 0.dp)
-                .align(Alignment.CenterHorizontally),
-            color = Color.White,
-            fontWeight = FontWeight.Bold
-        )
-
-        Row(
-            modifier = Modifier
-                .padding(0.dp, 8.dp, 0.dp, 0.dp)
-                .align(Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(id = R.string.nav_grade),
-                color = Color(0xFFF5F5F5),
-                fontSize = 12.sp
-            )
-            Text(
-                text = stringResource(id = R.string.nav_line_2),
-                fontSize = 12.sp,
-                color = Color(0xFFF5F5F5),
-            )
-            Text(
-                text = stringResource(id = R.string.nav_rank),
-                modifier = Modifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
-                fontSize = 12.sp,
-                color = Color(0xFFF5F5F5),
-            )
-            Text(
-                text = stringResource(id = R.string.nav_line_2),
-                fontSize = 12.sp,
-                color = Color(0xFFF5F5F5),
-            )
-        }
-    }
-}
-
-@Composable
-private fun DrawContent(
-    drawerUIState: DrawerUIState,
-    navigation: (String) -> Unit = {},
-    modifier: Modifier,
-    enterMineCollect: () -> Unit = {},
-    enterScoreCollect: () -> Unit = {},
-    onShareClick: () -> Unit = {},
-    signOut: () -> Unit = {}
-) {
-    Column(
-        modifier
-            .background(WanAndroidTheme.colors.viewBackground)
-            .padding(0.dp, 10.dp, 0.dp, 0.dp)
-    ) {
-        DrawItemContent(
-            R.drawable.ic_score_white_24dp,
-            stringResource(id = R.string.nav_my_score)
-        ) {
-            drawerUIState.ifLogin(navigation, enterScoreCollect)
-        }
-        DrawItemContent(R.drawable.ic_like_not, stringResource(id = R.string.nav_my_collect)) {
-            drawerUIState.ifLogin(navigation, enterMineCollect)
-        }
-        DrawItemContent(R.drawable.ic_share_white_24dp, stringResource(id = R.string.my_share)) {
-            drawerUIState.ifLogin(navigation, onShareClick)
-        }
-        DrawItemContent(R.drawable.ic_todo_default_24dp, stringResource(id = R.string.nav_todo)) {
-            drawerUIState.ifLogin(navigation) {
-
-            }
-        }
-        DrawItemContent(R.drawable.ic_night_24dp, stringResource(id = R.string.nav_night_mode)) {
-            WanAndroidTheme.changeTheme()
-        }
-        DrawItemContent(R.drawable.ic_setting_24dp, stringResource(id = R.string.nav_setting)) {
-            drawerUIState.ifLogin(navigation) {
-
-            }
-        }
-        if (drawerUIState.isLogin) {
-            DrawItemContent(
-                R.drawable.ic_logout_white_24dp,
-                stringResource(id = R.string.nav_logout)
-            ) {
-                signOut()
-            }
-        }
-    }
-}
-
-private fun DrawerUIState.ifLogin(navigation: (String) -> Unit, block: () -> Unit) {
-    if (isLogin) {
-        block()
-    } else {
-        navigation(Screen.Login.route)
-    }
-}
-
-@Composable
-private fun DrawItemContent(@DrawableRes icon: Int, title: String, itemClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .clickable { itemClick() }
-            .padding(20.dp, 0.dp, 0.dp, 0.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = title,
-            tint = WanAndroidTheme.colors.itemNavColorTv,
-            modifier = Modifier.padding(0.dp, 15.dp)
-        )
-        Text(
-            text = title,
-            color = WanAndroidTheme.colors.itemNavColorTv,
-            fontSize = 16.sp,
-            modifier = Modifier.padding(40.dp, 0.dp, 0.dp, 0.dp),
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-@OptIn(ExperimentalPagerApi::class)
-fun HomeContent(
-    navigation: (String) -> Unit,
-    onMenuClickListener: () -> Unit,
+    onNavigation: (Screen) -> Unit,
     onBrowser: (String) -> Unit
 ) {
-    val viewModel: HomeViewModel = hiltViewModel()
-    val pagerState = rememberPagerState()
-    val animateScope = rememberCoroutineScope()
-
-    Column(Modifier.fillMaxSize()) {
-        TextToolBar(
-            title = viewModel.TITLE[pagerState.currentPage],
-            fitsSystemWindows = true,
-            navigationIcon = {
-                ToolBarIcon(drawableRes = R.drawable.ic_menu_white_24dp) {
-                    onMenuClickListener()
-                }
-            },
-            actions = {
-                ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp) {
-                    navigation(Screen.Search.route)
-                }
+    val drawerUIState by viewModel.drawerUIState.collectAsState()
+    HomeScreen(
+        isLogin = drawerUIState.isLogin,
+        user = drawerUIState.user,
+        modifier = modifier,
+        onBrowser = onBrowser,
+        onSearch = { onNavigation(Screen.Search) },
+        // 需要登录的
+        onMineCollect = {
+            if (drawerUIState.isLogin) {
+                onNavigation(Screen.MineCollect)
+            } else {
+                onNavigation(Screen.Login)
             }
-        )
-        HorizontalPager(
-            count = viewModel.navigationItems.size,
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
-        {
-            when (it) {
-                0 -> IndexPage(onBrowser = onBrowser)
-                1 -> SquarePage()
-                2 -> WechatRoute(modifier = Modifier.fillMaxSize(), onBrowser = onBrowser)
-                3 -> SystemPage()
-                4 -> ProjectPage()
+        },
+        onMineScore = {
+            if (drawerUIState.isLogin) {
+                onNavigation(Screen.Score)
+            } else {
+                onNavigation(Screen.Login)
             }
-        }
-        // 底部导航
-        NavigationBar(
-            Modifier.padding(0.dp, 1.dp, 0.dp, 0.dp),
-            viewModel.navigationItems,
-            pagerState.currentPage
-        ) {
-            animateScope.launch {
-                pagerState.animateScrollToPage(it)
+        },
+        onRankClick = {
+            if (drawerUIState.isLogin) {
+                onNavigation(Screen.Rank)
+            } else {
+                onNavigation(Screen.Login)
             }
-        }
-    }
+        },
+        onShareClick = {
+            if (drawerUIState.isLogin) {
+                onNavigation(Screen.Share)
+            } else {
+                onNavigation(Screen.Login)
+            }
+        },
+        onSettingClick = {
+            if (drawerUIState.isLogin) {
+                // TODO
+            } else {
+                onNavigation(Screen.Login)
+            }
+        },
+        onTodoClick = {
+            if (drawerUIState.isLogin) {
+                // TODO
+            } else {
+                onNavigation(Screen.Login)
+            }
+        },
+        onSignOut = { viewModel.signOut() }
+    )
 }
 
+// 数据层
+val navigationItems = arrayOf(
+    NavigationItemBean(R.drawable.ic_home_black_24dp, R.string.navigation_text_home),
+    NavigationItemBean(R.drawable.ic_square_black_24dp, R.string.navigation_text_square),
+    NavigationItemBean(R.drawable.ic_wechat_black_24dp, R.string.navigation_text_public),
+    NavigationItemBean(R.drawable.ic_apps_black_24dp, R.string.navigation_text_system),
+    NavigationItemBean(R.drawable.ic_project_black_24dp, R.string.navigation_text_project),
+)
+private val titles = arrayOf(
+    R.string.toolbar_text_home,
+    R.string.toolbar_text_square,
+    R.string.toolbar_text_public,
+    R.string.toolbar_text_system,
+    R.string.toolbar_text_project
+)
+private val routes = arrayOf(
+    Screen.HomeIndex,
+    Screen.HomeSquare,
+    Screen.HomeWechat,
+    Screen.HomeSystem,
+    Screen.HomeProject
+)
 
-@Preview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreviewHome() {
-    WanAndroidTheme {
+private fun HomeScreen(
+    isLogin: Boolean,
+    user: User,
+    modifier: Modifier = Modifier,
+    onBrowser: (String) -> Unit,
+    onMineCollect: () -> Unit,
+    onMineScore: () -> Unit,
+    onRankClick: () -> Unit,
+    onTodoClick: () -> Unit,
+    onSettingClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onSearch: () -> Unit,
+    onSignOut: () -> Unit
+) {
+    // 准备数据
+    val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentPage by remember {
+        derivedStateOf {
+            routes.map { it.route }.indexOf( navBackStackEntry?.destination?.route ?: Screen.HomeIndex.route)
+        }
+    }
+    val title by remember(titles) { derivedStateOf { titles[currentPage] } }
+
+
+    ModalNavigationDrawer(
+        drawerContent = {
+            HomeDrawer(
+                isLogin = isLogin,
+                user = user,
+                onSignOut = onSignOut,
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .fillMaxHeight(),
+                onRankClick = onRankClick,
+                onMineCollect = onMineCollect,
+                onMineScore = onMineScore,
+                onShareClick = onShareClick,
+                onTodoClick = onTodoClick,
+                onSettingClick = onSettingClick
+            )
+        },
+        modifier = Modifier,
+        drawerState = drawerState
+    ) {
+        // UI显示部分
+        Scaffold(
+            modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                HomeTopContent(
+                    title = stringResource(id = title),
+                    modifier = Modifier,
+                    onDrawerToggle = {
+                        scope.launch { drawerState.open() }
+                    },
+                    onSearch = onSearch
+                )
+            },
+            bottomBar = {
+                com.zxj.wanandroid.compose.ui.NavigationBar(
+                    modifier = Modifier.padding(0.dp, 1.dp, 0.dp, 0.dp),
+                    navigationItems = navigationItems,
+                    selectIndex = currentPage,
+                    onItemSelectedChanged = { routes[it].navigation(navController) }
+                )
+            },
+            containerColor = WanAndroidTheme.colors.windowBackground,
+            contentColor = WanAndroidTheme.colors.viewBackground,
+        ) { innerPadding ->
+            NavHost(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                navController = navController,
+                startDestination = Screen.HomeIndex.route
+            ) {
+                addHomeIndex(onBrowser)
+                addHomeSquare(controller = navController)
+                addHomeWechat(controller = navController)
+                addHomeSystem(controller = navController)
+                addHomeProject(controller = navController)
+            }
+        }
     }
 }
+
+/**
+ * 顶部内容
+ */
+@Composable
+private fun HomeTopContent(
+    title: String,
+    modifier: Modifier = Modifier,
+    onDrawerToggle: () -> Unit,
+    onSearch: () -> Unit
+) {
+    TextToolBar(
+        modifier = modifier,
+        title = title,
+        fitsSystemWindows = true,
+        navigationIcon = {
+            ToolBarIcon(drawableRes = R.drawable.ic_menu_white_24dp, onDrawerToggle)
+        },
+        actions = {
+            ToolBarIcon(drawableRes = R.drawable.ic_search_white_24dp, onSearch)
+        }
+    )
+}
+
+
