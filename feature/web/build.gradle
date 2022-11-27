@@ -1,0 +1,14 @@
+plugins {
+    id "android.feature"
+    id 'android.library.compose'
+}
+
+android {
+    namespace 'com.zxj.web'
+    defaultConfig {
+        consumerProguardFiles "consumer-rules.pro"
+    }
+}
+
+dependencies {
+}

@@ -1,45 +1,27 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
-    id 'com.google.protobuf'
+    id("android.application")
+    id("android.application.compose")
+    id("android.hilt")
 }
 
 android {
-    compileSdk 33
+
+    namespace "com.zxj.wanandroid.compose"
 
     defaultConfig {
         applicationId "com.zxj.wanandroid.compose"
-        minSdk 24
-        targetSdk 33
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get().toString()
     }
     packagingOptions {
         resources {
@@ -49,81 +31,32 @@ android {
 }
 
 dependencies {
-    // room
-    kapt(libs.room.compiler)
-    implementation(libs.room.ktx)
-    implementation(libs.room.runtime)
-    // ktx
+    // feature
+    implementation(project(":feature:article"))
+    implementation(project(":feature:collect"))
+    implementation(project(":feature:rank"))
+    implementation(project(":feature:score"))
+    implementation(project(":feature:search"))
+    implementation(project(":feature:share"))
+    implementation(project(":feature:user"))
+    implementation(project(":feature:web"))
+
+    // core
+    implementation(project(":core:ui"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:data"))
+    implementation(project(":core:model"))
+
+    // compose相关
     implementation(libs.androidx.core.ktx)
-    implementation(libs.lifecycle.livedata.core.ktx)
-    implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
-    // accompanist
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.pager.indicators)
-    implementation(libs.accompanist.swiperefresh)
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.webview)
-    implementation(libs.accompanist.navigation.animation)
-    implementation(libs.accompanist.flowlayout)
-    // hilt
-    kapt(libs.hilt.android.compiler)
-    implementation(libs.hilt.android)
-    implementation(libs.compose.hilt.navigation)
-    implementation(libs.compose.coil)
-    implementation(libs.compose.activity)
-    implementation(libs.compose.lifecycle.viewmodel)
-    implementation(libs.compose.material)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.navigation)
-    androidTestImplementation(libs.compose.ui.test.junit4)
-    debugImplementation(libs.compose.ui.tooling)
-    // page3
-    testImplementation(libs.paging.tests)
-    implementation(libs.paging)
-    implementation(libs.paging.compose)
-    // 网络相关
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logger)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.fastjson)
-    implementation(libs.fastjson)
-    implementation(libs.kotlin.reflect)
-    // datastore
-    implementation(libs.datastore)
-    implementation(libs.datastore.core)
-    implementation(libs.datastore.preferences)
-    implementation(libs.datastore.protobuf.kotlin.lite)
+
     // 测试相关
     testImplementation(libs.test)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.exspresso)
-    // 约束布局
-    implementation(libs.constraintlayout.compose)
 }
 
-protobuf {
-    protoc {
-        // 高版本就不用这样处理
-        def name = libs.datastore.protobuf.protoc.get().module
-        def version = libs.datastore.protobuf.protoc.get().versionConstraint
-        def result = "${name}:${version}"
-        artifact = result
-    }
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java {
-                    option 'lite'
-                }
-                kotlin {
-                    option 'lite'
-                }
-            }
-        }
-    }
-}
+
 
