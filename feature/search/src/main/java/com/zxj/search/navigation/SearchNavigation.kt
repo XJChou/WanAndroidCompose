@@ -1,11 +1,12 @@
 package com.zxj.search.navigation
 
 import android.net.Uri
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.*
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.composable
 import com.zxj.search.SearchResultRoute
 import com.zxj.search.SearchRoute
 
@@ -37,6 +38,7 @@ fun NavController.navigateToSearch() {
     navigate(searchRoute)
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.searchScreen(
     onBack: () -> Unit,
     onSearch: (String) -> Unit
@@ -56,12 +58,13 @@ fun NavController.navigationToSearchDetail(searchContent: String) {
     navigate("${searchDetailRoute}/$encodeId")
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.searchDetailScreen(
     onBack: () -> Unit,
     onBrowser: (String) -> Unit
 ) {
     composable(
-        route = "$searchDetailRoute/$searchDetailRouteArg",
+        route = "$searchDetailRoute/{$searchDetailRouteArg}",
         arguments = listOf(
             navArgument(searchDetailRouteArg) { type = NavType.StringType }
         )

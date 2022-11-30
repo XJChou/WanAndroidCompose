@@ -1,11 +1,12 @@
 package com.zxj.user.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.google.accompanist.navigation.animation.composable
 import com.zxj.user.LoginRoute
 import com.zxj.user.RegisterRoute
 
@@ -31,6 +32,7 @@ fun NavGraphBuilder.accountGraph(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.loginScreen(
     onBack: () -> Unit,
     navigateToRegister: () -> Unit
@@ -44,6 +46,7 @@ fun NavGraphBuilder.loginScreen(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.registerScreen(
     onBack: () -> Unit,
     navigateToLogin: () -> Unit

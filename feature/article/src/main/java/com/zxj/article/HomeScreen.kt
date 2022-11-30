@@ -1,5 +1,6 @@
 package com.zxj.article
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -9,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.zxj.article.components.HomeDrawer
 import com.zxj.article.components.NavigationItemBean
 import com.zxj.article.navigation.*
@@ -110,7 +112,7 @@ private val routes = arrayOf(
     indexRoute, squareRoute, wechatRoute, systemRoute, projectRoute
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 private fun HomeScreen(
     user: UserBean,
@@ -128,7 +130,7 @@ private fun HomeScreen(
     // 准备数据
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val navController = rememberNavController()
+    val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentPage by remember {
         derivedStateOf { routes.indexOf(navBackStackEntry?.destination?.route ?: indexRoute) }
@@ -159,7 +161,7 @@ private fun HomeScreen(
             modifier = modifier,
             topBar = {
                 TextToolBar(
-                    modifier = modifier,
+                    modifier = Modifier.fillMaxWidth(),
                     title = stringResource(id = title),
                     fitsSystemWindows = true,
                     navigationIcon = {
@@ -195,7 +197,7 @@ private fun HomeScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize(),
-                navController = rememberNavController(),
+                navController = navController,
                 navigateToBrowser = navigateToBrowser
             )
         }

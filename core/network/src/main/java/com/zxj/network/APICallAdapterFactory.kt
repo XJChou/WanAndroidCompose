@@ -88,7 +88,8 @@ class APICall(private val originCall: Call<API<*>>) : Call<API<*>> {
     override fun clone(): Call<API<*>> = APICall(originCall.clone())
 
     private fun Response<API<*>>.check(): Response<API<*>> {
-        return Response.success(NullPointerException().toAPI())
+        if (body() == null) return Response.success(NullPointerException().toAPI())
+        return this
     }
 
     override fun timeout(): Timeout = originCall.timeout()

@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.composable
 import com.zxj.article.*
 import com.zxj.article.index.IndexRoute
 import com.zxj.article.project.ProjectRoute
@@ -20,6 +20,7 @@ fun NavController.navigateToHome() {
     navigate(homeRoute)
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.homeScreen(
     navigateToSearch: () -> Unit,
     navigateToCollect: () -> Unit,
@@ -104,6 +105,7 @@ internal fun NavController.navigateToSquare() {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 internal fun NavGraphBuilder.indexScreen(navigateToBrowser: (String) -> Unit) {
     composable(indexRoute) {
         IndexRoute(
@@ -113,6 +115,7 @@ internal fun NavGraphBuilder.indexScreen(navigateToBrowser: (String) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 internal fun NavGraphBuilder.wechatScreen(navigateToBrowser: (String) -> Unit) {
     composable(wechatRoute) {
         WechatRoute(
@@ -122,6 +125,7 @@ internal fun NavGraphBuilder.wechatScreen(navigateToBrowser: (String) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 internal fun NavGraphBuilder.projectScreen(navigateToBrowser: (String) -> Unit) {
     composable(projectRoute) {
         ProjectRoute(
@@ -131,6 +135,7 @@ internal fun NavGraphBuilder.projectScreen(navigateToBrowser: (String) -> Unit) 
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 internal fun NavGraphBuilder.squareScreen(navigateToBrowser: (String) -> Unit) {
     composable(squareRoute) {
         SquareRoute(
@@ -140,6 +145,7 @@ internal fun NavGraphBuilder.squareScreen(navigateToBrowser: (String) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 internal fun NavGraphBuilder.systemScreen(navigateToBrowser: (String) -> Unit) {
     composable(systemRoute) {
         SystemRoute(

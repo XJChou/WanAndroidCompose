@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     color = WanAndroidTheme.colors.windowBackground
                 ) {
                     WanAndroidNavHost(
-                        navController = rememberNavController(),
+                        navController = rememberAnimatedNavController(),
                         modifier = Modifier.fillMaxSize()
                     )
                 }

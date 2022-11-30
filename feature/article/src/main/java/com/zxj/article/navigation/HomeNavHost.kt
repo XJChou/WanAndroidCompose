@@ -1,17 +1,20 @@
 package com.zxj.article.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.google.accompanist.navigation.animation.AnimatedNavHost
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun HomeNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     navigateToBrowser: (String) -> Unit,
 ) {
-    NavHost(
+    AnimatedNavHost(
         modifier = modifier,
         navController = navController,
         startDestination = indexRoute

@@ -34,34 +34,34 @@ fun WanAndroidNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    NavHost(
+    AnimatedNavHost(
         navController = navController,
         startDestination = homeRoute,
         modifier = modifier,
-//        exitTransition = {
-//            slideOutOfContainer(
-//                AnimatedContentScope.SlideDirection.Left,
-//                animationSpec = tween(500)
-//            )
-//        },
-//        enterTransition = {
-//            slideIntoContainer(
-//                AnimatedContentScope.SlideDirection.Left,
-//                animationSpec = tween(500)
-//            )
-//        },
-//        popExitTransition = {
-//            slideOutOfContainer(
-//                AnimatedContentScope.SlideDirection.Right,
-//                animationSpec = tween(500)
-//            )
-//        },
-//        popEnterTransition = {
-//            slideIntoContainer(
-//                AnimatedContentScope.SlideDirection.Right,
-//                animationSpec = tween(500)
-//            )
-//        }
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        }
     ) {
         // 主页
         this.homeScreen(

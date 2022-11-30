@@ -1,14 +1,15 @@
 package com.zxj.web.navigation
 
 import android.net.Uri
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.accompanist.navigation.animation.composable
 import com.zxj.web.BrowserRoute
 
 const val browserRoute = "browser"
@@ -27,9 +28,10 @@ fun NavController.navigateToBrowser(url: String) {
     navigate("$browserRoute/${encodeURL}")
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.browserScreen(onBack: () -> Unit) {
     composable(
-        "$browserRoute/$browserArgs",
+        "$browserRoute/{$browserArgs}",
         listOf(navArgument(browserArgs) { type = NavType.StringType })
     ) {
         BrowserRoute(
