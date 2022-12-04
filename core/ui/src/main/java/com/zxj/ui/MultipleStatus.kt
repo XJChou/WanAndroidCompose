@@ -110,7 +110,7 @@ sealed interface Status {
     object Initial : Status
     object Loading : Status
 
-    class Success(private val data: Any) : Status {
+    class Success(private val data: Any?) : Status {
 
         @Suppress("UNCHECKED_CAST")
         fun <Data> getData(): Data = data as Data

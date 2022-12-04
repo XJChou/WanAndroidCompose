@@ -48,42 +48,42 @@ fun HomeRoute(
         navigateToSearch = navigateToSearch,
         // 需要登录的
         navigateToCollect = {
-            if (user == USER_EMPTY) {
+            if (user !== USER_EMPTY) {
                 navigateToCollect()
             } else {
                 navigateToLogin()
             }
         },
         navigateToScore = {
-            if (user == USER_EMPTY) {
+            if (user !== USER_EMPTY) {
                 navigateToScore()
             } else {
                 navigateToLogin()
             }
         },
         navigateToRank = {
-            if (user == USER_EMPTY) {
+            if (user !== USER_EMPTY) {
                 navigateToRank()
             } else {
                 navigateToLogin()
             }
         },
         navigateToShare = {
-            if (user == USER_EMPTY) {
+            if (user !== USER_EMPTY) {
                 navigateToShare()
             } else {
                 navigateToLogin()
             }
         },
         navigateToSetting = {
-            if (user == USER_EMPTY) {
+            if (user !== USER_EMPTY) {
                 navigateToSetting()
             } else {
                 navigateToLogin()
             }
         },
         navigateToTODO = {
-            if (user == USER_EMPTY) {
+            if (user !== USER_EMPTY) {
                 navigateToTODO()
             } else {
                 navigateToLogin()

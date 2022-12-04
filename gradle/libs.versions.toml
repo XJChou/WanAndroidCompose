@@ -54,6 +54,7 @@ compose-material = { group = "androidx.compose.material", name = "material", ver
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 compose-material3-window = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav" }
 compose-navigation-gradle = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "nav" }

@@ -126,4 +126,14 @@ class RealArticleRepository @Inject constructor(
     override suspend fun loadKnowledgeList(page: Int, cid: Int): API<ListData<ArticleBean>> {
         return networkDataSource.loadKnowledgeList(page, cid)
     }
+
+    override suspend fun loadProjectTree(): API<List<ProjectTreeBean>> {
+        return networkDataSource.loadProjectTree()
+    }
+
+    override suspend fun loadProjectList(page: Int, cid: Int): API<ListData<ArticleBean>> {
+        return networkDataSource.loadProjectList(page, cid)
+    }
+
+
 }

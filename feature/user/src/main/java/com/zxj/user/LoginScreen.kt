@@ -98,6 +98,7 @@ fun ColumnScope.LoginPage(
                 is LoginViewEvent.LoginError -> {
                     context.toast("登录失败：${it.message}")
                 }
+                else -> {}
             }
         }
     }

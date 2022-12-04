@@ -79,6 +79,18 @@ interface ArticleNetworkDataSource {
      * @param cid
      */
     @GET("article/list/{page}/json")
-    suspend fun loadKnowledgeList(@Path("page") page: Int, @Query("cid") cid: Int): API<ListData<ArticleBean>>
+    suspend fun loadKnowledgeList(
+        @Path("page") page: Int,
+        @Query("cid") cid: Int
+    ): API<ListData<ArticleBean>>
 
+
+    /**
+     * 加载projectTree
+     */
+    @GET("project/tree/json")
+    suspend fun loadProjectTree(): API<List<ProjectTreeBean>>
+
+    @GET("project/list/{page}/json")
+    suspend fun loadProjectList(@Path("page") page: Int, @Query("cid") cid: Int): API<ListData<ArticleBean>>
 }

@@ -31,4 +31,9 @@ interface ArticleRepository {
 
     suspend fun loadKnowledgeList(page: Int, cid: Int): API<ListData<ArticleBean>>
 
+
+    suspend fun loadProjectTree(): API<List<ProjectTreeBean>>
+
+    suspend fun loadProjectList(page: Int, cid: Int): API<ListData<ArticleBean>>
+
 }
