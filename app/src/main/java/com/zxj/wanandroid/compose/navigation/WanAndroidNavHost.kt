@@ -8,8 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.zxj.article.navigation.homeRoute
-import com.zxj.article.navigation.homeScreen
+import com.zxj.article.navigation.*
 import com.zxj.collect.navigation.collectScreen
 import com.zxj.collect.navigation.navigateToCollect
 import com.zxj.rank.navigation.navigateToRank
@@ -73,7 +72,14 @@ fun WanAndroidNavHost(
             navigateToShare = navController::navigateToShare,
             navigateToSetting = {},
             navigateToTODO = {},
-            navigateToBrowser = navController::navigateToBrowser
+            navigateToBrowser = navController::navigateToBrowser,
+            navigateToKnowledgeSystemDetail = navController::navigateToKnowledgeSystemDetail
+        )
+
+        // 主页详情
+        this.knowledgeSystemDetailScreen(
+            onBack = navController::popBackStack,
+            navigateToBrowser = navController::navigateToBrowser,
         )
 
         // 收藏

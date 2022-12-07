@@ -1,20 +1,25 @@
 package com.zxj.article.navigation
 
+import android.net.Uri
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.*
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
+import androidx.navigation.*
 import com.google.accompanist.navigation.animation.composable
 import com.zxj.article.*
 import com.zxj.article.index.IndexRoute
 import com.zxj.article.project.ProjectRoute
 import com.zxj.article.square.SquareRoute
+import com.zxj.article.system.KnowledgeSystemDetailRoute
 import com.zxj.article.system.SystemRoute
 import com.zxj.article.wechat.WechatRoute
+import com.zxj.model.Knowledge
 
 const val homeRoute = "homeRoute"
+const val knowledgeSystemDetailRoute = "knowledgeSystemDetailRoute"
+const val knowledgeSystemDetailNameArgs = "name"
+const val knowledgeSystemDetailKnowledgesArgs = "knowledges"
 
 // 对外
 fun NavController.navigateToHome() {
@@ -31,6 +36,7 @@ fun NavGraphBuilder.homeScreen(
     navigateToShare: () -> Unit,
     navigateToSetting: () -> Unit,
     navigateToTODO: () -> Unit,
+    navigateToKnowledgeSystemDetail: (String, List<Knowledge>) -> Unit,
     navigateToBrowser: (String) -> Unit
 ) {
     composable(homeRoute) {
@@ -45,6 +51,36 @@ fun NavGraphBuilder.homeScreen(
             navigateToSetting = navigateToSetting,
             navigateToTODO = navigateToTODO,
             navigateToBrowser = navigateToBrowser,
+            navigateToKnowledgeSystemDetail = navigateToKnowledgeSystemDetail
+        )
+    }
+}
+
+fun NavController.navigateToKnowledgeSystemDetail(name: String, knowledges: List<Knowledge>) {
+    val json = Uri.encode(com.alibaba.fastjson.JSONObject.toJSONString(knowledges))
+    navigate("$knowledgeSystemDetailRoute/$name/$json")
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.knowledgeSystemDetailScreen(
+    onBack: () -> Unit,
+    navigateToBrowser: (String) -> Unit
+) {
+    composable(
+        route = "$knowledgeSystemDetailRoute/{$knowledgeSystemDetailNameArgs}/{$knowledgeSystemDetailKnowledgesArgs}",
+        arguments = listOf(
+            navArgument(knowledgeSystemDetailNameArgs) {
+                this.type = NavType.StringType
+            },
+            navArgument(knowledgeSystemDetailKnowledgesArgs) {
+                this.type = NavType.StringType
+            }
+        )
+    ) {
+        KnowledgeSystemDetailRoute(
+            modifier = Modifier.fillMaxSize(),
+            onBack = onBack,
+            navigateToBrowser = navigateToBrowser
         )
     }
 }
@@ -147,11 +183,15 @@ internal fun NavGraphBuilder.squareScreen(navigateToBrowser: (String) -> Unit) {
 }
 
 @OptIn(ExperimentalAnimationApi::class)
-internal fun NavGraphBuilder.systemScreen(navigateToBrowser: (String) -> Unit) {
+internal fun NavGraphBuilder.systemScreen(
+    navigateToBrowser: (String) -> Unit,
+    navigateToKnowledgeSystemDetail: (String, List<Knowledge>) -> Unit
+) {
     composable(systemRoute) {
         SystemRoute(
             modifier = Modifier.fillMaxSize(),
             navigateToBrowser = navigateToBrowser,
+            navigateToKnowledgeSystemDetail = navigateToKnowledgeSystemDetail
         )
     }
 }

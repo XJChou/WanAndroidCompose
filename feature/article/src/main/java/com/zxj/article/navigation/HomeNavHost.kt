@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.zxj.model.Knowledge
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -13,6 +14,7 @@ internal fun HomeNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     navigateToBrowser: (String) -> Unit,
+    navigateToKnowledgeSystemDetail: (String, List<Knowledge>) -> Unit
 ) {
     AnimatedNavHost(
         modifier = modifier,
@@ -22,7 +24,7 @@ internal fun HomeNavHost(
         this.indexScreen(navigateToBrowser)
         this.wechatScreen(navigateToBrowser)
         this.squareScreen(navigateToBrowser)
-        this.systemScreen(navigateToBrowser)
+        this.systemScreen(navigateToBrowser, navigateToKnowledgeSystemDetail)
         this.projectScreen(navigateToBrowser)
     }
 }

@@ -29,9 +29,19 @@ interface ArticleRepository {
      */
     suspend fun loadWechatChapters(): API<List<WechatChapterBean>>
 
+    /**
+     * 体系相关
+     */
+    suspend fun loadKnowledgeTree(): API<List<KnowledgeTreeBean>>
+
     suspend fun loadKnowledgeList(page: Int, cid: Int): API<ListData<ArticleBean>>
 
+    suspend fun loadNavigation(): API<List<NavigationBean>>
 
+
+    /**
+     * 项目相关
+     */
     suspend fun loadProjectTree(): API<List<ProjectTreeBean>>
 
     suspend fun loadProjectList(page: Int, cid: Int): API<ListData<ArticleBean>>

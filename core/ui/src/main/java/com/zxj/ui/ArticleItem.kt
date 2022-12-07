@@ -28,6 +28,7 @@ import com.zxj.model.articleBeanDemo
 fun ArticleItem(
     data: ArticleBean,
     modifier: Modifier = Modifier,
+    collect: Boolean = data.collect,
     onItemZanClick: (collect: Boolean, data: ArticleBean) -> Unit = { _, _ -> },
     onItemClick: (data: ArticleBean) -> Unit = {},
 ) {
@@ -105,8 +106,8 @@ fun ArticleItem(
                 color = WanAndroidTheme.colors.itemChapter,
                 fontSize = 12.sp
             )
-            val painter = remember(data.collect) {
-                if (data.collect) R.drawable.ic_like else R.drawable.ic_like_not
+            val painter = remember(collect) {
+                if (collect) R.drawable.ic_like else R.drawable.ic_like_not
             }
             Image(
                 painter = painterResource(id = painter),
@@ -114,7 +115,7 @@ fun ArticleItem(
                 modifier = Modifier.clickable(
                     onClick = {
                         onItemZanClick.invoke(
-                            !data.collect,
+                            !collect,
                             data
                         )
                     },

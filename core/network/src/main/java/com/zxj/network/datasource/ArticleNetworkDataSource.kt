@@ -73,6 +73,14 @@ interface ArticleNetworkDataSource {
     suspend fun loadWechatChapters(): API<List<WechatChapterBean>>
 
     /**
+     * 获取知识体系
+     * http://www.wanandroid.com/tree/json
+     */
+    @GET("tree/json")
+    suspend fun loadKnowledgeTree(): API<List<KnowledgeTreeBean>>
+
+
+    /**
      * 知识体系下的文章
      * http://www.wanandroid.com/article/list/0/json?cid=168
      * @param page
@@ -84,6 +92,13 @@ interface ArticleNetworkDataSource {
         @Query("cid") cid: Int
     ): API<ListData<ArticleBean>>
 
+    /**
+     * 导航数据
+     * http://www.wanandroid.com/navi/json
+     */
+    @GET("navi/json")
+    suspend fun loadNavigationList(): API<List<NavigationBean>>
+
 
     /**
      * 加载projectTree
@@ -92,5 +107,8 @@ interface ArticleNetworkDataSource {
     suspend fun loadProjectTree(): API<List<ProjectTreeBean>>
 
     @GET("project/list/{page}/json")
-    suspend fun loadProjectList(@Path("page") page: Int, @Query("cid") cid: Int): API<ListData<ArticleBean>>
+    suspend fun loadProjectList(
+        @Path("page") page: Int,
+        @Query("cid") cid: Int
+    ): API<ListData<ArticleBean>>
 }

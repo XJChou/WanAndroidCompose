@@ -19,6 +19,7 @@ import com.zxj.article.navigation.navigateToIndex
 import com.zxj.article.navigation.navigateToSquare
 import com.zxj.article.navigation.navigateToWechat
 import com.zxj.designsystem.theme.WanAndroidTheme
+import com.zxj.model.Knowledge
 import com.zxj.model.USER_EMPTY
 import com.zxj.model.UserBean
 import com.zxj.ui.TextToolBar
@@ -38,6 +39,7 @@ fun HomeRoute(
     navigateToShare: () -> Unit,
     navigateToSetting: () -> Unit,
     navigateToTODO: () -> Unit,
+    navigateToKnowledgeSystemDetail: (String, List<Knowledge>) -> Unit,
     navigateToBrowser: (String) -> Unit
 ) {
     val user by viewModel.userFlow.collectAsState()
@@ -89,6 +91,7 @@ fun HomeRoute(
                 navigateToLogin()
             }
         },
+        navigateToKnowledgeSystemDetail = navigateToKnowledgeSystemDetail,
         onSignOut = viewModel::signOut
     )
 }
@@ -125,6 +128,7 @@ private fun HomeScreen(
     navigateToShare: () -> Unit,
     navigateToSetting: () -> Unit,
     navigateToTODO: () -> Unit,
+    navigateToKnowledgeSystemDetail: (String, List<Knowledge>) -> Unit,
     onSignOut: () -> Unit
 ) {
     // 准备数据
@@ -198,7 +202,8 @@ private fun HomeScreen(
                     .padding(innerPadding)
                     .fillMaxSize(),
                 navController = navController,
-                navigateToBrowser = navigateToBrowser
+                navigateToBrowser = navigateToBrowser,
+                navigateToKnowledgeSystemDetail = navigateToKnowledgeSystemDetail
             )
         }
     }

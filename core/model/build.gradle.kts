@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.fastjson)
+    api(libs.fastjson)
 }

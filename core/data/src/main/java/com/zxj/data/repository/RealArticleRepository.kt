@@ -123,8 +123,16 @@ class RealArticleRepository @Inject constructor(
         return networkDataSource.loadWechatChapters()
     }
 
+    override suspend fun loadKnowledgeTree(): API<List<KnowledgeTreeBean>> {
+        return networkDataSource.loadKnowledgeTree()
+    }
+
     override suspend fun loadKnowledgeList(page: Int, cid: Int): API<ListData<ArticleBean>> {
         return networkDataSource.loadKnowledgeList(page, cid)
+    }
+
+    override suspend fun loadNavigation(): API<List<NavigationBean>> {
+        return networkDataSource.loadNavigationList()
     }
 
     override suspend fun loadProjectTree(): API<List<ProjectTreeBean>> {

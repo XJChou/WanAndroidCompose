@@ -30,4 +30,9 @@
     <string name="nav_line_2" translatable="false">--</string>
 
     <string name="go_login">去登陆</string>
+
+
+    <!--  system  -->
+    <string name="knowledge_system">体系</string>
+    <string name="navigation">导航</string>
 </resources>

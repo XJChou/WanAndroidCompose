@@ -27,8 +27,6 @@ class ProjectViewModel @Inject constructor(
     private val _event = MutableSharedFlow<String>()
     val event = _event.asSharedFlow()
 
-    val collectEvent = articleRepository.collectFlow
-
     private val pagerMap = mutableStateMapOf<Int, Flow<PagingData<ArticleBean>>>()
     private val collectMap = mutableStateMapOf<String, Boolean>()
 
@@ -47,7 +45,7 @@ class ProjectViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            collectEvent.collect { event ->
+            articleRepository.collectFlow.collect { event ->
                 collectMap[event.first] = event.second
             }
         }
