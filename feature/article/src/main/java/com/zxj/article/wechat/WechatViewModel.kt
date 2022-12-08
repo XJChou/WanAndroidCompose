@@ -24,12 +24,13 @@ class WechatViewModel @Inject constructor(
     }
 
     fun loadData() {
-        _uiState.tryEmit(Status.Loading)
+        _uiState.value = Status.Loading
         viewModelScope.launch {
-            articleRepository.loadWechatChapters().ifSuccess {
-                _uiState.tryEmit(Status.Success(it ?: emptyList<WechatChapterBean>()))
-            }.ifError {
-                _uiState.tryEmit(Status.Error(it))
+            val response = articleRepository.loadWechatChapters()
+            if (response.isSuccess) {
+                _uiState.value = Status.Success(response.data)
+            } else {
+                _uiState.value = Status.Error(response.errorMsgOrDefault)
             }
         }
     }

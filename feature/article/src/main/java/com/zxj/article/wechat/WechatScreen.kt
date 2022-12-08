@@ -65,7 +65,7 @@ private fun WechatScreen(
                     selected = selectedTab == index,
                     onClick = {
                         scope.launch {
-                            pagerState.animateScrollToPage(index, 0f)
+                            pagerState.scrollToPage(index, 0f)
                         }
                     }
                 ) {

@@ -1,5 +1,6 @@
 package com.zxj.article.wechat
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.zxj.data.createIntPagingSource
+import com.zxj.data.repository.ArticleRepository
 import com.zxj.model.API
 import com.zxj.model.ArticleBean
 import com.zxj.model.ListData
@@ -19,12 +21,8 @@ import kotlinx.coroutines.launch
 
 class WechatArticleDetailViewModel @AssistedInject constructor(
     @Assisted private val cid: Int,
-    private val articleRepository: com.zxj.data.repository.ArticleRepository
+    private val articleRepository: ArticleRepository
 ) : ViewModel() {
-
-    init {
-        println("WechatArticleDetailViewModel init cid = ${cid}")
-    }
 
     @AssistedFactory
     interface Factory {
@@ -43,14 +41,23 @@ class WechatArticleDetailViewModel @AssistedInject constructor(
         }
     }
 
-    private val collectFlow =
-        articleRepository.collectFlow.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    private val collectMap = mutableStateMapOf<String, Boolean>()
     private val pager = Pager(PagingConfig(20)) { createIntPagingSource(::fetch) }
     val pagingData = pager.flow.cachedIn(viewModelScope)
+
+    init {
+        viewModelScope.launch {
+            articleRepository.collectFlow.collect {
+                collectMap[it.first] = it.second
+            }
+        }
+    }
 
     private suspend fun fetch(page: Int): API<ListData<ArticleBean>> {
         return articleRepository.loadKnowledgeList(page, cid)
     }
+
+    fun getCollect(id: String): Boolean? = collectMap[id]
 
     fun collectArticle(collect: Boolean, id: String) {
         viewModelScope.launch {

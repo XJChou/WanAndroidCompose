@@ -2,10 +2,12 @@ package com.zxj.article.wechat
 
 import android.app.Activity
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -16,6 +18,7 @@ import com.zxj.model.ArticleBean
 import com.zxj.model.WechatChapterBean
 import com.zxj.ui.PagingLazyColumn
 import com.zxj.ui.ArticleItem
+import com.zxj.ui.rememberLazyListState
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.flowOf
 
@@ -37,7 +40,8 @@ fun WechatArticleDetailRoute(
         },
         onArticleClick = {
             onBrowser(it.link)
-        }
+        },
+        getCollect = wechatArticleDetailViewModel::getCollect
     )
 }
 
@@ -46,13 +50,19 @@ private fun WechatArticleDetailScreen(
     pagingItems: LazyPagingItems<ArticleBean>,
     modifier: Modifier = Modifier,
     onArticleClick: (ArticleBean) -> Unit,
-    onCollectClick: (Boolean, ArticleBean) -> Unit
+    onCollectClick: (Boolean, ArticleBean) -> Unit,
+    getCollect: (String) -> Boolean?
 ) {
-    PagingLazyColumn(modifier = modifier, pagingItems = pagingItems) {
+    PagingLazyColumn(
+        modifier = modifier,
+        pagingItems = pagingItems,
+        state = pagingItems.rememberLazyListState()
+    ) {
         items(pagingItems) {
             ArticleItem(
                 data = it!!,
-                modifier = Modifier.fillMaxWidth(),
+                collect = getCollect(it.id) ?: it.collect,
+                modifier = Modifier.fillMaxWidth().padding(top = 2.dp),
                 onItemZanClick = onCollectClick,
                 onItemClick = onArticleClick
             )
@@ -85,7 +95,8 @@ fun PreviewWechatArticleDetailScreen() {
         WechatArticleDetailScreen(
             pagingItems = flowOf(PagingData.empty<ArticleBean>()).collectAsLazyPagingItems(),
             onArticleClick = {},
-            onCollectClick = { _, _ -> }
+            onCollectClick = { _, _ -> },
+            getCollect = { false }
         )
     }
 }
