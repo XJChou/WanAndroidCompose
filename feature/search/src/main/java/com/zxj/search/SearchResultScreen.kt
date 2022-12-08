@@ -3,6 +3,7 @@ package com.zxj.search
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -37,7 +38,8 @@ fun SearchResultRoute(
         onItemClick = onItemClick,
         onItemZan = viewModel::toggleCollect,
         pagingItems = pagingItems,
-        modifier = modifier
+        modifier = modifier,
+        getCollect = viewModel::getCollect
     )
     // toast处理
     val context = LocalContext.current
@@ -46,20 +48,6 @@ fun SearchResultRoute(
             when (it) {
                 is UIEvent.ShowToast -> {
                     Toast.makeText(context, it.msg, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-    // 事件处理
-    LaunchedEffect(viewModel.collectFlow) {
-        viewModel.collectFlow.collect { event ->
-            viewModel.pagingItems.map {
-                it.map {
-                    if (it.id == event.first) {
-                        it.copy(collect = event.second)
-                    } else {
-                        it
-                    }
                 }
             }
         }
@@ -75,6 +63,7 @@ internal fun SearchResultScreen(
     onItemZan: (Boolean, ArticleBean) -> Unit,
     pagingItems: LazyPagingItems<ArticleBean>,
     modifier: Modifier = Modifier,
+    getCollect: (String) -> Boolean?
 ) {
     Scaffold(
         modifier = modifier,
@@ -95,9 +84,10 @@ internal fun SearchResultScreen(
             items(pagingItems, key = { it.id }) {
                 ArticleItem(
                     data = it!!,
+                    collect = getCollect(it.id) ?: it.collect,
                     onItemZanClick = onItemZan,
                     onItemClick = onItemClick,
-                    modifier = modifier.padding(top = 2.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

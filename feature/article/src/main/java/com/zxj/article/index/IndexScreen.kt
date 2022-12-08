@@ -71,8 +71,7 @@ private fun IndexScreen(
         items(pagingItems, key = { it.id }) {
             ArticleItem(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 2.dp),
+                    .fillMaxWidth(),
                 data = it!!,
                 collect = getCollect(it.id) ?: it.collect,
                 onItemZanClick = onItemCollect,

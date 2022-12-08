@@ -57,7 +57,7 @@ fun HomeDrawer(
 
         // 头部
         DrawerHeader(
-            isLogin = user == USER_EMPTY,
+            isLogin = user != USER_EMPTY,
             user = user,
             onRankClick = navigateToRank
         )

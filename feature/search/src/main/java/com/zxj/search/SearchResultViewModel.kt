@@ -1,5 +1,6 @@
 package com.zxj.search
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,10 +30,19 @@ class SearchResultViewModel @Inject constructor(
 
     private val pager = Pager(PagingConfig(20)) { createIntPagingSource(::fetch) }
     val pagingItems = pager.flow.cachedIn(viewModelScope)
-    val collectFlow = articleRepository.collectFlow
 
     private val _uiEvent = MutableSharedFlow<UIEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
+
+    private val collectMap = mutableStateMapOf<String, Boolean>()
+
+    init {
+        viewModelScope.launch {
+            articleRepository.collectFlow.collect {
+                collectMap[it.first] = it.second
+            }
+        }
+    }
 
     private suspend fun fetch(pageIndex: Int): API<ListData<ArticleBean>> {
         return articleRepository.loadSearchArticleList(
@@ -53,6 +63,8 @@ class SearchResultViewModel @Inject constructor(
             }
         }
     }
+
+    fun getCollect(id: String): Boolean? = collectMap[id]
 }
 
 interface UIEvent {

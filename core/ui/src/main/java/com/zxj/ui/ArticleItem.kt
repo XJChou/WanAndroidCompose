@@ -12,6 +12,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,13 +34,15 @@ fun ArticleItem(
     onItemZanClick: (collect: Boolean, data: ArticleBean) -> Unit = { _, _ -> },
     onItemClick: (data: ArticleBean) -> Unit = {},
 ) {
+    val divideColor = WanAndroidTheme.colors.listDivider
     Column(
         modifier
             .fillMaxWidth()
             .background(WanAndroidTheme.colors.viewBackground)
-            .clickable {
-                onItemClick.invoke(data)
+            .drawBehind {
+                drawLine(divideColor, Offset(0f, size.height), Offset(size.width, size.height))
             }
+            .clickable { onItemClick.invoke(data) }
             .padding(0.dp, 10.dp, 10.dp, 10.dp)
     ) {
         // 标签 + 作者 + 时间

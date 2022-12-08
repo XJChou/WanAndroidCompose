@@ -1,6 +1,7 @@
 package com.zxj.share
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -76,7 +77,8 @@ internal fun ShareScreen(
                 ArticleItem(
                     data = it!!,
                     onItemClick = onArticleItem,
-                    onItemZanClick = onArticleCollectItem
+                    onItemZanClick = onArticleCollectItem,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

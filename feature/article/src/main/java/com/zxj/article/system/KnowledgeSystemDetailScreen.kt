@@ -142,8 +142,7 @@ private fun KnowledgeSystemDetailPage(
                 data = it!!,
                 collect = getCollect(it.id) ?: it.collect,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 2.dp),
+                    .fillMaxWidth(),
                 onItemClick = { navigateToBrowser(it.link) },
                 onItemZanClick = onCollectClick
             )

@@ -47,8 +47,7 @@ fun SquareScreen(
             ArticleItem(
                 data = it!!,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 2.dp),
+                    .fillMaxWidth(),
                 collect = getCollect(it.id) ?: it.collect,
                 onItemClick = { navigateToBrowser(it.link) },
                 onItemZanClick = onArticleCollect

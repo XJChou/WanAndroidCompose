@@ -62,7 +62,7 @@ private fun WechatArticleDetailScreen(
             ArticleItem(
                 data = it!!,
                 collect = getCollect(it.id) ?: it.collect,
-                modifier = Modifier.fillMaxWidth().padding(top = 2.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onItemZanClick = onCollectClick,
                 onItemClick = onArticleClick
             )

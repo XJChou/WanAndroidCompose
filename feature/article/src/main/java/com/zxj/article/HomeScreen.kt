@@ -158,11 +158,11 @@ private fun HomeScreen(
                 onSignOut = onSignOut,
             )
         },
-        modifier = Modifier,
+        modifier = modifier,
     ) {
         // UI显示部分
         Scaffold(
-            modifier = modifier,
+            modifier = Modifier.fillMaxSize(),
             topBar = {
                 TextToolBar(
                     modifier = Modifier.fillMaxWidth(),
