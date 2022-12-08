@@ -111,4 +111,14 @@ interface ArticleNetworkDataSource {
         @Path("page") page: Int,
         @Query("cid") cid: Int
     ): API<ListData<ArticleBean>>
+
+
+    /**
+     * 广场列表数据
+     * https://wanandroid.com/user_article/list/0/json
+     * @param page 页码拼接在url上从0开始
+     */
+    @GET("user_article/list/{page}/json")
+    suspend fun loadSquareList(@Path("page") page: Int): API<ListData<ArticleBean>>
+
 }

@@ -1,5 +1,6 @@
 package com.zxj.article.index
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.map
@@ -29,6 +30,16 @@ class IndexViewModel @Inject constructor(
 
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    private val collectMap = mutableStateMapOf<String, Boolean>()
+
+    init {
+        viewModelScope.launch {
+            articleRepository.collectFlow.collect {
+                collectMap[it.first] = it.second
+            }
+        }
+    }
 
     /* ------------------------ action处理 ------------------------ */
     private suspend fun fetch(pageIndex: Int): API<ListData<ArticleBean>> {
@@ -67,6 +78,8 @@ class IndexViewModel @Inject constructor(
             }
         }
     }
+
+    fun getCollect(id: String): Boolean? = collectMap[id]
 }
 
 

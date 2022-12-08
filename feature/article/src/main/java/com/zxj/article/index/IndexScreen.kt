@@ -2,12 +2,14 @@ package com.zxj.article.index
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -29,6 +31,7 @@ fun IndexRoute(
         onBrowser = navigateToBrowser,
         onItemCollect = indexViewModel::dealZanAction,
         pagingItems = pagingItems,
+        getCollect = indexViewModel::getCollect
     )
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -48,7 +51,8 @@ private fun IndexScreen(
     pagingItems: LazyPagingItems<ArticleBean>,
     modifier: Modifier = Modifier,
     onBrowser: (String) -> Unit,
-    onItemCollect: (Boolean, ArticleBean) -> Unit
+    onItemCollect: (Boolean, ArticleBean) -> Unit,
+    getCollect: (String) -> Boolean?
 ) {
     val state = pagingItems.rememberLazyListState()
     PagingLazyColumn(
@@ -66,7 +70,11 @@ private fun IndexScreen(
         }
         items(pagingItems, key = { it.id }) {
             ArticleItem(
-                it!!,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 2.dp),
+                data = it!!,
+                collect = getCollect(it.id) ?: it.collect,
                 onItemZanClick = onItemCollect,
                 onItemClick = { onBrowser(it.link) }
             )

@@ -46,4 +46,6 @@ interface ArticleRepository {
 
     suspend fun loadProjectList(page: Int, cid: Int): API<ListData<ArticleBean>>
 
+    suspend fun loadSquareList(page: Int): API<ListData<ArticleBean>>
+
 }

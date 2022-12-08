@@ -143,5 +143,7 @@ class RealArticleRepository @Inject constructor(
         return networkDataSource.loadProjectList(page, cid)
     }
 
-
+    override suspend fun loadSquareList(page: Int): API<ListData<ArticleBean>> {
+        return networkDataSource.loadSquareList(page - 1)
+    }
 }
