@@ -3,20 +3,24 @@ package com.zxj.wanandroid.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.zxj.wanandroid.compose.ui.theme.WanAndroidTheme
+import com.zxj.designsystem.theme.WanAndroidTheme
+import com.zxj.wanandroid.compose.navigation.WanAndroidNavHost
 import dagger.hilt.android.AndroidEntryPoint
-import com.zxj.wanandroid.compose.utils.MyLog
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 声明自身管理WindowInsets
@@ -32,11 +36,15 @@ class MainActivity : ComponentActivity() {
                 systemUiController.setNavigationBarColor(Color.Black)
 
                 Surface(
-                    modifier = Modifier.fillMaxSize().navigationBarsPadding(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
                     color = WanAndroidTheme.colors.windowBackground
                 ) {
-                    // 主题内容
-                    MainNavigation()
+                    WanAndroidNavHost(
+                        navController = rememberAnimatedNavController(),
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
         }

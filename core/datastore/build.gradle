@@ -1,0 +1,43 @@
+plugins {
+    id 'android.library'
+    id 'android.hilt'
+    alias(libs.plugins.protobuf)
+}
+
+android {
+    namespace 'com.zxj.datastore'
+    defaultConfig {
+        consumerProguardFiles "consumer-rules.pro"
+    }
+}
+
+dependencies {
+    implementation(project(":core:model"))
+    // datastore
+    implementation(libs.datastore)
+    implementation(libs.datastore.core)
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore.protobuf.kotlin.lite)
+}
+
+protobuf {
+    protoc {
+        // 高版本就不用这样处理
+        def name = libs.datastore.protobuf.protoc.get().module
+        def version = libs.datastore.protobuf.protoc.get().versionConstraint
+        def result = "${name}:${version}"
+        artifact = result
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+                kotlin {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}

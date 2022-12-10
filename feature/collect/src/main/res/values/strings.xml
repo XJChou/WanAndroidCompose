@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Collect -->
+    <string name="nav_my_collect">我的收藏</string>
+    <string name="collect">收藏</string>
+    <string name="anonymous">匿名</string>
+</resources>
