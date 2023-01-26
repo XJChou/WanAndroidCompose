@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.zxj.designsystem.theme.WanAndroidTheme
 import com.zxj.model.UserScoreBean
 import com.zxj.model.userScoreBeanDemo
+import com.zxj.ui.itemDivider
 
 @Composable
 fun ScoreItem(
@@ -25,6 +26,7 @@ fun ScoreItem(
     Box(
         modifier = modifier
             .background(Color.White)
+            .itemDivider()
             .padding(16.dp)
     ) {
         Row {

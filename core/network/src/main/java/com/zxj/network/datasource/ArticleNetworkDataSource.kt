@@ -55,7 +55,10 @@ interface ArticleNetworkDataSource {
      */
     @POST("lg/user_article/add/json")
     @FormUrlEncoded
-    suspend fun shareArticle(@FieldMap map: MutableMap<String, Any>): API<Any>
+    suspend fun shareArticle(
+        @Field("title") title: String,
+        @Field("link") link: String
+    ): API<String>
 
     /**
      * 删除自己分享的文章

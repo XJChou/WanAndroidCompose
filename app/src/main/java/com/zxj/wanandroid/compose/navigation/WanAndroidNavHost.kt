@@ -19,6 +19,8 @@ import com.zxj.search.navigation.navigateToSearch
 import com.zxj.search.navigation.navigationToSearchDetail
 import com.zxj.search.navigation.searchGraph
 import com.zxj.share.navigation.navigateToShare
+import com.zxj.share.navigation.navigateToShareArticle
+import com.zxj.share.navigation.shareArticleScreen
 import com.zxj.share.navigation.shareScreen
 import com.zxj.user.navigation.accountGraph
 import com.zxj.user.navigation.navigateToLogin
@@ -73,7 +75,8 @@ fun WanAndroidNavHost(
             navigateToSetting = {},
             navigateToTODO = {},
             navigateToBrowser = navController::navigateToBrowser,
-            navigateToKnowledgeSystemDetail = navController::navigateToKnowledgeSystemDetail
+            navigateToKnowledgeSystemDetail = navController::navigateToKnowledgeSystemDetail,
+            navigateToShareArticle = navController::navigateToShareArticle
         )
 
         // 主页详情
@@ -117,6 +120,10 @@ fun WanAndroidNavHost(
         this.shareScreen(
             onBack = navController::popBackStack,
             onBrowser = navController::navigateToBrowser
+        )
+
+        this.shareArticleScreen(
+            onBack = navController::popBackStack
         )
 
         // 网页界面

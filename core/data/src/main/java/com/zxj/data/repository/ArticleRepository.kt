@@ -22,6 +22,8 @@ interface ArticleRepository {
 
     suspend fun removeCollectArticle(id: String): API<String>
 
+    suspend fun shareArticle(title: String, link: String): API<String>
+
     suspend fun loadShareList(page: Int): API<MineShareBean>
 
     /**

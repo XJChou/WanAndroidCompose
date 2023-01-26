@@ -24,16 +24,16 @@ fun Project.configureFlavors(
     commonExtension.apply {
         flavorDimensions += FlavorDimension.contentType.name
         productFlavors {
-            Flavor.values().forEach{
-                create(it.name) {
-                    dimension = it.dimension.name
-                    if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
-                        if (it.applicationIdSuffix != null) {
-                            this.applicationIdSuffix = it.applicationIdSuffix
-                        }
-                    }
-                }
-            }
+//            Flavor.values().forEach{
+//                create(it.name) {
+//                    dimension = it.dimension.name
+//                    if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
+//                        if (it.applicationIdSuffix != null) {
+//                            this.applicationIdSuffix = it.applicationIdSuffix
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 }

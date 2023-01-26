@@ -32,15 +32,6 @@
 
     <!-- 广场 -->
     <string name="square">广场</string>
-    <string name="share_article">分享文章</string>
-    <string name="share_article_title">文章标题</string>
-    <string name="share_article_title_tip">100字以内</string>
-    <string name="share_article_link">文章链接</string>
-    <string name="share_article_link_tip">例如：https://www.wanandroid.com</string>
-    <string name="share_success">分享成功</string>
-    <string name="share_article_delete">已删除分享的文章</string>
-    <string name="audited">待审核</string>
-    <string name="submit_ing">正在提交...</string>
 
     <!--  积分  -->
     <string name="score">积分</string>

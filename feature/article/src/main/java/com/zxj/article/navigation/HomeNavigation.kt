@@ -37,7 +37,8 @@ fun NavGraphBuilder.homeScreen(
     navigateToSetting: () -> Unit,
     navigateToTODO: () -> Unit,
     navigateToKnowledgeSystemDetail: (String, List<Knowledge>) -> Unit,
-    navigateToBrowser: (String) -> Unit
+    navigateToBrowser: (String) -> Unit,
+    navigateToShareArticle: () -> Unit,
 ) {
     composable(homeRoute) {
         HomeRoute(
@@ -51,7 +52,8 @@ fun NavGraphBuilder.homeScreen(
             navigateToSetting = navigateToSetting,
             navigateToTODO = navigateToTODO,
             navigateToBrowser = navigateToBrowser,
-            navigateToKnowledgeSystemDetail = navigateToKnowledgeSystemDetail
+            navigateToKnowledgeSystemDetail = navigateToKnowledgeSystemDetail,
+            navigateToShareArticle = navigateToShareArticle
         )
     }
 }

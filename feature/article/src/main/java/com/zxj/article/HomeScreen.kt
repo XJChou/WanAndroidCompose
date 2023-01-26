@@ -40,7 +40,8 @@ fun HomeRoute(
     navigateToSetting: () -> Unit,
     navigateToTODO: () -> Unit,
     navigateToKnowledgeSystemDetail: (String, List<Knowledge>) -> Unit,
-    navigateToBrowser: (String) -> Unit
+    navigateToBrowser: (String) -> Unit,
+    navigateToShareArticle: () -> Unit,
 ) {
     val user by viewModel.userFlow.collectAsState()
     HomeScreen(
@@ -91,6 +92,7 @@ fun HomeRoute(
                 navigateToLogin()
             }
         },
+        navigateToShareArticle = navigateToShareArticle,
         navigateToKnowledgeSystemDetail = navigateToKnowledgeSystemDetail,
         onSignOut = viewModel::signOut
     )
@@ -129,7 +131,8 @@ private fun HomeScreen(
     navigateToSetting: () -> Unit,
     navigateToTODO: () -> Unit,
     navigateToKnowledgeSystemDetail: (String, List<Knowledge>) -> Unit,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    navigateToShareArticle: () -> Unit,
 ) {
     // 准备数据
     val scope = rememberCoroutineScope()

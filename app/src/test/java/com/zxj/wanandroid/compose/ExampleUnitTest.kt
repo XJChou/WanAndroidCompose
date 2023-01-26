@@ -1,5 +1,7 @@
 package com.zxj.wanandroid.compose
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.Snapshot
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -12,6 +14,18 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        val state = mutableStateOf(1)
+
+        val snapshot = Snapshot.takeSnapshot()
+        state.value = 2
+        println("value = " + state.value)
+
+        snapshot.enter {
+            println("value = " + state.value)
+        }
+
+        println("value = " + state.value)
+
+        snapshot.dispose()
     }
 }

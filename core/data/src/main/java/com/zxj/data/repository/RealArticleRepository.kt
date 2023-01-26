@@ -115,6 +115,10 @@ class RealArticleRepository @Inject constructor(
         }
     }
 
+    override suspend fun shareArticle(title: String, link: String): API<String> {
+        return networkDataSource.shareArticle(title, link)
+    }
+
     override suspend fun loadShareList(page: Int): API<MineShareBean> {
         return networkDataSource.loadShareList(page)
     }

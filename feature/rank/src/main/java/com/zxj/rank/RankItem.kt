@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.zxj.designsystem.theme.WanAndroidTheme
 import com.zxj.model.RankBean
 import com.zxj.model.rankBeanDemo
+import com.zxj.ui.itemDivider
 
 @Composable
 fun RankItem(
@@ -19,7 +20,9 @@ fun RankItem(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.padding(top = 16.dp, end = 16.dp, bottom = 16.dp),
+        modifier = modifier
+            .itemDivider()
+            .padding(top = 16.dp, end = 16.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
