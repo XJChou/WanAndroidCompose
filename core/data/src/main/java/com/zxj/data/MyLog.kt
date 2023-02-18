@@ -12,7 +12,7 @@ object MyLog {
     }
 
     private val fileLineMethod: String
-        private get() {
+        get() {
             val traceElement = Exception().stackTrace[2]
             val toStringBuffer = StringBuffer("[").append(traceElement.fileName).append(" | ")
                 .append(traceElement.lineNumber).append(" | ").append(traceElement.methodName)
