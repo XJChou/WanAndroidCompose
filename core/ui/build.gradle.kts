@@ -27,6 +27,8 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:model"))
 
+    api(libs.exoplayer)
+
     implementation(libs.androidx.core.ktx)
     // compose 相关
     androidTestImplementation(libs.compose.ui.test.junit4)
