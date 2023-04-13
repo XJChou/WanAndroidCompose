@@ -11,7 +11,7 @@ android {
 dependencies {
     implementation(project(":core:model"))
     // room
-    ksp(libs.room.compiler)
+    kapt(libs.room.compiler)
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     // 协程
